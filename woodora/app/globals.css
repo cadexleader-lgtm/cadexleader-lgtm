@@ -28,12 +28,20 @@
   --color-success: #2f7a45;
   --color-warning: #b86a05;
 
-  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "DM Serif Display", ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: "Instrument Sans Variable", "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
 
-  --radius-card: 14px;
-  --shadow-soft: 0 1px 2px rgb(22 21 21 / 0.04), 0 6px 18px -6px rgb(22 21 21 / 0.1);
-  --shadow-lift: 0 2px 4px rgb(22 21 21 / 0.05), 0 18px 36px -12px rgb(22 21 21 / 0.22);
+  /* Restrained geometry: crisp corners, hairlines rather than heavy shadows. */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
+  --radius-3xl: 8px;
+  --radius-card: 4px;
+  --shadow-soft: 0 1px 0 rgb(22 21 21 / 0.04);
+  --shadow-lift: 0 1px 0 rgb(22 21 21 / 0.04), 0 18px 40px -24px rgb(22 21 21 / 0.28);
 
   --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade-in: fade-in 0.4s ease-out both;
@@ -55,13 +63,22 @@
   }
   body {
     @apply bg-cream text-charcoal font-sans antialiased;
-    font-feature-settings: "cv11", "ss01";
+    font-feature-settings: "ss01", "tnum" 0;
     text-rendering: optimizeLegibility;
   }
-  h1, h2, h3, .font-display {
+  h1, h2, .font-display {
     font-family: var(--font-display);
     font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+  h3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
     letter-spacing: -0.01em;
+  }
+  h1 em, h2 em, .font-display em {
+    font-style: italic;
+    color: var(--color-wood);
   }
   ::selection {
     background: var(--color-wood-100);
@@ -82,14 +99,10 @@
     @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
   }
   .kicker {
-    @apply inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-wood-600;
-  }
-  .kicker::before {
-    content: "";
-    @apply inline-block h-px w-6 bg-current opacity-70;
+    @apply inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-stone;
   }
   .card {
-    @apply rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-soft)] ring-1 ring-line/70;
+    @apply rounded-[var(--radius-card)] bg-surface ring-1 ring-line;
   }
   select.field {
     appearance: none;
@@ -141,18 +154,20 @@
 }
 
 /* ------------------------------------------------------------- motion */
-.js [data-reveal] {
+@media (scripting: enabled) {
+[data-reveal] {
   opacity: 0;
   transition:
     opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
     transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
-.js [data-reveal="up"] { transform: translateY(28px); }
-.js [data-reveal="scale"] { transform: scale(0.96); }
-.js [data-reveal="left"] { transform: translateX(-32px); }
-.js [data-reveal="right"] { transform: translateX(32px); }
-.js [data-reveal][data-shown="true"] { opacity: 1; transform: none; }
+[data-reveal="up"] { transform: translateY(14px); }
+[data-reveal="scale"] { transform: scale(0.985); }
+[data-reveal="left"] { transform: translateX(-16px); }
+[data-reveal="right"] { transform: translateX(16px); }
+[data-reveal][data-shown="true"] { opacity: 1; transform: none; }
+}
 
 .marquee-track { animation: marquee-x linear infinite; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
@@ -190,9 +205,10 @@
 @keyframes word-in { to { opacity: 1; transform: none; } }
 
 .bar-fill { transform-origin: left; transform: scaleX(0); transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s; }
-[data-shown="true"] .bar-fill, html:not(.js) .bar-fill { transform: scaleX(1); }
+[data-shown="true"] .bar-fill { transform: scaleX(1); }
+@media (scripting: none) { .bar-fill { transform: scaleX(1); } }
 
-.slide-progress { animation: slide-progress 6.5s linear forwards; }
+.slide-progress { animation: slide-progress 7s linear forwards; }
 @keyframes slide-progress { from { width: 0; } to { width: 100%; } }
 
 .spin-slow { animation: spin 60s linear infinite; }
@@ -213,8 +229,8 @@
 .mask-fade-x { mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent); }
 
 @media (prefers-reduced-motion: reduce) {
-  .js [data-reveal] { opacity: 1 !important; transform: none !important; }
-  .marquee-track, .ember, .glow-pulse, .slide-progress { animation: slide-progress 6.5s linear forwards; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .marquee-track, .ember, .glow-pulse, .slide-progress { animation: slide-progress 7s linear forwards; }
 @keyframes slide-progress { from { width: 0; } to { width: 100%; } }
 
 .spin-slow { animation: none !important; }

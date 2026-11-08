@@ -1,21 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight, ArrowUpRight, Calculator, Check, Flame, Handshake, MessageCircle, PackageCheck, ShieldCheck, Star, Truck } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Star } from "lucide-react";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Carousel } from "@/components/site/Carousel";
 import { HeroSlider, type Slide } from "@/components/site/HeroSlider";
+import { emphasize } from "@/lib/emphasize";
 import { SpeciesDisc } from "@/components/site/SpeciesDisc";
-import { ButtonLink } from "@/components/ui";
+import { ButtonLink, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/motion/Reveal";
-import { Marquee } from "@/components/motion/Marquee";
-import { Embers } from "@/components/motion/Embers";
-import { CountUp } from "@/components/motion/CountUp";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { listProducts, toPublicProduct, type Product } from "@/lib/data/products";
 import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
 import { blogPath, categoryPath, routePath, SITES } from "@/lib/sites";
-import { fmt, formatNumber, money } from "@/lib/format";
+import { fmt, formatNumber } from "@/lib/format";
 import { formatLabel } from "@/lib/product-format";
 import { estimateHeatingNeeds } from "@/lib/calculator";
 import { SPECIES } from "@/lib/energy";
@@ -40,30 +38,43 @@ const SAMPLE = {
   us: { postal: "12207", area: 1300, place: "Albany, NY" },
 } as const;
 
+/** Relative characteristics on a 5-point scale (density, ease of lighting, coal life). */
 const SPECIES_SCORES: Record<(typeof CATALOG_SPECIES)[number], { heat: number; lighting: number; coals: number }> = {
-  oak: { heat: 95, lighting: 45, coals: 100 },
-  beech: { heat: 90, lighting: 60, coals: 80 },
-  birch: { heat: 72, lighting: 100, coals: 55 },
-  maple: { heat: 88, lighting: 60, coals: 80 },
-  ash: { heat: 82, lighting: 78, coals: 75 },
-  pine: { heat: 55, lighting: 100, coals: 35 },
+  oak: { heat: 5, lighting: 2, coals: 5 },
+  beech: { heat: 4, lighting: 3, coals: 4 },
+  birch: { heat: 3, lighting: 5, coals: 3 },
+  maple: { heat: 4, lighting: 3, coals: 4 },
+  ash: { heat: 4, lighting: 4, coals: 4 },
+  pine: { heat: 2, lighting: 5, coals: 2 },
 };
+
+function Meter({ value, label }: { value: number; label: string }) {
+  return (
+    <span className="flex items-center gap-1" role="img" aria-label={`${label} ${value}/5`}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <span key={i} className={`h-[3px] w-4 ${i < value ? "bg-forest" : "bg-forest/15"}`} />
+      ))}
+    </span>
+  );
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
 
 export default async function HomePage({ params }: SiteParams) {
   const { site: id } = await params;
   const ctx = await loadSite(id);
-  const { site, t, market, freeThresholdCents } = ctx;
+  const { site, t, market } = ctx;
   const [products, reviews, stats] = await Promise.all([listProducts(site.market, site.lang), listApprovedReviews(site.market, 3), reviewStats(site.market)]);
 
-  const featuredRaw = products.filter((p) => p.featured);
-  const featured = [...featuredRaw, ...products.filter((p) => !p.featured && p.categoryId === "firewood")].slice(0, 8);
-  const kiln = products.filter((p) => p.categoryId === "kiln-dried" || p.categoryId === "pellets" || p.categoryId === "briquettes").slice(0, 10);
+  const featured = [...products.filter((p) => p.featured), ...products.filter((p) => !p.featured && p.categoryId === "firewood")].slice(0, 8);
+  const kiln = products.filter((p) => ["kiln-dried", "pellets", "briquettes"].includes(p.categoryId)).slice(0, 10);
   const speciesList = CATALOG_SPECIES.filter((s) => products.some((p) => p.species === s));
   const card = (p: Product, priority = false) => (
     <ProductCard key={p.id} p={toPublicProduct(p, site.lang)} site={site} t={t} currency={market.currency} formatLabel={formatLabel(p, t, site.lang)} priority={priority} />
   );
 
   const sample = SAMPLE[site.market];
+  const sampleArea = `${formatNumber(sample.area, site.locale, 0)} ${site.market === "fr" ? "m²" : site.lang === "fr" ? "pi²" : "sq ft"}`;
   const sampleResult = estimateHeatingNeeds({
     market: site.market,
     postalCode: sample.postal,
@@ -76,18 +87,16 @@ export default async function HomePage({ params }: SiteParams) {
     months: 5,
   }).quantities[0];
   const sampleUnit = t.calculator.result.units[sampleResult.unit as keyof typeof t.calculator.result.units];
-  const sampleText = fmt(t.home.calculator.sampleText, {
-    area: `${formatNumber(sample.area, site.locale, 0)} ${site.market === "fr" ? "m²" : site.lang === "fr" ? "pi²" : "sq ft"}`,
-    place: sample.place,
-  });
-  const freeLabel = freeThresholdCents ? fmt(t.topbar.freeDeliveryFrom, { amount: money(site, freeThresholdCents, market.currency) }) : t.topbar.freeDelivery;
-  const marqueeItems = [freeLabel, ...t.preorder.reassurance, ...t.home.marquee];
-  const whyIcons = [Truck, Handshake, PackageCheck, MessageCircle];
+  const steps = t.calculator.steps;
 
+  const slide = (i: number, image: string, position: string, href: string, secondaryHref: string): Slide => {
+    const { secondary, ...rest } = t.home.slides[i];
+    return { ...rest, image, position, href, secondary: { label: secondary, href: secondaryHref } };
+  };
   const slides: Slide[] = [
-    { image: "/images/ambiance/cabin-stove.webp", position: "50% 40%", href: routePath(site, "shop"), ...t.home.slides[0] },
-    { image: "/images/ambiance/living-room-fireplace.webp", position: "50% 56%", href: routePath(site, "calculator"), ...t.home.slides[1] },
-    { image: "/images/photos/delivery-trailer.webp", position: "50% 55%", href: routePath(site, "delivery"), ...t.home.slides[2] },
+    slide(0, "/images/ambiance/cabin-stove.webp", "50% 40%", routePath(site, "shop"), routePath(site, "calculator")),
+    slide(1, "/images/ambiance/living-room-fireplace.webp", "50% 56%", routePath(site, "calculator"), routePath(site, "faq")),
+    slide(2, "/images/photos/delivery-trailer.webp", "50% 55%", routePath(site, "delivery"), routePath(site, "faq")),
   ];
 
   const tiles = [
@@ -97,42 +106,53 @@ export default async function HomePage({ params }: SiteParams) {
     { href: blogPath(site), image: "/images/ambiance/texture-split-logs.webp", ...t.home.tiles[3] },
     { href: routePath(site, "about"), image: "/images/ambiance/texture-cracked.webp", ...t.home.tiles[4] },
   ];
+  const underline = "text-sm font-semibold text-forest underline decoration-forest/25 underline-offset-[6px] transition hover:decoration-forest";
 
   return (
     <>
-      {/* ------------------------------------------------------------ Hero slider */}
-      <HeroSlider slides={slides} labels={{ prev: t.common.previous, next: t.common.next, slide: t.common.slide }}>
-        <Embers count={22} className="z-10" />
-      </HeroSlider>
+      <HeroSlider slides={slides} labels={{ prev: t.common.previous, next: t.common.next, slide: t.common.slide }} />
 
-      {/* ------------------------------------------------------------ Trust marquee */}
-      <div className="bg-forest text-cream">
-        <Marquee duration={40} itemClassName="items-center gap-10 pr-10 py-3">
-          {marqueeItems.map((m) => (
-            <span key={m} className="flex items-center gap-10 whitespace-nowrap text-[0.8rem] font-medium uppercase tracking-[0.16em]">
-              {m}
-              <Flame className="h-3.5 w-3.5 text-wood" />
-            </span>
+      {/* ------------------------------------------------------------ Commitments */}
+      <section className="border-b border-line bg-white">
+        <div className="container-page grid sm:grid-cols-2 lg:grid-cols-4">
+          {t.home.values.map((v, i) => (
+            <div
+              key={v.title}
+              className={`border-line py-8 sm:px-6 ${i > 0 ? "border-t sm:border-t-0" : ""} ${i % 2 === 1 ? "sm:border-l" : "sm:pl-0"} ${i >= 2 ? "sm:border-t lg:border-t-0" : ""} ${i === 2 ? "lg:border-l lg:pl-6" : ""}`}
+            >
+              <p className="text-[0.72rem] font-semibold tabular-nums tracking-[0.18em] text-wood-600">{pad(i + 1)}</p>
+              <p className="mt-3 font-semibold text-charcoal">{v.title}</p>
+              <p className="mt-1 text-[0.88rem] leading-relaxed text-stone">{v.text}</p>
+            </div>
           ))}
-        </Marquee>
-      </div>
+        </div>
+      </section>
 
-      {/* ------------------------------------------------------------ Promo banners */}
-      <section className="container-page grid gap-5 pt-14 md:grid-cols-2">
+      {/* ------------------------------------------------------------ Banners */}
+      <section className="container-page grid gap-4 pt-16 md:grid-cols-12">
         {[
-          { href: routePath(site, "delivery"), image: "/images/photos/firewood-crates-yard.webp", position: "50% 60%", ...t.home.banners.delivery, Icon: Truck },
-          { href: blogPath(site), image: "/images/ambiance/modern-fireplace.webp", position: "50% 62%", ...t.home.banners.advice, Icon: Flame },
+          { href: routePath(site, "delivery"), image: "/images/photos/firewood-crates-yard.webp", position: "50% 60%", span: "md:col-span-7", ...t.home.banners.delivery },
+          { href: blogPath(site), image: "/images/ambiance/modern-fireplace.webp", position: "50% 62%", span: "md:col-span-5", ...t.home.banners.advice },
         ].map((b, i) => (
-          <Reveal key={b.href} delay={i * 100} variant="scale">
-            <Link href={b.href} className="group relative flex h-56 items-center overflow-hidden rounded-xl bg-forest-950 p-7 text-cream ring-4 ring-white shadow-[0_18px_40px_-24px_rgb(22_21_21/0.6)] sm:h-60 sm:p-9">
-              <Image src={b.image} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition duration-[1.2s] ease-out group-hover:scale-[1.07]" style={{ objectPosition: b.position }} />
-              <div className="absolute inset-0 bg-gradient-to-r from-forest-950/85 via-forest-950/45 to-transparent" />
-              <div className="relative max-w-xs">
-                <b.Icon className="h-6 w-6 text-wood" />
-                <h2 className="mt-2 text-4xl sm:text-[2.6rem]">{b.title}</h2>
-                <p className="mt-2 text-[0.92rem] leading-relaxed text-cream/80">{b.text}</p>
-                <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-wood-100">
-                  {b.cta} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+          <Reveal key={b.href} delay={i * 80} className={b.span}>
+            <Link href={b.href} className="group relative flex h-72 items-end overflow-hidden bg-forest-950 text-cream sm:h-80">
+              <Image
+                src={b.image}
+                alt=""
+                fill
+                sizes="(min-width: 768px) 58vw, 100vw"
+                className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                style={{ objectPosition: b.position }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-forest-950/85 via-forest-950/25 to-transparent" />
+              <div className="relative flex w-full items-end justify-between gap-6 p-7 sm:p-8">
+                <div className="max-w-sm">
+                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-cream/60">{pad(i + 1)}</p>
+                  <h2 className="mt-2 text-[2.4rem] leading-none sm:text-[2.8rem]">{b.title}</h2>
+                  <p className="mt-3 text-[0.92rem] leading-relaxed text-cream/75">{b.text}</p>
+                </div>
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[3px] bg-cream text-ink transition-colors group-hover:bg-wood">
+                  <ArrowUpRight className="h-5 w-5" />
                 </span>
               </div>
             </Link>
@@ -140,82 +160,91 @@ export default async function HomePage({ params }: SiteParams) {
         ))}
       </section>
 
-      {/* ------------------------------------------------------------ Featured products */}
+      {/* ------------------------------------------------------------ Featured */}
       {featured.length > 0 && (
-        <section className="container-page pt-16">
+        <section className="container-page pt-20">
           <Reveal>
-            <Carousel title={t.home.featured} prevLabel={t.common.previous} nextLabel={t.common.next}>
+            <Carousel
+              title={t.home.featured}
+              prevLabel={t.common.previous}
+              nextLabel={t.common.next}
+              action={
+                <Link href={routePath(site, "shop")} className={`hidden shrink-0 pb-1 sm:inline ${underline}`}>
+                  {t.common.seeAll}
+                </Link>
+              }
+            >
               {featured.map((p, i) => card(p, i < 4))}
             </Carousel>
           </Reveal>
         </section>
       )}
 
-      {/* ------------------------------------------------------------ Species */}
+      {/* ------------------------------------------------------------ Species guide */}
       {speciesList.length > 0 && (
-        <section className="mt-10 border-y border-line bg-cream-200/60 py-16">
+        <section className="mt-16 bg-cream-200/70 py-20">
           <div className="container-page">
             <Reveal>
-              <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-                <div>
-                  <p className="kicker mb-2">{t.home.species.kicker}</p>
-                  <h2 className="text-[1.75rem] text-forest sm:text-[2.1rem]">{t.home.species.title}</h2>
-                  <p className="mt-1.5 max-w-2xl text-stone">{t.home.species.subtitle}</p>
+              <SectionHeading kicker={t.home.speciesTable.kicker} title={emphasize(t.home.speciesTable.title)} subtitle={t.home.speciesTable.subtitle} />
+            </Reveal>
+            <Reveal>
+              <div className="bg-white ring-1 ring-line">
+                <div className="hidden grid-cols-[2.2fr_1fr_1fr_1fr_0.7fr_auto] gap-6 border-b border-line px-6 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-stone md:grid">
+                  <span>{t.home.speciesTable.species}</span>
+                  <span>{t.home.speciesTable.heat}</span>
+                  <span>{t.home.speciesTable.lighting}</span>
+                  <span>{t.home.speciesTable.coals}</span>
+                  <span>{t.home.speciesTable.formats}</span>
+                  <span className="w-10" />
                 </div>
-                <Link href={routePath(site, "shop")} className="inline-flex items-center gap-2 font-semibold text-wood-600 hover:text-forest">
-                  {t.nav.allProducts} <ArrowRight className="h-4 w-4" />
-                </Link>
+                {speciesList.map((sp) => {
+                  const sc = SPECIES_SCORES[sp];
+                  const n = products.filter((p) => p.species === sp).length;
+                  return (
+                    <Link
+                      key={sp}
+                      href={`${routePath(site, "shop")}?species=${sp}`}
+                      className="group grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-4 border-b border-line px-6 py-5 transition-colors last:border-b-0 hover:bg-cream md:grid-cols-[2.2fr_1fr_1fr_1fr_0.7fr_auto] md:gap-6"
+                    >
+                      <span className="flex items-center gap-4">
+                        <SpeciesDisc species={sp} className="h-12 w-12 shrink-0" />
+                        <span>
+                          <span className="block font-display text-[1.7rem] leading-none text-forest">{SPECIES[sp].names[site.lang]}</span>
+                          <span className="mt-1 block text-[0.82rem] text-stone">{t.home.species.taglines[sp]}</span>
+                        </span>
+                      </span>
+                      <span className="flex h-10 w-10 items-center justify-center rounded-[3px] text-forest ring-1 ring-inset ring-forest/15 transition-colors group-hover:bg-forest group-hover:text-cream md:order-last">
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                      <span className="col-span-2 grid grid-cols-3 gap-4 md:contents">
+                        {(["heat", "lighting", "coals"] as const).map((k) => (
+                          <span key={k} className="flex flex-col gap-1.5 md:block">
+                            <span className="text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-stone md:hidden">{t.home.speciesTable[k]}</span>
+                            <Meter value={sc[k]} label={t.home.speciesTable[k]} />
+                          </span>
+                        ))}
+                      </span>
+                      <span className="hidden text-sm tabular-nums text-charcoal md:block">{n}</span>
+                    </Link>
+                  );
+                })}
               </div>
             </Reveal>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {speciesList.map((sp, i) => {
-                const n = products.filter((p) => p.species === sp).length;
-                const scores = SPECIES_SCORES[sp];
-                return (
-                  <Reveal key={sp} delay={i * 70}>
-                    <Link
-                      href={`${routePath(site, "shop")}?species=${sp}`}
-                      className="group flex h-full items-center gap-5 rounded-xl bg-white p-5 shadow-[var(--shadow-soft)] ring-1 ring-line/70 transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
-                    >
-                      <SpeciesDisc species={sp} className="h-24 w-24 shrink-0 drop-shadow-md transition duration-700 group-hover:rotate-[30deg]" />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-baseline justify-between gap-2">
-                          <h3 className="text-2xl text-forest">{SPECIES[sp].names[site.lang]}</h3>
-                          <span className="text-xs text-stone">{fmt(t.home.species.count, { n })}</span>
-                        </div>
-                        <p className="text-sm text-wood-600">{t.home.species.taglines[sp]}</p>
-                        <dl className="mt-3 space-y-1.5">
-                          {(["heat", "lighting", "coals"] as const).map((k) => (
-                            <div key={k} className="grid grid-cols-[70px_1fr] items-center gap-2 text-[0.72rem] text-stone">
-                              <dt>{t.home.species.bars[k]}</dt>
-                              <dd className="h-1.5 overflow-hidden rounded-full bg-cream-200">
-                                <span className="bar-fill block h-full rounded-full bg-gradient-to-r from-pine to-wood" style={{ width: `${scores[k]}%` }} />
-                              </dd>
-                            </div>
-                          ))}
-                        </dl>
-                      </div>
-                      <ArrowUpRight className="h-5 w-5 shrink-0 self-start text-stone transition group-hover:text-wood" />
-                    </Link>
-                  </Reveal>
-                );
-              })}
-            </div>
           </div>
         </section>
       )}
 
-      {/* ------------------------------------------------------------ Kiln-dried & densified */}
+      {/* ------------------------------------------------------------ Kiln-dried */}
       {kiln.length > 0 && (
-        <section className="container-page pt-16">
+        <section className="container-page pt-20">
           <Reveal>
             <Carousel
               title={t.home.kiln}
               prevLabel={t.common.previous}
               nextLabel={t.common.next}
               action={
-                <Link href={categoryPath(site, "kiln-dried")} className="hidden shrink-0 text-sm font-semibold text-wood-600 hover:text-forest sm:inline">
-                  {t.common.seeAll} →
+                <Link href={categoryPath(site, "kiln-dried")} className={`hidden shrink-0 pb-1 sm:inline ${underline}`}>
+                  {t.common.seeAll}
                 </Link>
               }
             >
@@ -225,18 +254,21 @@ export default async function HomePage({ params }: SiteParams) {
         </section>
       )}
 
-      {/* ------------------------------------------------------------ Promo tiles */}
-      <section className="container-page grid gap-5 pt-10 md:grid-cols-6">
+      {/* ------------------------------------------------------------ Tiles */}
+      <section className="container-page grid gap-x-4 gap-y-2 pt-16 md:grid-cols-6">
         {tiles.map((tile, i) => (
-          <Reveal key={tile.title} delay={i * 80} variant="scale" className={i < 2 ? (i === 0 ? "md:col-span-3" : "md:col-span-3") : "md:col-span-2"}>
-            <Link href={tile.href} className="group relative flex h-48 items-end overflow-hidden rounded-xl bg-forest-950 p-6 text-cream ring-1 ring-line sm:h-56">
-              <Image src={tile.image} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition duration-[1.2s] ease-out group-hover:scale-[1.08]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-forest-950/90 via-forest-950/35 to-forest-950/5 transition duration-500 group-hover:from-forest-950/95" />
-              <div className="relative">
-                <h3 className="text-[1.9rem] leading-tight drop-shadow">{tile.title}</h3>
-                <p className="mt-1 flex items-center gap-2 text-sm text-cream/80">
-                  {tile.text} <ArrowRight className="h-4 w-4 -translate-x-1 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100" />
-                </p>
+          <Reveal key={tile.title} delay={(i % 3) * 70} className={i < 2 ? "md:col-span-3" : "md:col-span-2"}>
+            <Link href={tile.href} className="group block">
+              <div className={`relative overflow-hidden bg-forest-950 ${i < 2 ? "aspect-[16/9]" : "aspect-[4/3]"}`}>
+                <Image src={tile.image} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]" />
+              </div>
+              <div className="flex items-start justify-between gap-4 border-b border-line py-4">
+                <div>
+                  <p className="text-[0.68rem] font-semibold tabular-nums uppercase tracking-[0.18em] text-wood-600">{pad(i + 1)}</p>
+                  <p className="mt-1.5 font-display text-[1.75rem] leading-tight text-forest">{tile.title}</p>
+                  <p className="text-[0.88rem] text-stone">{tile.text}</p>
+                </div>
+                <ArrowUpRight className="mt-6 h-5 w-5 shrink-0 text-stone transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-forest" />
               </div>
             </Link>
           </Reveal>
@@ -244,169 +276,132 @@ export default async function HomePage({ params }: SiteParams) {
       </section>
 
       {/* ------------------------------------------------------------ Calculator */}
-      <section className="container-page py-16 sm:py-20">
-        <Reveal variant="scale">
-          <div className="relative overflow-hidden rounded-[24px] bg-forest text-cream">
-            <Image src="/images/ambiance/texture-stack.webp" alt="" fill sizes="100vw" className="object-cover opacity-25" />
-            <div className="absolute inset-0 bg-gradient-to-r from-forest via-forest/95 to-forest/70" aria-hidden />
-            <div className="relative grid gap-10 p-8 sm:p-12 lg:grid-cols-[1.2fr_1fr] lg:gap-14 lg:p-16">
-              <div>
-                <p className="kicker text-wood-100">{t.home.calculator.kicker}</p>
-                <h2 className="mt-4 text-3xl leading-[1.1] sm:text-[2.7rem]">{t.home.calculator.title}</h2>
-                <p className="mt-4 text-lg text-cream/75">{t.home.calculator.subtitle}</p>
-                <ul className="mt-7 space-y-3">
-                  {t.home.calculator.points.map((pt) => (
-                    <li key={pt} className="flex items-start gap-3 text-cream/85">
-                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cream/10 ring-1 ring-cream/20">
-                        <Check className="h-3.5 w-3.5 text-wood-100" />
-                      </span>
-                      {pt}
-                    </li>
-                  ))}
-                </ul>
-                <ButtonLink href={routePath(site, "calculator")} variant="wood" size="lg" className="shine mt-9 uppercase tracking-wide">
-                  <Calculator className="h-5 w-5" /> {t.home.calculator.cta}
-                </ButtonLink>
-              </div>
-              <div className="self-center rounded-2xl bg-cream p-6 text-charcoal shadow-2xl sm:p-7">
-                <p className="kicker">{t.home.calculator.sample}</p>
-                <p className="mt-3 text-[0.95rem] leading-relaxed text-stone">{sampleText}</p>
-                <div className="mt-5 rounded-xl bg-white p-5 ring-1 ring-line">
-                  <p className="text-sm text-stone">{t.calculator.result.need}</p>
-                  <p className="mt-1 font-display text-4xl text-forest">
-                    {fmt(t.calculator.result.range, { low: formatNumber(sampleResult.low, site.locale), high: formatNumber(sampleResult.high, site.locale) })}
-                  </p>
-                  <p className="mt-1 text-[0.95rem] font-medium text-wood-600">{sampleUnit[1]}</p>
-                  <Reveal>
-                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-cream-200">
-                      <span className="bar-fill block h-full w-2/3 rounded-full bg-gradient-to-r from-sage via-pine to-wood" />
-                    </div>
-                  </Reveal>
-                </div>
-              </div>
+      <section className="mt-20 bg-forest-950 text-cream">
+        <div className="container-page grid gap-12 py-20 lg:grid-cols-12 lg:gap-16 lg:py-24">
+          <Reveal className="lg:col-span-6">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-cream/55">{t.home.calculator.kicker}</p>
+            <h2 className="mt-5 text-[2.6rem] leading-[1] sm:text-[3.6rem]">{emphasize(t.home.slides[1].title)}</h2>
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-cream/70">{t.home.calculator.subtitle}</p>
+            <ol className="mt-10 grid gap-px bg-cream/10 sm:grid-cols-3">
+              {t.home.calculator.points.map((pt, i) => (
+                <li key={pt} className="bg-forest-950 py-5 sm:px-5 sm:first:pl-0">
+                  <span className="text-[0.7rem] font-semibold tabular-nums tracking-[0.18em] text-wood">{pad(i + 1)}</span>
+                  <p className="mt-2 text-[0.88rem] leading-relaxed text-cream/75">{pt}</p>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-10">
+              <ButtonLink href={routePath(site, "calculator")} variant="wood" size="lg">
+                {t.home.calculator.cta} <ArrowRight className="h-4 w-4" />
+              </ButtonLink>
             </div>
-          </div>
-        </Reveal>
-      </section>
-
-      {/* ------------------------------------------------------------ Why us + figures */}
-      <section className="bg-forest-950 py-16 text-cream sm:py-20">
-        <div className="container-page">
-          <Reveal>
-            <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
-              <div className="max-w-2xl">
-                <p className="kicker text-wood-100">{t.home.why.kicker}</p>
-                <h2 className="mt-3 text-[1.9rem] leading-tight sm:text-[2.6rem]">{t.home.why.title}</h2>
+          </Reveal>
+          <Reveal className="lg:col-span-5 lg:col-start-8" delay={120}>
+            <div className="bg-cream text-charcoal">
+              <div className="flex items-center justify-between border-b border-line px-6 py-4">
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-stone">{t.home.calculator.sample}</p>
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-stone">{sample.place}</p>
               </div>
-              <div className="flex gap-8">
-                {[3, speciesList.length || 6, 0].map((v, i) => (
-                  <div key={i}>
-                    <p className="font-display text-5xl text-wood">
-                      <CountUp to={v} locale={site.locale} />
-                    </p>
-                    <p className="text-xs uppercase tracking-wider text-cream/60">{t.home.ambiance.stats[i === 2 ? 3 : i]}</p>
+              <dl className="divide-y divide-line px-6 text-[0.9rem]">
+                {[
+                  [t.calculator.result.rows.area, sampleArea],
+                  [t.calculator.result.rows.insulation, steps.insulation.options.average.label],
+                  [t.calculator.result.rows.appliance, steps.appliance.options.wood_stove.label],
+                  [t.calculator.result.rows.usage, steps.usage.options.daily.label],
+                  [t.calculator.result.rows.duration, steps.duration.month.replace("{n}", "5")],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex justify-between gap-4 py-3">
+                    <dt className="text-stone">{k}</dt>
+                    <dd className="font-medium">{v}</dd>
                   </div>
                 ))}
+              </dl>
+              <div className="mt-2 bg-white px-6 py-6 ring-1 ring-line">
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-stone">{t.calculator.result.need}</p>
+                <p className="mt-2 font-display text-[3.4rem] leading-none text-forest">
+                  {formatNumber(sampleResult.low, site.locale)}–{formatNumber(sampleResult.high, site.locale)}
+                </p>
+                <p className="mt-2 text-[0.95rem] font-semibold text-wood-600">{sampleUnit[1]}</p>
               </div>
             </div>
           </Reveal>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {t.home.why.items.map((item, i) => {
-              const Icon = whyIcons[i];
-              return (
-                <Reveal key={item.title} delay={i * 80}>
-                  <div className="group h-full rounded-xl bg-cream/[0.04] p-6 ring-1 ring-cream/10 transition duration-300 hover:bg-cream/[0.08] hover:ring-wood/50">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-wood/15 text-wood transition group-hover:bg-wood group-hover:text-ink">
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <h3 className="mt-5 text-xl">{item.title}</h3>
-                    <p className="mt-2 text-[0.93rem] leading-relaxed text-cream/65">{item.text}</p>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------ Why us */}
+      <section className="container-page py-20">
+        <Reveal>
+          <SectionHeading kicker={t.home.why.kicker} title={t.home.why.title} subtitle={t.home.transparency.text} />
+        </Reveal>
+        <div className="grid gap-px bg-line ring-1 ring-line sm:grid-cols-2 lg:grid-cols-4">
+          {t.home.why.items.map((item, i) => (
+            <Reveal key={item.title} delay={i * 60} className="bg-white p-7">
+              <p className="font-display text-[3rem] leading-none text-wood">{pad(i + 1)}</p>
+              <h3 className="mt-6 text-[1.05rem] text-charcoal">{item.title}</h3>
+              <p className="mt-2 text-[0.9rem] leading-relaxed text-stone">{item.text}</p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
       {/* ------------------------------------------------------------ How to order */}
-      <section className="container-page py-16 sm:py-20">
-        <Reveal>
-          <div className="mb-8 flex items-center gap-5">
-            <h2 className="shrink-0 text-[1.75rem] text-forest sm:text-[2.1rem]">{t.home.how.title}</h2>
-            <span className="h-px flex-1 bg-gradient-to-r from-line to-transparent" aria-hidden />
-          </div>
-        </Reveal>
-        <ol className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {t.home.how.steps.map((s, i) => (
-            <Reveal as="li" key={s.title} delay={i * 110} className="relative rounded-xl bg-white p-6 shadow-[var(--shadow-soft)] ring-1 ring-line/70">
-              <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-forest font-display text-2xl text-wood-100">{i + 1}</span>
-              <h3 className="mt-4 font-sans text-lg font-semibold tracking-normal text-charcoal">{s.title}</h3>
-              <p className="mt-1.5 text-[0.92rem] leading-relaxed text-stone">{s.text}</p>
-            </Reveal>
-          ))}
-        </ol>
-        <p className="mt-6 flex items-center gap-2 text-sm text-stone">
-          <ShieldCheck className="h-4 w-4 text-wood" /> {t.common.noPayment}
-        </p>
+      <section className="bg-white py-20">
+        <div className="container-page">
+          <Reveal>
+            <SectionHeading kicker={t.home.how.kicker} title={t.home.how.title} subtitle={t.common.noPayment} />
+          </Reveal>
+          <ol className="grid gap-10 md:grid-cols-4 md:gap-6">
+            {t.home.how.steps.map((st, i) => (
+              <Reveal as="li" key={st.title} delay={i * 90} className="relative">
+                <div className="flex items-center gap-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-forest text-sm font-semibold tabular-nums text-cream">{i + 1}</span>
+                  <span className="hidden h-px flex-1 bg-forest/15 md:block" />
+                </div>
+                <h3 className="mt-5 text-[1.05rem] text-charcoal">{st.title}</h3>
+                <p className="mt-2 text-[0.9rem] leading-relaxed text-stone">{st.text}</p>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* ------------------------------------------------------------ Reviews */}
-      <section className="border-t border-line bg-cream-200/60 py-16 sm:py-20">
-        <div className="container-page">
-          <Reveal>
-            <div className="mb-8 flex flex-wrap items-center gap-5">
-              <h2 className="shrink-0 text-[1.75rem] text-forest sm:text-[2.1rem]">{t.home.reviews.title}</h2>
-              <span className="hidden h-px flex-1 bg-gradient-to-r from-line to-transparent sm:block" aria-hidden />
+      <section className="container-page py-20">
+        <Reveal>
+          <SectionHeading
+            kicker={t.home.reviews.kicker}
+            title={t.home.reviews.title}
+            subtitle={stats.count > 0 && stats.average ? fmt(t.home.reviews.average, { avg: formatNumber(stats.average, site.locale), n: stats.count }) : t.home.reviews.subtitle}
+            action={
               <ButtonLink href={routePath(site, "reviews")} variant="secondary" size="sm">
-                <Star className="h-4 w-4" /> {t.home.reviews.cta}
+                {t.home.reviews.cta}
               </ButtonLink>
-            </div>
-          </Reveal>
-          {reviews.length > 0 ? (
-            <div className="grid gap-5 md:grid-cols-3">
-              {reviews.map((r, i) => (
-                <Reveal key={r.id} delay={i * 90}>
-                  <figure className="card flex h-full flex-col p-6">
-                    <div className="flex gap-0.5 text-wood" aria-label={fmt(t.reviews.stars, { n: r.rating })}>
-                      {Array.from({ length: 5 }, (_, k) => (
-                        <Star key={k} className={`h-4 w-4 ${k < r.rating ? "fill-current" : "opacity-25"}`} />
-                      ))}
-                    </div>
-                    {r.title && <p className="mt-4 font-display text-xl text-forest">{r.title}</p>}
-                    <blockquote className="mt-2 flex-1 text-[0.95rem] leading-relaxed text-charcoal/85">“{r.body}”</blockquote>
-                    <figcaption className="mt-5 flex items-center justify-between text-sm">
-                      <span className="font-medium text-charcoal">
-                        {r.authorName}
-                        {r.city ? <span className="font-normal text-stone"> · {r.city}</span> : null}
-                      </span>
-                      {r.verified && (
-                        <span className="flex items-center gap-1 text-xs text-success">
-                          <ShieldCheck className="h-3.5 w-3.5" /> {t.home.reviews.verified}
-                        </span>
-                      )}
-                    </figcaption>
-                  </figure>
-                </Reveal>
-              ))}
-            </div>
-          ) : (
-            <Reveal>
-              <div className="grid items-center gap-6 rounded-xl bg-white p-7 shadow-[var(--shadow-soft)] ring-1 ring-line/70 md:grid-cols-[auto_1fr]">
-                <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-wood-100 text-wood-600">
-                  <ShieldCheck className="h-7 w-7" />
-                </span>
-                <div>
-                  <p className="font-display text-2xl text-forest">{t.home.reviews.emptyTitle}</p>
-                  <p className="mt-1.5 max-w-3xl text-[0.95rem] leading-relaxed text-stone">{t.home.reviews.emptyText}</p>
+            }
+          />
+        </Reveal>
+        {reviews.length > 0 ? (
+          <div className="grid gap-px bg-line ring-1 ring-line md:grid-cols-3">
+            {reviews.map((r) => (
+              <figure key={r.id} className="flex flex-col bg-white p-7">
+                <div className="flex gap-0.5 text-wood" aria-label={fmt(t.reviews.stars, { n: r.rating })}>
+                  {Array.from({ length: 5 }, (_, k) => (
+                    <Star key={k} className={`h-3.5 w-3.5 ${k < r.rating ? "fill-current" : "opacity-25"}`} />
+                  ))}
                 </div>
-              </div>
-            </Reveal>
-          )}
-          {stats.count > 0 && stats.average && (
-            <p className="mt-6 text-sm text-stone">{fmt(t.home.reviews.average, { avg: formatNumber(stats.average, site.locale), n: stats.count })}</p>
-          )}
-        </div>
+                <blockquote className="mt-5 flex-1 font-display text-[1.45rem] leading-snug text-forest">“{r.body}”</blockquote>
+                <figcaption className="mt-6 text-sm text-stone">
+                  <span className="font-semibold text-charcoal">{r.authorName}</span>
+                  {r.city ? ` · ${r.city}` : ""} · {t.home.reviews.verified}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-6 bg-white p-8 ring-1 ring-line md:grid-cols-12">
+            <p className="font-display text-[1.9rem] leading-tight text-forest md:col-span-5">{t.home.reviews.emptyTitle}</p>
+            <p className="text-[0.95rem] leading-relaxed text-stone md:col-span-6 md:col-start-7">{t.home.reviews.emptyText}</p>
+          </div>
+        )}
       </section>
     </>
   );

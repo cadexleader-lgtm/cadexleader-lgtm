@@ -190,7 +190,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
           <path key={x} d={`M${x} 120 q7 -36 14 0`} fill="none" stroke="#f6f5f1" strokeWidth="7" strokeLinecap="round" />
         ))}
         <rect x="160" y="190" width="80" height="34" rx="4" fill="#2A2828" />
-        <text x="200" y="212" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="15" fill="#F6F3EB">Woodora</text>
+        <text x="200" y="212" textAnchor="middle" fontFamily="Instrument Serif, Georgia, serif" fontSize="15" fill="#F6F3EB">Woodora</text>
       </>
     );
   } else if (kind === "net-bag") {
@@ -213,7 +213,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
         <path d="M150 86 Q200 40 250 86" fill="none" stroke="#d0532f" strokeWidth="5" />
         <rect x="186" y="60" width="28" height="14" rx="3" fill="#b6472a" />
         <rect x="236" y="196" width="58" height="40" rx="4" fill="#F6F3EB" stroke="#d7cdb9" transform="rotate(8 265 216)" />
-        <text x="265" y="220" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="11" fill="#2A2828" transform="rotate(8 265 216)">Woodora</text>
+        <text x="265" y="220" textAnchor="middle" fontFamily="Instrument Serif, Georgia, serif" fontSize="11" fill="#2A2828" transform="rotate(8 265 216)">Woodora</text>
       </>
     );
   } else if (kind === "bag") {
@@ -227,7 +227,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
           <path key={i} d={`M${130 + i * 17} 120 L${128 + i * 17} 286`} stroke="#b9966a" strokeWidth="1" opacity="0.6" />
         ))}
         <rect x="140" y="160" width="120" height="78" rx="6" fill="#2A2828" />
-        <text x="200" y="196" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="20" fill="#F6F3EB">Woodora</text>
+        <text x="200" y="196" textAnchor="middle" fontFamily="Instrument Serif, Georgia, serif" fontSize="20" fill="#F6F3EB">Woodora</text>
         <text x="200" y="218" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="9" letterSpacing="2" fill="#d9b48f">{(SPECIES[species]?.names.en ?? "").toUpperCase()}</text>
       </>
     );
@@ -247,7 +247,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
         <path d="M96 120 L70 92 L176 66 L200 92 Z" fill="#d3ad7c" stroke="#a7804f" strokeWidth="1.5" />
         <path d="M304 120 L330 92 L224 66 L200 92 Z" fill="#c29b69" stroke="#a7804f" strokeWidth="1.5" />
         <path d="M112 170 L184 190 L184 236 L112 216 Z" fill="#2A2828" />
-        <text x="148" y="208" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="13" fill="#F6F3EB" transform="skewY(15) translate(0 -40)">Woodora</text>
+        <text x="148" y="208" textAnchor="middle" fontFamily="Instrument Serif, Georgia, serif" fontSize="13" fill="#F6F3EB" transform="skewY(15) translate(0 -40)">Woodora</text>
       </>
     );
   }

@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import "@fontsource-variable/inter";
-import "@fontsource/dm-serif-display/400.css";
+import "@fontsource-variable/instrument-sans";
+import "@fontsource/instrument-serif/400.css";
+import "@fontsource/instrument-serif/400-italic.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,10 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const h = await headers();
   const lang = h.get("x-woodora-lang") === "en" ? "en" : "fr";
   return (
-    <html lang={lang} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
-      </head>
+    <html lang={lang}>
       <body className="flex min-h-dvh flex-col">{children}</body>
     </html>
   );

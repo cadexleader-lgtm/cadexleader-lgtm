@@ -45,7 +45,7 @@ export function Footer({ ctx, articles = [] }: { ctx: SiteContext; articles?: Ar
     { href: social.linkedin, Icon: Linkedin, label: "LinkedIn" },
     { href: social.youtube, Icon: Youtube, label: "YouTube" },
   ].filter((s) => s.href);
-  const heading = "mb-5 font-display text-xl text-wood";
+  const heading = "mb-5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-wood";
   const list = "space-y-2.5 text-[0.92rem] text-cream/70";
   const bullet = "group flex items-center gap-2.5 transition hover:text-cream";
   const dot = <span className="h-1.5 w-1.5 rotate-45 bg-wood/70 transition group-hover:bg-wood" aria-hidden />;
@@ -170,7 +170,7 @@ export function Footer({ ctx, articles = [] }: { ctx: SiteContext; articles?: Ar
                 <Landmark className="mt-0.5 h-4 w-4 shrink-0 text-wood" /> {t.footer.payment}
               </li>
               <li>
-                <Link href={routePath(site, "contact")} className="inline-flex rounded-full bg-wood px-4 py-2 text-sm font-semibold text-ink hover:bg-wood-600">
+                <Link href={routePath(site, "contact")} className="inline-flex rounded-[3px] bg-wood px-4 py-2 text-sm font-semibold text-ink hover:bg-ember">
                   {t.nav.contact}
                 </Link>
               </li>

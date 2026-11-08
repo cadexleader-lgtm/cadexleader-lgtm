@@ -156,8 +156,8 @@ export function AddButton({ productId, minQty, label, addedLabel, disabled }: { 
         add(productId, minQty);
         setDone(true);
       }}
-      className={`flex h-11 w-full items-center justify-center gap-2 rounded-lg text-[0.88rem] font-semibold transition duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-cream-300 disabled:text-stone ${
-        done ? "bg-pine text-cream" : "bg-wood text-ink hover:bg-wood-600 hover:shadow-[0_8px_18px_-8px_rgb(192_112_10/0.8)]"
+      className={`flex h-10 w-full items-center justify-center gap-2 rounded-[3px] text-[0.84rem] font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:bg-cream-300 disabled:text-stone ${
+        done ? "bg-forest text-cream" : "bg-wood text-ink hover:bg-ember"
       }`}
     >
       {done ? <Check className="h-4 w-4" /> : <ShoppingBasket className="h-4 w-4" />}

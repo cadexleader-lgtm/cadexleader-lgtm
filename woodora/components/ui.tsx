@@ -38,22 +38,41 @@ export function SectionHeading({
   align = "left",
   action,
   tone = "dark",
+  index,
 }: {
   kicker?: string;
-  title: string;
+  title: React.ReactNode;
   subtitle?: string;
   align?: "left" | "center";
   action?: ReactNode;
   tone?: "dark" | "light";
+  index?: string;
 }) {
-  return (
-    <div className={`mb-8 flex flex-col gap-4 sm:mb-10 ${align === "center" ? "items-center text-center" : "md:flex-row md:items-end md:justify-between"}`}>
-      <div className={align === "center" ? "max-w-2xl" : "max-w-2xl"}>
-        {kicker && <p className="kicker mb-3">{kicker}</p>}
-        <h2 className={`text-3xl leading-[1.1] sm:text-[2.6rem] ${tone === "dark" ? "text-forest" : "text-cream"}`}>{title}</h2>
-        {subtitle && <p className={`mt-3 text-[1.02rem] leading-relaxed ${tone === "dark" ? "text-stone" : "text-cream/75"}`}>{subtitle}</p>}
+  const muted = tone === "dark" ? "text-stone" : "text-cream/60";
+  if (align === "center") {
+    return (
+      <div className="mx-auto mb-12 max-w-2xl text-center">
+        {kicker && <p className={`mb-4 text-[0.72rem] font-semibold uppercase tracking-[0.18em] ${muted}`}>{kicker}</p>}
+        <h2 className={`text-[2.4rem] leading-[1.02] sm:text-[3.2rem] ${tone === "dark" ? "text-forest" : "text-cream"}`}>{title}</h2>
+        {subtitle && <p className={`mt-4 text-[1.02rem] leading-relaxed ${muted}`}>{subtitle}</p>}
       </div>
-      {action}
+    );
+  }
+  return (
+    <div className={`mb-10 grid gap-6 border-t pt-6 md:grid-cols-12 ${tone === "dark" ? "border-forest/15" : "border-cream/15"}`}>
+      <div className="md:col-span-7">
+        {(kicker || index) && (
+          <p className={`mb-3 flex items-center gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.18em] ${muted}`}>
+            {index && <span className="tabular-nums text-wood">{index}</span>}
+            {kicker}
+          </p>
+        )}
+        <h2 className={`text-[2.3rem] leading-[1.02] sm:text-[3rem] ${tone === "dark" ? "text-forest" : "text-cream"}`}>{title}</h2>
+      </div>
+      <div className="flex flex-col justify-end gap-4 md:col-span-5 md:items-end md:text-right">
+        {subtitle && <p className={`max-w-md text-[0.98rem] leading-relaxed ${muted}`}>{subtitle}</p>}
+        {action}
+      </div>
     </div>
   );
 }
@@ -68,7 +87,7 @@ const TONES = {
 
 export function Badge({ tone = "neutral", children, className = "" }: { tone?: keyof typeof TONES; children: ReactNode; className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${TONES[tone]} ${className}`}>{children}</span>
+    <span className={`inline-flex items-center gap-1.5 rounded-[2px] px-2 py-0.5 text-[0.7rem] font-semibold uppercase tracking-[0.06em] ${TONES[tone]} ${className}`}>{children}</span>
   );
 }
 
@@ -98,8 +117,8 @@ export function PageHero({ kicker, title, intro, children }: { kicker?: string; 
     <section className="relative overflow-hidden bg-forest text-cream">
       <div className="grain absolute inset-0" aria-hidden />
       <div className="container-page relative py-14 sm:py-20">
-        {kicker && <p className="kicker mb-4 text-wood-100/90">{kicker}</p>}
-        <h1 className="max-w-3xl text-4xl leading-[1.08] sm:text-5xl">{title}</h1>
+        {kicker && <p className="mb-5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-cream/55">{kicker}</p>}
+        <h1 className="max-w-4xl text-[2.8rem] leading-[1] sm:text-[4.2rem]">{title}</h1>
         {intro && <p className="mt-5 max-w-2xl text-lg leading-relaxed text-cream/75">{intro}</p>}
         {children}
       </div>

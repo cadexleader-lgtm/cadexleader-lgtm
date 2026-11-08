@@ -157,7 +157,7 @@ function Bag({ x, y, w, h, label, accent = "#244E3E" }: { x: number; y: number; 
       />
       <rect x={x + 10} y={y + 2} width={w - 20} height="10" fill="#efe8da" />
       <rect x={x + 18} y={y + h * 0.3} width={w - 36} height={h * 0.38} rx="8" fill={accent} />
-      <text x={x + w / 2} y={y + h * 0.48} textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize={w * 0.13} fill="#F6F3EB">
+      <text x={x + w / 2} y={y + h * 0.48} textAnchor="middle" fontFamily="Instrument Serif, Georgia, serif" fontSize={w * 0.13} fill="#F6F3EB">
         Woodora
       </text>
       <text x={x + w / 2} y={y + h * 0.6} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={w * 0.075} fill="#d9b48f" letterSpacing="1.5">

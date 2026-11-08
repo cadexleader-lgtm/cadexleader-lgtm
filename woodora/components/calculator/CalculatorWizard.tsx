@@ -410,7 +410,7 @@ function ResultView({
 
   return (
     <div className="space-y-8 animate-fade-up">
-      <div className="relative overflow-hidden rounded-[28px] bg-forest text-cream">
+      <div className="relative overflow-hidden rounded-md bg-forest text-cream">
         <div className="grain absolute inset-0" aria-hidden />
         <div className="relative grid gap-8 p-8 sm:p-10 lg:grid-cols-[1.3fr_1fr] lg:p-12">
           <div>

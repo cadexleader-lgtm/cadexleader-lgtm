@@ -130,12 +130,12 @@ export function Header(p: HeaderProps) {
   const cartButton = (compact = false) => (
     <Link
       href={p.preorderHref}
-      className={`relative flex h-9 items-center gap-2 rounded-full bg-wood pl-3 pr-3.5 text-sm font-semibold text-ink transition hover:bg-wood-600 ${bump ? "scale-110" : ""}`}
+      className={`relative flex h-9 items-center gap-2 rounded-[3px] bg-wood pl-3 pr-3 text-[0.78rem] font-semibold text-ink transition hover:bg-ember ${bump ? "scale-105" : ""}`}
       aria-label={p.labels.cartCount.replace("{n}", String(count))}
     >
       <ShoppingBasket className="h-4 w-4" />
       {!compact && <span className="hidden uppercase tracking-wide sm:inline">{p.labels.cart}</span>}
-      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-[0.7rem] font-bold text-wood-600">{ready ? count : 0}</span>
+      <span className="flex h-5 min-w-5 items-center justify-center rounded-[2px] bg-ink px-1 text-[0.7rem] font-bold text-cream">{ready ? count : 0}</span>
     </Link>
   );
 
@@ -169,7 +169,7 @@ export function Header(p: HeaderProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <form onSubmit={onSearch} role="search" className="hidden h-8 items-center overflow-hidden rounded-md bg-white md:flex">
+            <form onSubmit={onSearch} role="search" className="hidden h-8 items-center overflow-hidden rounded-[3px] bg-white md:flex">
               <input
                 name="q"
                 type="search"
@@ -177,7 +177,7 @@ export function Header(p: HeaderProps) {
                 aria-label={p.labels.search}
                 className="h-full w-56 bg-transparent px-3 text-[0.8rem] text-charcoal placeholder:text-stone/60 focus:outline-none lg:w-64"
               />
-              <button type="submit" aria-label={p.labels.search} className="flex h-full w-9 items-center justify-center bg-wood text-ink hover:bg-wood-600">
+              <button type="submit" aria-label={p.labels.search} className="flex h-full w-9 items-center justify-center bg-wood text-ink hover:bg-ember">
                 <Search className="h-4 w-4" />
               </button>
             </form>
@@ -229,8 +229,8 @@ export function Header(p: HeaderProps) {
             ))}
             <Link
               href={p.calculatorHref}
-              className={`ml-3 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[0.88rem] font-semibold transition ${
-                isActive(p.calculatorHref) ? "bg-wood text-ink" : "bg-forest text-cream hover:bg-pine"
+              className={`ml-4 inline-flex h-10 items-center gap-2 rounded-[3px] px-4 text-[0.85rem] font-semibold transition-colors ${
+                isActive(p.calculatorHref) ? "bg-wood text-ink" : "bg-forest text-cream hover:bg-ink"
               }`}
             >
               <Calculator className="h-4 w-4" /> {p.labels.calculator}
