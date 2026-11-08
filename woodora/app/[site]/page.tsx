@@ -124,7 +124,7 @@ export default async function HomePage({ params }: SiteParams) {
           { href: blogPath(site), image: "/images/ambiance/modern-fireplace.webp", position: "50% 62%", ...t.home.banners.advice, Icon: Flame },
         ].map((b, i) => (
           <Reveal key={b.href} delay={i * 100} variant="scale">
-            <Link href={b.href} className="group relative flex h-56 items-center overflow-hidden rounded-xl bg-forest-950 p-7 text-cream ring-4 ring-white shadow-[0_18px_40px_-24px_rgb(24_61_50/0.6)] sm:h-60 sm:p-9">
+            <Link href={b.href} className="group relative flex h-56 items-center overflow-hidden rounded-xl bg-forest-950 p-7 text-cream ring-4 ring-white shadow-[0_18px_40px_-24px_rgb(22_21_21/0.6)] sm:h-60 sm:p-9">
               <Image src={b.image} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition duration-[1.2s] ease-out group-hover:scale-[1.07]" style={{ objectPosition: b.position }} />
               <div className="absolute inset-0 bg-gradient-to-r from-forest-950/85 via-forest-950/45 to-transparent" />
               <div className="relative max-w-xs">
@@ -316,7 +316,7 @@ export default async function HomePage({ params }: SiteParams) {
               return (
                 <Reveal key={item.title} delay={i * 80}>
                   <div className="group h-full rounded-xl bg-cream/[0.04] p-6 ring-1 ring-cream/10 transition duration-300 hover:bg-cream/[0.08] hover:ring-wood/50">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-wood/15 text-wood transition group-hover:bg-wood group-hover:text-white">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-wood/15 text-wood transition group-hover:bg-wood group-hover:text-ink">
                       <Icon className="h-6 w-6" />
                     </span>
                     <h3 className="mt-5 text-xl">{item.title}</h3>
@@ -341,7 +341,7 @@ export default async function HomePage({ params }: SiteParams) {
           {t.home.how.steps.map((s, i) => (
             <Reveal as="li" key={s.title} delay={i * 110} className="relative rounded-xl bg-white p-6 shadow-[var(--shadow-soft)] ring-1 ring-line/70">
               <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-forest font-display text-2xl text-wood-100">{i + 1}</span>
-              <h3 className="mt-4 text-lg font-semibold text-charcoal">{s.title}</h3>
+              <h3 className="mt-4 font-sans text-lg font-semibold tracking-normal text-charcoal">{s.title}</h3>
               <p className="mt-1.5 text-[0.92rem] leading-relaxed text-stone">{s.text}</p>
             </Reveal>
           ))}

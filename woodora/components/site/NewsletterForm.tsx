@@ -29,7 +29,7 @@ export function NewsletterForm({
           aria-label={labels.placeholder}
           className={`min-w-0 flex-1 bg-transparent px-3.5 text-[0.95rem] focus:outline-none ${tone === "dark" ? "text-cream placeholder:text-cream/50" : "text-charcoal placeholder:text-stone/60"}`}
         />
-        <button type="submit" disabled={pending} className="shrink-0 rounded-full bg-wood px-4 py-2 text-sm font-medium text-white transition hover:bg-wood-600 disabled:opacity-60">
+        <button type="submit" disabled={pending} className="shrink-0 rounded-full bg-wood px-4 py-2 text-sm font-medium text-ink transition hover:bg-wood-600 disabled:opacity-60">
           {labels.subscribe}
         </button>
       </div>

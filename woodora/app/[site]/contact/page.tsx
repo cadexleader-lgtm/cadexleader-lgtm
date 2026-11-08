@@ -26,7 +26,7 @@ export default async function ContactPage({ params }: SiteParams) {
               <MessageCircle className="h-7 w-7 text-wood-100" />
               <p className="mt-4 font-display text-2xl">{t.contact.whatsapp}</p>
               <p className="mt-1 text-sm text-cream/75">{t.contact.whatsappText}</p>
-              <span className="mt-4 inline-flex rounded-full bg-wood px-4 py-2 text-sm font-medium text-white">{t.contact.whatsappCta}</span>
+              <span className="mt-4 inline-flex rounded-full bg-wood px-4 py-2 text-sm font-medium text-ink">{t.contact.whatsappCta}</span>
             </a>
           )}
           {settings.contactEmail && (

@@ -64,7 +64,7 @@ export function HeroSlider({ slides, labels, children }: { slides: Slide[]; labe
                   <p className="mt-5 max-w-xl animate-fade-up text-lg leading-relaxed text-cream/80 [animation-delay:240ms]">{s.text}</p>
                   <Link
                     href={s.href}
-                    className="shine mt-8 inline-flex h-13 animate-fade-up items-center gap-2.5 rounded-lg bg-wood px-7 text-base font-semibold text-white shadow-[0_12px_30px_-12px_rgb(217_137_63/0.8)] transition hover:bg-wood-600 [animation-delay:360ms]"
+                    className="shine mt-8 inline-flex h-13 animate-fade-up items-center gap-2.5 rounded-lg bg-wood px-7 text-base font-semibold text-ink shadow-[0_12px_30px_-12px_rgb(243_154_30/0.8)] transition hover:bg-wood-600 [animation-delay:360ms]"
                   >
                     {s.cta} <ArrowRight className="h-5 w-5" />
                   </Link>

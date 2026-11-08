@@ -151,7 +151,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
   if (kind === "bulk") {
     content = (
       <>
-        <ellipse cx="200" cy="292" rx="175" ry="18" fill="#183D32" opacity="0.12" />
+        <ellipse cx="200" cy="292" rx="175" ry="18" fill="#2A2828" opacity="0.12" />
         <Pile seed={seed} c={c} cx={200} base={285} width={310} height={190} count={58} />
       </>
     );
@@ -159,7 +159,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
     const wood = "#d7b98c";
     content = (
       <>
-        <ellipse cx="200" cy="300" rx="150" ry="12" fill="#183D32" opacity="0.12" />
+        <ellipse cx="200" cy="300" rx="150" ry="12" fill="#2A2828" opacity="0.12" />
         <WedgeGrid seed={seed} c={c} x={92} y={48} w={216} h={218} r={21} />
         {[48, 120, 192, 258].map((yy) => (
           <rect key={yy} x="84" y={yy - 6} width="232" height="13" rx="2" fill={wood} stroke="#b08e5f" strokeWidth="1" />
@@ -176,7 +176,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
   } else if (kind === "big-bag") {
     content = (
       <>
-        <ellipse cx="200" cy="300" rx="160" ry="12" fill="#183D32" opacity="0.12" />
+        <ellipse cx="200" cy="300" rx="160" ry="12" fill="#2A2828" opacity="0.12" />
         <Pile seed={seed} c={c} cx={200} base={128} width={230} height={70} count={30} />
         <path d="M78 118 Q72 200 84 286 L316 286 Q328 200 322 118 Z" fill="#f6f5f1" stroke="#cfcac0" strokeWidth="2" />
         {Array.from({ length: 22 }, (_, i) => (
@@ -189,14 +189,14 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
         {[86, 300].map((x) => (
           <path key={x} d={`M${x} 120 q7 -36 14 0`} fill="none" stroke="#f6f5f1" strokeWidth="7" strokeLinecap="round" />
         ))}
-        <rect x="160" y="190" width="80" height="34" rx="4" fill="#183D32" />
+        <rect x="160" y="190" width="80" height="34" rx="4" fill="#2A2828" />
         <text x="200" y="212" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="15" fill="#F6F3EB">Woodora</text>
       </>
     );
   } else if (kind === "net-bag") {
     content = (
       <>
-        <ellipse cx="200" cy="296" rx="110" ry="12" fill="#183D32" opacity="0.12" />
+        <ellipse cx="200" cy="296" rx="110" ry="12" fill="#2A2828" opacity="0.12" />
         <clipPath id={`${id}-net`}>
           <path d="M128 90 Q110 180 122 286 L278 286 Q290 180 272 90 Q200 70 128 90 Z" />
         </clipPath>
@@ -213,20 +213,20 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
         <path d="M150 86 Q200 40 250 86" fill="none" stroke="#d0532f" strokeWidth="5" />
         <rect x="186" y="60" width="28" height="14" rx="3" fill="#b6472a" />
         <rect x="236" y="196" width="58" height="40" rx="4" fill="#F6F3EB" stroke="#d7cdb9" transform="rotate(8 265 216)" />
-        <text x="265" y="220" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="11" fill="#183D32" transform="rotate(8 265 216)">Woodora</text>
+        <text x="265" y="220" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="11" fill="#2A2828" transform="rotate(8 265 216)">Woodora</text>
       </>
     );
   } else if (kind === "bag") {
     content = (
       <>
-        <ellipse cx="200" cy="298" rx="120" ry="12" fill="#183D32" opacity="0.12" />
+        <ellipse cx="200" cy="298" rx="120" ry="12" fill="#2A2828" opacity="0.12" />
         <Pile seed={seed} c={c} cx={200} base={112} width={150} height={60} count={18} />
         <path d="M118 100 L112 284 Q112 292 122 292 L278 292 Q288 292 288 284 L282 100 Z" fill="#c9a87c" stroke="#a88658" strokeWidth="2" />
         <path d="M118 100 L282 100 L280 116 L120 116 Z" fill="#b9966a" />
         {Array.from({ length: 9 }, (_, i) => (
           <path key={i} d={`M${130 + i * 17} 120 L${128 + i * 17} 286`} stroke="#b9966a" strokeWidth="1" opacity="0.6" />
         ))}
-        <rect x="140" y="160" width="120" height="78" rx="6" fill="#183D32" />
+        <rect x="140" y="160" width="120" height="78" rx="6" fill="#2A2828" />
         <text x="200" y="196" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="20" fill="#F6F3EB">Woodora</text>
         <text x="200" y="218" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="9" letterSpacing="2" fill="#d9b48f">{(SPECIES[species]?.names.en ?? "").toUpperCase()}</text>
       </>
@@ -234,7 +234,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
   } else if (kind === "box") {
     content = (
       <>
-        <ellipse cx="200" cy="298" rx="140" ry="12" fill="#183D32" opacity="0.12" />
+        <ellipse cx="200" cy="298" rx="140" ry="12" fill="#2A2828" opacity="0.12" />
         <path d="M96 120 L200 92 L304 120 L200 148 Z" fill={shade(c.wood, -80)} />
         <g clipPath={`url(#${id}-top)`}>
           <clipPath id={`${id}-top`}>
@@ -246,7 +246,7 @@ export function PackagingArt({ kind, species, seed, className = "", label }: { k
         <path d="M304 120 L200 148 L200 292 L304 264 Z" fill="#b48b5b" stroke="#a7804f" strokeWidth="1.5" />
         <path d="M96 120 L70 92 L176 66 L200 92 Z" fill="#d3ad7c" stroke="#a7804f" strokeWidth="1.5" />
         <path d="M304 120 L330 92 L224 66 L200 92 Z" fill="#c29b69" stroke="#a7804f" strokeWidth="1.5" />
-        <path d="M112 170 L184 190 L184 236 L112 216 Z" fill="#183D32" />
+        <path d="M112 170 L184 190 L184 236 L112 216 Z" fill="#2A2828" />
         <text x="148" y="208" textAnchor="middle" fontFamily="DM Serif Display, Georgia, serif" fontSize="13" fill="#F6F3EB" transform="skewY(15) translate(0 -40)">Woodora</text>
       </>
     );

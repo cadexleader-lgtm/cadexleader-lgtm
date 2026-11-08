@@ -85,7 +85,7 @@ export default async function ArticlePage({ params }: Props) {
             <div className="grid gap-5 md:grid-cols-3">
               {related.map((r) => (
                 <Link key={r.id} href={blogPath(site, r.slug)} className="group card p-6">
-                  <p className="text-xs uppercase tracking-wider text-wood">{fmt(t.common.minutes, { n: r.readingMinutes })}</p>
+                  <p className="text-xs uppercase tracking-wider text-wood-600">{fmt(t.common.minutes, { n: r.readingMinutes })}</p>
                   <h3 className="mt-2 text-xl leading-snug text-forest group-hover:text-pine">{r.title}</h3>
                   <p className="mt-2 line-clamp-2 text-sm text-stone">{r.excerpt}</p>
                 </Link>

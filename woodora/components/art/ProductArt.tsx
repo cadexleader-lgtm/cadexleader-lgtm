@@ -327,7 +327,7 @@ export function ProductArt({
         <>
           <rect x="140" y="60" width="120" height="200" rx="26" fill="#244E3E" />
           <rect x="158" y="84" width="84" height="56" rx="8" fill="#e3ebe5" />
-          <text x="200" y="122" textAnchor="middle" fontFamily="Inter, sans-serif" fontWeight="600" fontSize="28" fill="#183D32">
+          <text x="200" y="122" textAnchor="middle" fontFamily="Inter, sans-serif" fontWeight="600" fontSize="28" fill="#2A2828">
             16%
           </text>
           <circle cx="182" cy="176" r="12" fill="#B47B4D" />
@@ -360,7 +360,7 @@ export function ProductArt({
         </linearGradient>
       </defs>
       <rect width="400" height="320" fill={`url(#${gid})`} />
-      <ellipse cx="200" cy="300" rx="170" ry="16" fill="#183D32" opacity="0.07" />
+      <ellipse cx="200" cy="300" rx="170" ry="16" fill="#2A2828" opacity="0.07" />
       {content}
     </svg>
   );

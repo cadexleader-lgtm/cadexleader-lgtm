@@ -26,10 +26,10 @@ export function legalLabel(doc: LegalDoc, lang: "fr" | "en") {
 /** Torn / mountain edge between the newsletter band and the dark footer. */
 function TornEdge() {
   return (
-    <svg viewBox="0 0 1440 48" preserveAspectRatio="none" className="block h-8 w-full text-[#131c18] sm:h-12" aria-hidden>
+    <svg viewBox="0 0 1440 48" preserveAspectRatio="none" className="block h-8 w-full text-forest-950 sm:h-12" aria-hidden>
       <path
         fill="currentColor"
-        d="M0 48V30l18-6 14 8 20-14 16 10 22-18 14 12 26-8 12 10 24-16 18 14 20-6 16 8 30-20 14 12 22-4 18 10 26-18 12 8 28-10 16 14 20-8 24 6 18-16 22 12 14-6 26 10 20-18 16 8 24-4 18 12 28-16 14 10 22-8 16 6 26-14 18 12 20-6 24 8 16-12 22 10 18-4 26-14 14 8 24-6 18 12 20-16 22 10 16-4 28 12 18-10 22 6 14-8 26 12 20-14 18 8 24-6 16 10 22-12 14 6 26-8 20 12 18-6 24 8 16-10 22 6 18 2V48Z"
+        d="M0 48V28 L24 12 L50 28 L65 10 L82 19 L97 24 L117 9 L133 21 L160 10 L181 10 L208 9 L225 15 L240 26 L266 9 L287 9 L305 17 L332 12 L349 26 L372 25 L391 11 L411 19 L428 25 L444 26 L459 27 L479 23 L506 32 L530 22 L558 19 L581 15 L600 30 L621 10 L644 24 L673 18 L701 17 L717 11 L747 21 L766 32 L790 12 L819 21 L834 29 L850 32 L874 18 L899 27 L928 26 L956 10 L972 16 L1001 30 L1017 9 L1040 28 L1068 17 L1094 29 L1119 8 L1147 19 L1166 27 L1183 23 L1198 14 L1221 12 L1242 20 L1268 23 L1284 13 L1312 20 L1334 12 L1361 25 L1383 30 L1410 19 L1436 15 L1440 10 L1440 48Z"
       />
     </svg>
   );
@@ -69,7 +69,7 @@ export function Footer({ ctx, articles = [] }: { ctx: SiteContext; articles?: Ar
       </div>
 
       <TornEdge />
-      <div className="bg-[#131c18] text-cream">
+      <div className="bg-forest-950 text-cream">
         <div className="container-page grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className={heading}>{t.nav.categories}</p>
@@ -170,7 +170,7 @@ export function Footer({ ctx, articles = [] }: { ctx: SiteContext; articles?: Ar
                 <Landmark className="mt-0.5 h-4 w-4 shrink-0 text-wood" /> {t.footer.payment}
               </li>
               <li>
-                <Link href={routePath(site, "contact")} className="inline-flex rounded-full bg-wood px-4 py-2 text-sm font-semibold text-white hover:bg-wood-600">
+                <Link href={routePath(site, "contact")} className="inline-flex rounded-full bg-wood px-4 py-2 text-sm font-semibold text-ink hover:bg-wood-600">
                   {t.nav.contact}
                 </Link>
               </li>

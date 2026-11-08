@@ -38,7 +38,7 @@ export function MarketChoice({
       }`}
     >
       {suggested && (
-        <span className="absolute -top-3 left-6 rounded-full bg-wood px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
+        <span className="absolute -top-3 left-6 rounded-full bg-wood px-3 py-1 text-xs font-semibold uppercase tracking-wider text-ink">
           {suggestedLabel}
         </span>
       )}

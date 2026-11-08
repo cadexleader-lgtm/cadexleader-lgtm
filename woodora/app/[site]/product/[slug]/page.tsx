@@ -125,7 +125,7 @@ export default async function ProductPage({ params }: Props) {
           </div>
 
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-wood">{formatLabel(p, t, lang)}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-wood-600">{formatLabel(p, t, lang)}</p>
             <h1 className="mt-2 text-[2.2rem] leading-tight text-forest sm:text-5xl">{name}</h1>
             <p className="mt-3 text-lg text-stone">{loc(p.shortDescription, lang)}</p>
 

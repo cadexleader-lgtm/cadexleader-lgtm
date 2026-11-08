@@ -27,7 +27,7 @@ export function Carousel({ title, children, prevLabel, nextLabel, action }: { ti
     if (!el) return;
     el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: "smooth" });
   };
-  const arrow = "flex h-9 w-9 items-center justify-center rounded-md bg-white text-charcoal ring-1 ring-line transition hover:bg-wood hover:text-white hover:ring-wood disabled:opacity-35 disabled:hover:bg-white disabled:hover:text-charcoal disabled:hover:ring-line";
+  const arrow = "flex h-9 w-9 items-center justify-center rounded-md bg-white text-charcoal ring-1 ring-line transition hover:bg-wood hover:text-ink hover:ring-wood disabled:opacity-35 disabled:hover:bg-white disabled:hover:text-charcoal disabled:hover:ring-line";
   return (
     <div>
       <div className="mb-7 flex items-center gap-5">

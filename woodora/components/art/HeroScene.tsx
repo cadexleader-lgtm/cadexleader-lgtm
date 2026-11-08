@@ -28,9 +28,9 @@ export function HeroScene({ className = "" }: { className?: string }) {
     <svg viewBox="0 0 1200 700" className={className} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
         <linearGradient id="hero-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#0e241d" />
-          <stop offset="60%" stopColor="#183d32" />
-          <stop offset="100%" stopColor="#1d4739" />
+          <stop offset="0%" stopColor="#121111" />
+          <stop offset="60%" stopColor="#2a2828" />
+          <stop offset="100%" stopColor="#302c2b" />
         </linearGradient>
         <radialGradient id="hero-glow" cx="78%" cy="62%" r="45%">
           <stop offset="0%" stopColor="#d9893f" stopOpacity="0.55" />
@@ -43,10 +43,10 @@ export function HeroScene({ className = "" }: { className?: string }) {
       <circle cx="210" cy="140" r="30" fill="#f6f3eb" opacity="0.12" />
       <path d={back.join(" ")} fill="#8fa898" opacity="0.09" />
       <rect width="1200" height="700" fill="url(#hero-glow)" />
-      <path d={mid.join(" ")} fill="#0e241d" opacity="0.75" />
-      <path d="M0 610 Q 300 585 600 605 T 1200 600 V700 H0Z" fill="#0e241d" />
+      <path d={mid.join(" ")} fill="#121111" opacity="0.75" />
+      <path d="M0 610 Q 300 585 600 605 T 1200 600 V700 H0Z" fill="#121111" />
       <g transform="translate(700 330)">
-        <rect x="-10" y="-20" width="470" height="300" rx="10" fill="#0e241d" opacity="0.35" />
+        <rect x="-10" y="-20" width="470" height="300" rx="10" fill="#121111" opacity="0.35" />
         <LogStack seed="hero-woodpile" species="oak" rows={5} cols={7} x0={30} y0={20} r={32} />
       </g>
       {embers.map((e, i) => (
@@ -59,7 +59,7 @@ export function HeroScene({ className = "" }: { className?: string }) {
 export function CategoryBanner({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 1200 260" className={className} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <rect width="1200" height="260" fill="#183d32" />
+      <rect width="1200" height="260" fill="#2a2828" />
       <path d={[60, 180, 300, 430, 980, 1100, 1190].map((x, i) => pine(x, 260, 150 + ((i * 41) % 70))).join(" ")} fill="#8fa898" opacity="0.1" />
       <circle cx="1000" cy="200" r="220" fill="#b47b4d" opacity="0.12" />
     </svg>

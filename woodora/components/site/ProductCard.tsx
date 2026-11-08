@@ -30,7 +30,7 @@ export function ProductCard({
   const href = productPath(site, p.slug);
   const orderable = canOrder(p.availability);
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_rgb(24_61_50/0.05),0_10px_30px_-18px_rgb(24_61_50/0.35)] ring-1 ring-line/80 transition duration-300 hover:-translate-y-1 hover:shadow-[0_2px_4px_rgb(24_61_50/0.05),0_24px_44px_-20px_rgb(24_61_50/0.45)]">
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_rgb(22_21_21/0.05),0_10px_30px_-18px_rgb(22_21_21/0.35)] ring-1 ring-line/80 transition duration-300 hover:-translate-y-1 hover:shadow-[0_2px_4px_rgb(22_21_21/0.05),0_24px_44px_-20px_rgb(22_21_21/0.45)]">
       <Link href={href} className="relative block overflow-hidden bg-cream" tabIndex={-1} aria-hidden>
         <ProductVisual
           image={p.image}
@@ -50,7 +50,7 @@ export function ProductCard({
         </span>
       </Link>
       <div className="flex flex-1 flex-col px-5 pb-5 pt-4 text-center">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-wood">{formatLabel}</p>
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-wood-600">{formatLabel}</p>
         <h3 className="mt-1.5 font-sans text-[1.05rem] font-semibold leading-snug tracking-normal text-charcoal">
           <Link href={href} className="transition hover:text-wood-600">
             {p.name}

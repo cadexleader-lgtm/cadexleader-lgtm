@@ -34,7 +34,7 @@ export default async function BlogPage({ params }: SiteParams) {
                 )}
               </div>
               <div className="flex flex-col justify-center p-8 sm:p-10">
-                <p className="text-xs uppercase tracking-wider text-wood">
+                <p className="text-xs uppercase tracking-wider text-wood-600">
                   {formatDate(first.publishedAt, site.locale, market.timeZone)} · {fmt(t.common.minutes, { n: first.readingMinutes })}
                 </p>
                 <h2 className="mt-3 text-3xl leading-tight text-forest group-hover:text-pine sm:text-4xl">{first.title}</h2>
@@ -53,7 +53,7 @@ export default async function BlogPage({ params }: SiteParams) {
                     )}
                   </div>
                   <div className="p-6">
-                    <p className="text-xs uppercase tracking-wider text-wood">{fmt(t.common.minutes, { n: a.readingMinutes })}</p>
+                    <p className="text-xs uppercase tracking-wider text-wood-600">{fmt(t.common.minutes, { n: a.readingMinutes })}</p>
                     <h3 className="mt-2 text-xl leading-snug text-forest group-hover:text-pine">{a.title}</h3>
                     <p className="mt-2 line-clamp-3 text-[0.92rem] text-stone">{a.excerpt}</p>
                   </div>

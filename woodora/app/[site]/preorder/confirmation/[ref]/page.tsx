@@ -49,7 +49,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
       <section className="relative overflow-hidden bg-forest text-cream">
         <div className="grain absolute inset-0" aria-hidden />
         <div className="container-page relative py-14 sm:py-20">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-wood text-white">
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-wood text-ink">
             <CheckCircle2 className="h-7 w-7" />
           </span>
           <h1 className="mt-6 max-w-3xl text-4xl leading-tight sm:text-5xl">{t.confirmation.title}</h1>

@@ -94,7 +94,7 @@ export function AddToCart({
             add(productId, qty);
             setDone(true);
           }}
-          className={btn("primary", "lg", "flex-1 min-w-[220px]")}
+          className={btn("wood", "lg", "flex-1 min-w-[220px]")}
         >
           {done ? <Check className="h-5 w-5" /> : <ShoppingBasket className="h-5 w-5" />}
           {done ? labels.added : labels.add}
@@ -157,7 +157,7 @@ export function AddButton({ productId, minQty, label, addedLabel, disabled }: { 
         setDone(true);
       }}
       className={`flex h-11 w-full items-center justify-center gap-2 rounded-lg text-[0.88rem] font-semibold transition duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-cream-300 disabled:text-stone ${
-        done ? "bg-pine text-cream" : "bg-wood text-white hover:bg-wood-600 hover:shadow-[0_8px_18px_-8px_rgb(154_99_57/0.8)]"
+        done ? "bg-pine text-cream" : "bg-wood text-ink hover:bg-wood-600 hover:shadow-[0_8px_18px_-8px_rgb(192_112_10/0.8)]"
       }`}
     >
       {done ? <Check className="h-4 w-4" /> : <ShoppingBasket className="h-4 w-4" />}

@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Woodora — plateforme internationale de précommande de bois de chauffage (CA, US, FR)",
   "scripts": {
+    "predev": "node scripts/photo-manifest.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/photo-manifest.mjs",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

@@ -37,7 +37,7 @@ export function AdminNav({ user, badges, demo }: { user: { name: string; email: 
         >
           <Icon className="h-[18px] w-[18px]" />
           <span className="flex-1">{label}</span>
-          {badge && badges[badge] > 0 && <span className="rounded-full bg-wood px-2 py-0.5 text-[0.7rem] font-semibold text-white">{badges[badge]}</span>}
+          {badge && badges[badge] > 0 && <span className="rounded-full bg-wood px-2 py-0.5 text-[0.7rem] font-semibold text-ink">{badges[badge]}</span>}
         </Link>
       ))}
       <Link href="/" target="_blank" className="mt-4 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-cream/65 hover:text-cream">

@@ -130,7 +130,7 @@ export function Header(p: HeaderProps) {
   const cartButton = (compact = false) => (
     <Link
       href={p.preorderHref}
-      className={`relative flex h-9 items-center gap-2 rounded-full bg-wood pl-3 pr-3.5 text-sm font-semibold text-white transition hover:bg-wood-600 ${bump ? "scale-110" : ""}`}
+      className={`relative flex h-9 items-center gap-2 rounded-full bg-wood pl-3 pr-3.5 text-sm font-semibold text-ink transition hover:bg-wood-600 ${bump ? "scale-110" : ""}`}
       aria-label={p.labels.cartCount.replace("{n}", String(count))}
     >
       <ShoppingBasket className="h-4 w-4" />
@@ -177,7 +177,7 @@ export function Header(p: HeaderProps) {
                 aria-label={p.labels.search}
                 className="h-full w-56 bg-transparent px-3 text-[0.8rem] text-charcoal placeholder:text-stone/60 focus:outline-none lg:w-64"
               />
-              <button type="submit" aria-label={p.labels.search} className="flex h-full w-9 items-center justify-center bg-wood text-white hover:bg-wood-600">
+              <button type="submit" aria-label={p.labels.search} className="flex h-full w-9 items-center justify-center bg-wood text-ink hover:bg-wood-600">
                 <Search className="h-4 w-4" />
               </button>
             </form>
@@ -204,7 +204,7 @@ export function Header(p: HeaderProps) {
       </div>
 
       {/* Main header */}
-      <header className={`sticky top-0 z-40 border-b bg-white/95 backdrop-blur-md transition-shadow duration-300 ${scrolled ? "border-line shadow-[0_8px_24px_-16px_rgb(24_61_50/0.35)]" : "border-wood/30"}`}>
+      <header className={`sticky top-0 z-40 border-b bg-white/95 backdrop-blur-md transition-shadow duration-300 ${scrolled ? "border-line shadow-[0_8px_24px_-16px_rgb(22_21_21/0.35)]" : "border-wood/30"}`}>
         <div className={`container-page flex items-center gap-6 transition-all duration-300 ${scrolled ? "h-16" : "h-20"}`}>
           <Link href={p.homeHref} className="shrink-0" aria-label="Woodora">
             <Logo />
@@ -230,7 +230,7 @@ export function Header(p: HeaderProps) {
             <Link
               href={p.calculatorHref}
               className={`ml-3 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[0.88rem] font-semibold transition ${
-                isActive(p.calculatorHref) ? "bg-wood text-white" : "bg-forest text-cream hover:bg-pine"
+                isActive(p.calculatorHref) ? "bg-wood text-ink" : "bg-forest text-cream hover:bg-pine"
               }`}
             >
               <Calculator className="h-4 w-4" /> {p.labels.calculator}
@@ -258,7 +258,7 @@ export function Header(p: HeaderProps) {
             </div>
             <form onSubmit={onSearch} role="search" className="mx-5 mt-4 flex h-11 items-center overflow-hidden rounded-xl bg-white ring-1 ring-line">
               <input name="q" type="search" placeholder={p.labels.searchPlaceholder} aria-label={p.labels.search} className="h-full flex-1 bg-transparent px-3 text-sm focus:outline-none" />
-              <button type="submit" aria-label={p.labels.search} className="flex h-full w-11 items-center justify-center bg-wood text-white">
+              <button type="submit" aria-label={p.labels.search} className="flex h-full w-11 items-center justify-center bg-wood text-ink">
                 <Search className="h-4 w-4" />
               </button>
             </form>

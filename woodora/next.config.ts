@@ -7,7 +7,7 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@electric-sql/pglite"],
   outputFileTracingIncludes: {
-    "/**": ["./db/migrations/**/*", "./public/images/products/**/*"],
+    "/**": ["./db/migrations/**/*"],
   },
   images: {
     remotePatterns: [
