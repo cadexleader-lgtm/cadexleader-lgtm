@@ -21,7 +21,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const h = await headers();
   const lang = h.get("x-woodora-lang") === "en" ? "en" : "fr";
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="flex min-h-dvh flex-col">{children}</body>
     </html>
   );

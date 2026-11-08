@@ -7,6 +7,12 @@ import { MARKET_UNITS, SALE_UNITS, SPECIES, SPECIES_KEYS, unitLabel } from "@/li
 import { saveProductAction } from "@/app/admin/actions";
 
 const ARTS = [
+  ["bulk", "Vrac (selon l'essence)"],
+  ["pallet", "Palette (selon l'essence)"],
+  ["big-bag", "Big Bag (selon l'essence)"],
+  ["net-bag", "Filet (selon l'essence)"],
+  ["bag", "Sac (selon l'essence)"],
+  ["box", "Carton (selon l'essence)"],
   ["logs", "Bûches empilées"],
   ["kiln", "Bois séché au four"],
   ["logs-pallet", "Palette de bûches"],
@@ -23,8 +29,10 @@ const ARTS = [
 const PACKAGINGS = [
   ["bulk", "Vrac"],
   ["pallet", "Palette"],
+  ["big_bag", "Big Bag"],
+  ["net_bag", "Filet"],
   ["bag", "Sac"],
-  ["box", "Boîte / carton"],
+  ["box", "Carton"],
   ["bundle", "Fagot"],
   ["crate", "Caisse"],
   ["none", "À l'unité"],

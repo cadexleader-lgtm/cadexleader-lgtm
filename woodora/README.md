@@ -6,9 +6,9 @@ Woodora est une plateforme de **précommande** de bois de chauffage, bois séch�
 
 | Marché | URL | Langue(s) | Devise | Unités de vente |
 |---|---|---|---|---|
-| 🇨🇦 Canada | `/ca` · `/ca/en` | Français + anglais | CAD | corde complète, demi-corde, face cord, pied cube, palette |
-| 🇺🇸 États-Unis | `/us` | Anglais | USD | full cord, face cord, rick, cubic foot, pallet |
-| 🇫🇷 France | `/fr` | Français | EUR | stère, mètre cube apparent, palette, sac |
+| 🇨🇦 Canada | `/ca` · `/ca/en` | Français + anglais | CAD | corde complète, demi-corde, face cord, pied cube, palette, big bag, filet, sac, carton |
+| 🇺🇸 États-Unis | `/us` | Anglais | USD | full cord, face cord, rick, cubic foot, pallet, big bag, net bag, bag, box |
+| 🇫🇷 France | `/fr` | Français | EUR | stère, mètre cube apparent, palette, big bag, filet, sac, carton |
 
 Le site **n'encaisse aucun paiement** : le client envoie une précommande, reçoit une référence unique (`WD-CA-2026-000125`) et un message WhatsApp prérempli. L'équipe vérifie la commande, envoie une facture pro forma, **vérifie le virement**, puis organise la livraison.
 
@@ -85,17 +85,18 @@ Le tableau de bord affiche une liste « À faire » qui reprend ces points.
 1. **Réglages → marchés** : numéro **WhatsApp commercial** de chaque pays (sinon le bouton de confirmation WhatsApp est masqué), e-mail, téléphone, horaires.
 2. **Réglages → entreprise** : raison sociale, adresse, immatriculation, numéros de taxes, directeur de publication, médiateur (France). Ces données alimentent les mentions légales et les CGV.
 3. **Fournisseurs** : les trois fiches de départ sont à compléter (coordonnées, délais, conditions).
-4. **Produits** : le catalogue de départ (36 produits) contient des **prix, tarifs d'achat et caractéristiques indicatifs** à remplacer par ceux de vos fournisseurs. Ajoutez les vraies photos.
+4. **Produits** : le catalogue de départ est organisé **par essence × conditionnement** (Chêne, Hêtre, Bouleau, Érable, Frêne, Pin × vrac, palette, big bag, filet, sac, carton = 36 produits par pays, plus granulés, briquettes, allumage et accessoires). Les **prix, tarifs d'achat et caractéristiques sont indicatifs** et doivent être remplacés par ceux de vos fournisseurs. L'érable est désactivé en France (activable dans l'admin).
 5. **Zones de livraison** : les zones de départ (Québec et Est de l'Ontario, Nord-Est des États-Unis, Île-de-France et Centre-Val de Loire) et le seuil de livraison gratuite (150) sont des hypothèses à ajuster.
 6. **Textes légaux** : les pages CGV, confidentialité, livraison, annulation, réclamations, mentions légales et sécurité sont une base solide adaptée au modèle de précommande. Elles **doivent être relues par un juriste** dans chaque pays (droit de la consommation, taxes, étiquetage des combustibles).
-7. **Photos** : les photos fournies sont dans `public/images/photos/` (plaques d'immatriculation floutées). Vérifiez que vous détenez les droits d'utilisation de chaque image avant la mise en ligne. Les produits sans photo affichent une illustration à la charte.
+7. **Photos** : voir [`docs/photos-produits.md`](docs/photos-produits.md). Une photo par combinaison essence × conditionnement, nommée `<essence>-<conditionnement>.webp` et déposée dans `public/images/products/`, est utilisée automatiquement. Les produits sans photo affichent une illustration propre à leur essence et à leur conditionnement. Les photos d'ambiance sont dans `public/images/ambiance/` et `public/images/photos/` (plaques floutées). Vérifiez que vous détenez les droits d'utilisation commerciale de chaque image (plusieurs semblent provenir de Pinterest) et privilégiez des photos paysage d'au moins 1920 px de large pour le diaporama.
 
 ---
 
 ## Fonctionnalités
 
 ### Boutique (3 marchés)
-- Accueil : hero, 6 catégories, meilleures ventes du marché, calculateur, arguments, 4 étapes de commande, avis vérifiés, conseils, newsletter.
+- Accueil : barre supérieure (recherche, suivi, pays, panier), diaporama photo plein écran animé (fondu, zoom lent, braises), bande défilante, bannières Livraison / Conseils, carrousels « Produits en vedette » et « Bois séché », fiches essences (chaleur, allumage, braise), tuiles photo, calculateur, arguments avec compteurs animés, 4 étapes de commande, avis vérifiés, newsletter et pied de page sombre ; apparitions au défilement (désactivées si l'utilisateur réduit les animations).
+- Catalogue par essence × conditionnement, avec filtres par essence et conditionnement ; chaque fiche propose « ce bois dans d'autres conditionnements » et « le même conditionnement dans d'autres essences ».
 - Catalogue avec recherche, filtres (catégorie, essence, conditionnement, disponibilité) et tri.
 - Fiches produits : essence, humidité, longueur, conditionnement, unité expliquée (« ce que vous recevez exactement » : volume, poids, énergie), quantité minimale, disponibilité, livraison, transparence fournisseur.
 - Panier de précommande par marché (conservé dans le navigateur), quantités minimales, **vérification de la zone de livraison avant envoi**, consentement.

@@ -3,6 +3,7 @@
 // Deterministic: the same seed always produces the same drawing.
 
 import { SPECIES, type SpeciesKey } from "@/lib/energy";
+import { PackagingArt, isPackagingArt } from "./PackagingArt";
 
 type Art =
   | "logs"
@@ -95,7 +96,7 @@ function LogEnd({ x, y, r, bark, wood, rand, id }: { x: number; y: number; r: nu
 export function LogStack({ seed, species, rows = 4, cols = 5, x0 = 70, y0 = 120, r = 34, kiln = false }: { seed: string; species: SpeciesKey; rows?: number; cols?: number; x0?: number; y0?: number; r?: number; kiln?: boolean }) {
   const rand = rng(seed);
   const bark = SPECIES[species]?.bark ?? SPECIES.mixed_hardwood.bark;
-  const wood = kiln ? "#e8c79c" : species === "softwood" ? "#e6c48f" : species === "birch" ? "#ecd7b6" : "#dcb486";
+  const wood = kiln ? "#e8c79c" : SPECIES[species]?.wood ?? "#dcb486";
   const id = `a${seed.replace(/[^a-z0-9]/gi, "").slice(0, 10)}`;
   const logs: React.ReactNode[] = [];
   for (let row = rows - 1; row >= 0; row--) {
@@ -192,6 +193,9 @@ export function ProductArt({
   className?: string;
   label?: string;
 }) {
+  if (isPackagingArt(art)) {
+    return <PackagingArt kind={art} species={species ?? "mixed_hardwood"} seed={seed} className={className} label={label} />;
+  }
   const kind = (art && art in BG ? art : "logs") as Art;
   const [c1, c2] = BG[kind];
   const sp: SpeciesKey = species ?? "mixed_hardwood";

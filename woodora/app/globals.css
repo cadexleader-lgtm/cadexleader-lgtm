@@ -136,6 +136,88 @@
   }
 }
 
+/* ------------------------------------------------------------- motion */
+.js [data-reveal] {
+  opacity: 0;
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.js [data-reveal="up"] { transform: translateY(28px); }
+.js [data-reveal="scale"] { transform: scale(0.96); }
+.js [data-reveal="left"] { transform: translateX(-32px); }
+.js [data-reveal="right"] { transform: translateX(32px); }
+.js [data-reveal][data-shown="true"] { opacity: 1; transform: none; }
+
+.marquee-track { animation: marquee-x linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee-x { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes marquee-y { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+
+.ember {
+  position: absolute;
+  bottom: -12px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #ffd29a 0%, #f08a3c 55%, transparent 70%);
+  box-shadow: 0 0 10px 2px rgb(240 138 60 / 0.45);
+  animation: ember-rise linear infinite;
+  opacity: 0;
+}
+@keyframes ember-rise {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  10% { opacity: 0.9; }
+  70% { opacity: 0.6; }
+  100% { transform: translate(var(--drift, 0px), -110vh) scale(0.4); opacity: 0; }
+}
+
+.glow-pulse { animation: glow-pulse 6s ease-in-out infinite; }
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.06); }
+}
+
+.word-reveal > span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.45em);
+  animation: word-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes word-in { to { opacity: 1; transform: none; } }
+
+.bar-fill { transform-origin: left; transform: scaleX(0); transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s; }
+[data-shown="true"] .bar-fill, html:not(.js) .bar-fill { transform: scaleX(1); }
+
+.slide-progress { animation: slide-progress 6.5s linear forwards; }
+@keyframes slide-progress { from { width: 0; } to { width: 100%; } }
+
+.spin-slow { animation: spin 60s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.shine { position: relative; overflow: hidden; }
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.9s ease;
+}
+.shine:hover::after { transform: translateX(120%); }
+
+.mask-fade-y { mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent); }
+.mask-fade-x { mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .marquee-track, .ember, .glow-pulse, .slide-progress { animation: slide-progress 6.5s linear forwards; }
+@keyframes slide-progress { from { width: 0; } to { width: 100%; } }
+
+.spin-slow { animation: none !important; }
+  .word-reveal > span { opacity: 1; transform: none; animation: none; }
+  .bar-fill { transform: scaleX(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

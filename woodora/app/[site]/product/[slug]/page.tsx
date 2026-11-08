@@ -61,7 +61,10 @@ export default async function ProductPage({ params }: Props) {
     site.market,
   );
   const energy = productEnergyKwh(p);
-  const related = (await listProducts(site.market, lang, { category: p.categoryId })).filter((x) => x.id !== p.id).slice(0, 4);
+  const all = await listProducts(site.market, lang);
+  const sameSpecies = p.species ? all.filter((x) => x.id !== p.id && x.species === p.species) : [];
+  const samePackaging = p.species ? all.filter((x) => x.id !== p.id && x.packaging === p.packaging && x.species && x.species !== p.species && x.categoryId === p.categoryId) : [];
+  const related = sameSpecies.length || samePackaging.length ? [] : all.filter((x) => x.id !== p.id && x.categoryId === p.categoryId).slice(0, 4);
   const lengthText =
     p.lengthCm != null && p.lengthCm >= 5
       ? site.market === "fr"
@@ -224,6 +227,26 @@ export default async function ProductPage({ params }: Props) {
           </div>
         </div>
 
+        {sameSpecies.length > 0 && (
+          <section className="mt-20">
+            <h2 className="mb-6 text-3xl text-forest">{t.product.otherPackagings}</h2>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+              {sameSpecies.slice(0, 5).map((r) => (
+                <ProductCard key={r.id} p={toPublicProduct(r, lang)} site={site} t={t} currency={market.currency} formatLabel={formatLabel(r, t, lang)} />
+              ))}
+            </div>
+          </section>
+        )}
+        {samePackaging.length > 0 && (
+          <section className="mt-16">
+            <h2 className="mb-6 text-3xl text-forest">{t.product.otherSpecies}</h2>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+              {samePackaging.slice(0, 5).map((r) => (
+                <ProductCard key={r.id} p={toPublicProduct(r, lang)} site={site} t={t} currency={market.currency} formatLabel={formatLabel(r, t, lang)} />
+              ))}
+            </div>
+          </section>
+        )}
         {related.length > 0 && (
           <section className="mt-20">
             <h2 className="mb-6 text-3xl text-forest">{t.product.related}</h2>

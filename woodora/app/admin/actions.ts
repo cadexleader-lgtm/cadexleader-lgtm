@@ -141,7 +141,7 @@ export async function saveProductAction(fd: FormData) {
     species: isSpeciesKey(species) ? species : null,
     moisturePct: nOrNull(fd, "moisturePct"),
     lengthCm: nOrNull(fd, "lengthCm"),
-    packaging: (["pallet", "bag", "bulk", "box", "bundle", "crate", "none"].includes(s(fd, "packaging")) ? s(fd, "packaging") : "none") as ProductInput["packaging"],
+    packaging: (["pallet", "big_bag", "net_bag", "bag", "bulk", "box", "bundle", "crate", "none"].includes(s(fd, "packaging")) ? s(fd, "packaging") : "none") as ProductInput["packaging"],
     unit,
     unitVolumeM3: nOrNull(fd, "unitVolumeM3"),
     unitWeightKg: nOrNull(fd, "unitWeightKg"),

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { TopBar } from "@/components/site/TopBar";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { listPublishedArticles } from "@/lib/data/blog";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { SITES, SITE_IDS, blogPath, categoryPath, routePath, siblingSites } from "@/lib/sites";
 import { MARKETS } from "@/lib/markets";
 import { getDict } from "@/lib/i18n";
-import { loc } from "@/lib/format";
+import { loc, money } from "@/lib/format";
+import { whatsappLink } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +46,6 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
 
   return (
     <CartProvider market={site.market}>
-      <TopBar ctx={ctx} />
       <Header
         homeHref={site.prefix}
         shopHref={routePath(site, "shop")}
@@ -62,6 +62,14 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
           .map((c) => ({ key: c.id, name: loc(c.name, site.lang), description: loc(c.description, site.lang), href: categoryPath(site, c.id) }))}
         sites={sites}
         current={{ flag: market.flag, currency: market.currency, short: market.languages.length > 1 ? site.lang.toUpperCase() : market.id.toUpperCase() }}
+        contact={{
+          phone: ctx.settings.contactPhone,
+          email: ctx.settings.contactEmail,
+          whatsappHref: whatsappLink(ctx.settings.whatsappNumber),
+          freeLabel: ctx.freeThresholdCents
+            ? t.topbar.freeDeliveryFrom.replace("{amount}", money(site, ctx.freeThresholdCents, market.currency))
+            : t.topbar.freeDelivery,
+        }}
         labels={{
           home: t.nav.home,
           shop: t.nav.shop,
@@ -83,12 +91,13 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
           country: t.nav.country,
           skip: t.nav.skip,
           countryNotice: t.nav.countryNotice.replace("{country}", market.names[site.lang]),
+          whatsapp: t.topbar.whatsapp,
         }}
       />
       <main id="main" className="flex-1">
         {children}
       </main>
-      <Footer ctx={ctx} />
+      <Footer ctx={ctx} articles={await listPublishedArticles(site.lang, site.market, 3)} />
     </CartProvider>
   );
 }

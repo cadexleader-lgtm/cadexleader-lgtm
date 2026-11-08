@@ -138,3 +138,30 @@ export function QuickAdd({ productId, minQty, label, addedLabel }: { productId: 
     </button>
   );
 }
+
+/** Full-width "add to pre-order" button used on product cards. */
+export function AddButton({ productId, minQty, label, addedLabel, disabled }: { productId: string; minQty: number; label: string; addedLabel: string; disabled?: boolean }) {
+  const { add } = useCart();
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    if (!done) return;
+    const t = setTimeout(() => setDone(false), 2200);
+    return () => clearTimeout(t);
+  }, [done]);
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={() => {
+        add(productId, minQty);
+        setDone(true);
+      }}
+      className={`flex h-11 w-full items-center justify-center gap-2 rounded-lg text-[0.88rem] font-semibold transition duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-cream-300 disabled:text-stone ${
+        done ? "bg-pine text-cream" : "bg-wood text-white hover:bg-wood-600 hover:shadow-[0_8px_18px_-8px_rgb(154_99_57/0.8)]"
+      }`}
+    >
+      {done ? <Check className="h-4 w-4" /> : <ShoppingBasket className="h-4 w-4" />}
+      {done ? addedLabel : label}
+    </button>
+  );
+}

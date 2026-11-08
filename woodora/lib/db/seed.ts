@@ -124,28 +124,16 @@ async function seedSuppliers(q: Queryable): Promise<Record<string, string>> {
   return ids;
 }
 
-// Photos supplied for the launch (public/images/photos). Products without a
-// matching photo keep their illustration until real photos are uploaded.
-const PHOTO = {
-  delivery: "/images/photos/delivery-trailer.webp",
-  yard: "/images/photos/firewood-crates-yard.webp",
-  crates: "/images/photos/kiln-dried-crates.webp",
-  bigBag: "/images/photos/firewood-big-bag.webp",
-  compressed: "/images/photos/compressed-logs-cages.webp",
+// Category banners (editorial photos supplied for the launch). Product photos
+// are resolved by species × packaging from public/images/products/.
+export const CATEGORY_PHOTOS: Record<string, string> = {
+  firewood: "/images/photos/firewood-crates-yard.webp",
+  "kiln-dried": "/images/photos/kiln-dried-crate-covered.webp",
+  briquettes: "/images/photos/compressed-logs-cages.webp",
 };
 
-function seedImages(p: { art: string; packaging: string; market: string; unit: string }): string[] {
-  if (p.art === "logs" && p.packaging === "bulk") return p.market === "fr" ? [PHOTO.delivery, PHOTO.bigBag, PHOTO.yard] : [PHOTO.delivery, PHOTO.yard];
-  if (p.art === "kiln") return [PHOTO.crates, PHOTO.delivery];
-  if (p.art === "logs-pallet") return [PHOTO.crates, PHOTO.yard];
-  if (p.art === "briquettes" && p.unit === "pallet") return [PHOTO.compressed];
-  return [];
-}
-
-export const CATEGORY_PHOTOS: Record<string, string> = {
-  firewood: PHOTO.yard,
-  "kiln-dried": PHOTO.crates,
-  briquettes: PHOTO.compressed,
+const EXTRA_PRODUCT_PHOTOS: Record<string, string[]> = {
+  "fr:buches-bois-compresse-palette": ["/images/photos/compressed-logs-cages.webp"],
 };
 
 async function seedProducts(q: Queryable, suppliers: Record<string, string>) {
@@ -154,8 +142,8 @@ async function seedProducts(q: Queryable, suppliers: Record<string, string>) {
     const [row] = await q.query<{ id: string }>(
       `insert into products (market_id, category_id, supplier_id, slug, sku, name, short_description, description,
          delivery_info, art, species, moisture_pct, length_cm, packaging, unit, unit_volume_m3, unit_weight_kg, packing,
-         min_qty, price_cents, cost_cents, featured, position, images)
-       values ($1,$2,$3,$4,$5,$6::text::jsonb,$7::text::jsonb,$8::text::jsonb,$9::text::jsonb,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24::text::jsonb)
+         min_qty, price_cents, cost_cents, featured, position, images, active, is_available)
+       values ($1,$2,$3,$4,$5,$6::text::jsonb,$7::text::jsonb,$8::text::jsonb,$9::text::jsonb,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24::text::jsonb,$25,$26)
        returning id`,
       [
         p.market,
@@ -181,7 +169,9 @@ async function seedProducts(q: Queryable, suppliers: Record<string, string>) {
         p.cost,
         p.featured ?? false,
         pos,
-        json(seedImages(p)),
+        json(EXTRA_PRODUCT_PHOTOS[`${p.market}:${p.slug}`] ?? []),
+        p.active ?? true,
+        p.available ?? true,
       ],
     );
     await q.query(

@@ -27,7 +27,10 @@ export type SaleUnit =
   | "stere"
   | "cubic_meter"
   | "pallet"
+  | "big_bag"
+  | "net_bag"
   | "bag"
+  | "box"
   | "pack"
   | "piece";
 
@@ -40,16 +43,19 @@ export const SALE_UNITS: SaleUnit[] = [
   "stere",
   "cubic_meter",
   "pallet",
+  "big_bag",
+  "net_bag",
   "bag",
+  "box",
   "pack",
   "piece",
 ];
 
 /** Units offered to the administrator for each market (spec §5). */
 export const MARKET_UNITS: Record<MarketId, SaleUnit[]> = {
-  ca: ["full_cord", "half_cord", "face_cord", "cubic_foot", "pallet", "bag", "pack", "piece"],
-  us: ["full_cord", "face_cord", "rick", "cubic_foot", "pallet", "bag", "pack", "piece"],
-  fr: ["stere", "cubic_meter", "pallet", "bag", "pack", "piece"],
+  ca: ["full_cord", "half_cord", "face_cord", "cubic_foot", "pallet", "big_bag", "net_bag", "bag", "box", "pack", "piece"],
+  us: ["full_cord", "face_cord", "rick", "cubic_foot", "pallet", "big_bag", "net_bag", "bag", "box", "pack", "piece"],
+  fr: ["stere", "cubic_meter", "pallet", "big_bag", "net_bag", "bag", "box", "pack", "piece"],
 };
 
 const UNIT_LABELS: Record<SaleUnit, Record<Lang, [string, string]>> = {
@@ -61,7 +67,10 @@ const UNIT_LABELS: Record<SaleUnit, Record<Lang, [string, string]>> = {
   stere: { fr: ["stère", "stères"], en: ["stère", "stères"] },
   cubic_meter: { fr: ["m³ apparent", "m³ apparents"], en: ["cubic metre", "cubic metres"] },
   pallet: { fr: ["palette", "palettes"], en: ["pallet", "pallets"] },
+  big_bag: { fr: ["big bag", "big bags"], en: ["big bag", "big bags"] },
+  net_bag: { fr: ["filet", "filets"], en: ["net bag", "net bags"] },
   bag: { fr: ["sac", "sacs"], en: ["bag", "bags"] },
+  box: { fr: ["carton", "cartons"], en: ["box", "boxes"] },
   pack: { fr: ["lot", "lots"], en: ["pack", "packs"] },
   piece: { fr: ["pièce", "pièces"], en: ["item", "items"] },
 };
@@ -89,6 +98,11 @@ export type SpeciesKey =
   | "cherry"
   | "chestnut"
   | "mixed_hardwood"
+  | "spruce"
+  | "fir"
+  | "pine"
+  | "larch"
+  | "poplar"
   | "softwood"
   | "mixed";
 
@@ -98,29 +112,39 @@ interface SpeciesInfo {
   /** LHV of oven-dry wood, kWh/kg. */
   lhv0: number;
   names: Record<Lang, string>;
-  /** Bark colour used by the product illustrations. */
+  /** Bark and wood colours used by the product illustrations. */
   bark: string;
+  wood: string;
 }
 
 export const SPECIES: Record<SpeciesKey, SpeciesInfo> = {
-  oak: { density: 570, lhv0: 5.1, names: { fr: "Chêne", en: "Oak" }, bark: "#4a3a2c" },
-  beech: { density: 560, lhv0: 5.1, names: { fr: "Hêtre", en: "Beech" }, bark: "#8d8a80" },
-  hornbeam: { density: 630, lhv0: 5.1, names: { fr: "Charme", en: "Hornbeam" }, bark: "#7d7a72" },
-  ash: { density: 560, lhv0: 5.1, names: { fr: "Frêne", en: "Ash" }, bark: "#6b6257" },
-  maple: { density: 560, lhv0: 5.1, names: { fr: "Érable", en: "Maple" }, bark: "#5e5246" },
-  hickory: { density: 640, lhv0: 5.1, names: { fr: "Caryer (hickory)", en: "Hickory" }, bark: "#5a4b3e" },
-  birch: { density: 510, lhv0: 5.1, names: { fr: "Bouleau", en: "Birch" }, bark: "#ece6da" },
-  cherry: { density: 470, lhv0: 5.1, names: { fr: "Merisier / cerisier", en: "Cherry" }, bark: "#5b3a2e" },
-  chestnut: { density: 480, lhv0: 5.1, names: { fr: "Châtaignier", en: "Chestnut" }, bark: "#5a4636" },
+  oak: { density: 570, lhv0: 5.1, names: { fr: "Chêne", en: "Oak" }, bark: "#4a3a2c", wood: "#c9a273" },
+  beech: { density: 560, lhv0: 5.1, names: { fr: "Hêtre", en: "Beech" }, bark: "#8d8a80", wood: "#e2b48e" },
+  hornbeam: { density: 630, lhv0: 5.1, names: { fr: "Charme", en: "Hornbeam" }, bark: "#7d7a72", wood: "#e8d6b8" },
+  ash: { density: 560, lhv0: 5.1, names: { fr: "Frêne", en: "Ash" }, bark: "#6b6257", wood: "#e9d8b4" },
+  maple: { density: 560, lhv0: 5.1, names: { fr: "Érable", en: "Maple" }, bark: "#5e5246", wood: "#efdcbc" },
+  hickory: { density: 640, lhv0: 5.1, names: { fr: "Caryer (hickory)", en: "Hickory" }, bark: "#5a4b3e", wood: "#d9b88f" },
+  birch: { density: 510, lhv0: 5.1, names: { fr: "Bouleau", en: "Birch" }, bark: "#ece6da", wood: "#f1e2c4" },
+  cherry: { density: 470, lhv0: 5.1, names: { fr: "Cerisier", en: "Cherry" }, bark: "#5b3a2e", wood: "#d79c74" },
+  chestnut: { density: 480, lhv0: 5.1, names: { fr: "Châtaignier", en: "Chestnut" }, bark: "#5a4636", wood: "#cfa977" },
+  spruce: { density: 380, lhv0: 5.25, names: { fr: "Épicéa", en: "Spruce" }, bark: "#6e4a36", wood: "#f0dfb8" },
+  fir: { density: 370, lhv0: 5.25, names: { fr: "Sapin", en: "Fir" }, bark: "#7b7166", wood: "#eedfc0" },
+  pine: { density: 430, lhv0: 5.25, names: { fr: "Pin", en: "Pine" }, bark: "#7a4b32", wood: "#ecc98f" },
+  larch: { density: 490, lhv0: 5.25, names: { fr: "Mélèze", en: "Larch" }, bark: "#6a4434", wood: "#dca274" },
+  poplar: { density: 350, lhv0: 5.1, names: { fr: "Peuplier", en: "Poplar" }, bark: "#8c8a7c", wood: "#f2e6cc" },
   mixed_hardwood: {
     density: 540,
     lhv0: 5.1,
     names: { fr: "Mélange de feuillus durs", en: "Mixed hardwoods" },
     bark: "#5b4a3b",
+    wood: "#d8b486",
   },
-  softwood: { density: 420, lhv0: 5.25, names: { fr: "Résineux", en: "Softwood" }, bark: "#7a4b32" },
-  mixed: { density: 480, lhv0: 5.15, names: { fr: "Essences mélangées", en: "Mixed species" }, bark: "#5f4d3d" },
+  softwood: { density: 420, lhv0: 5.25, names: { fr: "Résineux", en: "Softwood" }, bark: "#7a4b32", wood: "#e6c48f" },
+  mixed: { density: 480, lhv0: 5.15, names: { fr: "Essences mélangées", en: "Mixed species" }, bark: "#5f4d3d", wood: "#dcb88b" },
 };
+
+/** Softwoods (resinous): lighter, quick to light, less heat per volume. */
+export const SOFTWOODS: SpeciesKey[] = ["spruce", "fir", "pine", "larch", "softwood"];
 
 export const SPECIES_KEYS = Object.keys(SPECIES) as SpeciesKey[];
 
@@ -278,6 +302,18 @@ export function unitDefinition(unit: SaleUnit, lang: Lang, lengthCm?: number | n
         : "Cubic metre: 1 m³ of short logs (25–50 cm) neatly stacked — not to be confused with the stère, measured with 1-metre logs.";
     case "pallet":
       return fr ? "Palette : le contenu exact (volume ou poids) est précisé ci-dessous." : "Pallet: the exact content (volume or weight) is stated below.";
+    case "big_bag":
+      return fr
+        ? "Big bag : grand sac tissé rempli de bûches en vrac (non rangées), déposé sur votre terrain. Volume et poids exacts précisés ci-dessous."
+        : "Big bag: a large woven bag filled with loose (unstacked) logs, dropped on your property. Exact volume and weight are stated below.";
+    case "net_bag":
+      return fr
+        ? "Filet : sac en filet aéré de bûches séchées, facile à porter. Volume et poids exacts précisés ci-dessous."
+        : "Net bag: a breathable mesh bag of dried logs, easy to carry. Exact volume and weight are stated below.";
+    case "box":
+      return fr
+        ? "Carton : bûches séchées conditionnées en carton, propres à manipuler. Volume et poids exacts précisés ci-dessous."
+        : "Box: dried logs packed in a cardboard box, clean to handle. Exact volume and weight are stated below.";
     case "bag":
       return fr ? "Sac : le poids ou le volume exact est précisé ci-dessous." : "Bag: the exact weight or volume is stated below.";
     case "pack":

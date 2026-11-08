@@ -5,6 +5,7 @@
 import type { MarketId } from "../markets";
 import type { CategoryKey } from "../sites";
 import type { SaleUnit, SpeciesKey } from "../energy";
+import { speciesCatalog } from "./seed-species-catalog";
 
 export type L = { fr?: string; en?: string };
 
@@ -59,6 +60,8 @@ export const SEED_CATEGORIES: Array<{ id: CategoryKey; name: Required<L>; descri
   },
 ];
 
+export type Packaging = "pallet" | "big_bag" | "net_bag" | "bag" | "bulk" | "box" | "bundle" | "crate" | "none";
+
 export interface SeedProduct {
   market: MarketId;
   slug: string;
@@ -67,7 +70,7 @@ export interface SeedProduct {
   species?: SpeciesKey;
   moisture?: number; // %
   lengthCm?: number;
-  packaging: "pallet" | "bag" | "bulk" | "box" | "bundle" | "crate" | "none";
+  packaging: Packaging;
   unit: SaleUnit;
   volumeM3?: number;
   weightKg?: number;
@@ -76,6 +79,8 @@ export interface SeedProduct {
   price: number; // cents
   cost: number; // cents
   featured?: boolean;
+  active?: boolean;
+  available?: boolean;
   stock?: number;
   name: L;
   short: L;
@@ -84,7 +89,7 @@ export interface SeedProduct {
 
 const IN16 = 40.64;
 
-export const SEED_PRODUCTS: SeedProduct[] = [
+const OTHER_PRODUCTS: SeedProduct[] = [
   // ------------------------------------------------------------------ Canada
   {
     market: "ca", slug: "bois-franc-erable-merisier-face-cord", category: "firewood", art: "logs", species: "maple",
@@ -414,6 +419,11 @@ export const SEED_PRODUCTS: SeedProduct[] = [
     short: { fr: "Feutre épais et anses en cuir." },
     desc: { fr: "Un panier en feutre épais pour transporter et présenter vos bûches près du poêle. Anses renforcées, se plie à plat." },
   },
+];
+
+export const SEED_PRODUCTS: SeedProduct[] = [
+  ...speciesCatalog(),
+  ...OTHER_PRODUCTS.filter((p) => p.category !== "firewood" && p.category !== "kiln-dried"),
 ];
 
 export const SEED_SUPPLIERS: Array<{

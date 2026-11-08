@@ -4,6 +4,7 @@ import type { CategoryKey } from "../sites";
 import { energyPerUnitKwh, unitLabel, type Packing, type SaleUnit, type SpeciesKey } from "../energy";
 import { loc, type LText } from "../format";
 import { camelize } from "./util";
+import { autoProductPhoto } from "../product-photos";
 
 export interface Product {
   id: string;
@@ -21,7 +22,7 @@ export interface Product {
   species: SpeciesKey | null;
   moisturePct: number | null;
   lengthCm: number | null;
-  packaging: "pallet" | "bag" | "bulk" | "box" | "bundle" | "crate" | "none";
+  packaging: "pallet" | "big_bag" | "net_bag" | "bag" | "bulk" | "box" | "bundle" | "crate" | "none";
   unit: SaleUnit;
   unitVolumeM3: number | null;
   unitWeightKg: number | null;
@@ -86,6 +87,7 @@ export interface PublicProduct {
   minQty: number;
   maxQty: number | null;
   priceCents: number;
+  compareAtCents: number | null;
   availability: Availability;
   energyKwh: number | null;
   supplierId?: never;
@@ -107,6 +109,7 @@ export function toPublicProduct(p: Product, lang: Lang): PublicProduct {
     minQty: p.minQty,
     maxQty: p.maxQty,
     priceCents: p.priceCents,
+    compareAtCents: p.compareAtCents,
     availability: availabilityOf(p),
     energyKwh: productEnergyKwh(p),
   };
@@ -120,6 +123,10 @@ const SELECT = `
 function map(row: Record<string, unknown>): Product {
   const p = camelize<Product>(row);
   p.images = Array.isArray(p.images) ? p.images : [];
+  if (p.images.length === 0) {
+    const auto = autoProductPhoto(p.species, p.packaging);
+    if (auto) p.images = [auto];
+  }
   return p;
 }
 

@@ -7,7 +7,7 @@ import { getDict } from "@/lib/i18n";
 import { MARKETS } from "@/lib/markets";
 import { isValidPostalCode, normalizePostalCode, formatPostalCode, regionName } from "@/lib/regions";
 import { estimateHeatingNeeds, fuelsForAppliance, suggestedUnits, type CalcInput, type CalcResult } from "@/lib/calculator";
-import { fuelKindForCategory } from "@/lib/energy";
+import { fuelKindForCategory, SOFTWOODS } from "@/lib/energy";
 import { availabilityOf, canOrder, getProductsByIds, listProducts, productEnergyKwh, toPublicProduct, type PublicProduct } from "@/lib/data/products";
 import { checkDelivery, evaluateDelivery, listZones } from "@/lib/data/zones";
 import { createPreorder, findOrderForTracking } from "@/lib/data/orders";
@@ -360,8 +360,10 @@ export async function calculateAction(siteId: string, raw: Omit<CalcInput, "mark
     result.fuelKind === "pellets" ? ["pellets"] : result.fuelKind === "briquettes" ? ["briquettes"] : fuel === "kiln_dried" ? ["kiln-dried", "firewood"] : ["firewood", "kiln-dried"];
   const need = result.fuelEnergyKwh.central;
 
-  const recommendations: Recommendation[] = orderable
-    .filter((p) => wantedCategories.includes(p.categoryId) && fuelKindForCategory(p.categoryId) === result.fuelKind)
+  const speciesOk = (sp: string | null) =>
+    fuel === "softwood" ? !!sp && SOFTWOODS.includes(sp as never) : fuel === "hardwood" || fuel === "kiln_dried" ? !sp || !SOFTWOODS.includes(sp as never) : true;
+  const ranked = orderable
+    .filter((p) => wantedCategories.includes(p.categoryId) && fuelKindForCategory(p.categoryId) === result.fuelKind && speciesOk(p.species))
     .map((p) => {
       const kwh = productEnergyKwh(p);
       const qty = kwh ? suggestedUnits(need, kwh, p.minQty) : p.minQty;
@@ -373,9 +375,16 @@ export async function calculateAction(siteId: string, raw: Omit<CalcInput, "mark
       if (cat !== 0) return cat;
       const score = (x: typeof a) => Math.abs((x.covers ?? 2) - 1) + (x.qty > 25 ? 1 : 0);
       return score(a) - score(b);
-    })
-    .slice(0, 3)
-    .map(({ p, qty, covers }) => ({ product: toPublicProduct(p, site.lang), suggestedQty: qty, coversPct: covers ? Math.round(covers * 100) : null }));
+    });
+  // Prefer three different packagings (e.g. bulk, pallet, big bag) over three species of the same format.
+  const picked: typeof ranked = [];
+  for (const r of ranked) if (picked.length < 3 && !picked.some((x) => x.p.packaging === r.p.packaging)) picked.push(r);
+  for (const r of ranked) if (picked.length < 3 && !picked.includes(r)) picked.push(r);
+  const recommendations: Recommendation[] = picked.map(({ p, qty, covers }) => ({
+    product: toPublicProduct(p, site.lang),
+    suggestedQty: qty,
+    coversPct: covers ? Math.round(covers * 100) : null,
+  }));
 
   const complements = orderable
     .filter((p) => (result.fuelKind === "logs" ? ["kindling", "accessories"] : ["accessories"]).includes(p.categoryId))
