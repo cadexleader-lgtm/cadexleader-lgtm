@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { CalendarClock, MapPinned, PackageOpen, ClipboardCheck, Truck } from "lucide-react";
 import { PageHero } from "@/components/ui";
@@ -53,6 +54,9 @@ export default async function DeliveryPage({ params }: SiteParams) {
             )}
           </section>
           <section>
+            <div className="relative mb-6 aspect-[16/9] overflow-hidden rounded-[var(--radius-card)] ring-1 ring-line sm:aspect-[21/9]">
+              <Image src="/images/photos/delivery-trailer.webp" alt={t.deliveryPage.howTitle} fill sizes="(min-width: 1024px) 60vw, 100vw" className="object-cover object-[50%_45%]" />
+            </div>
             <h2 className="text-3xl text-forest">{t.deliveryPage.howTitle}</h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {t.deliveryPage.how.map((h, i) => {

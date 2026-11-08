@@ -36,8 +36,8 @@ export async function updateMarketSettings(
   s: Pick<MarketSettings, "whatsappNumber" | "contactEmail" | "contactPhone" | "businessHours" | "pricesIncludeTax" | "taxNote" | "freeDeliveryNote" | "active">,
 ) {
   await query(
-    `update markets set whatsapp_number=$2, contact_email=$3, contact_phone=$4, business_hours=$5::jsonb,
-       prices_include_tax=$6, tax_note=$7::jsonb, free_delivery_note=$8::jsonb, active=$9, updated_at=now()
+    `update markets set whatsapp_number=$2, contact_email=$3, contact_phone=$4, business_hours=$5::text::jsonb,
+       prices_include_tax=$6, tax_note=$7::text::jsonb, free_delivery_note=$8::text::jsonb, active=$9, updated_at=now()
      where id=$1`,
     [id, s.whatsappNumber, s.contactEmail, s.contactPhone, json(s.businessHours), s.pricesIncludeTax, json(s.taxNote), json(s.freeDeliveryNote), s.active],
   );
@@ -89,7 +89,7 @@ export async function getSetting<K extends SettingKey>(key: K): Promise<(typeof 
 
 export async function setSetting<K extends SettingKey>(key: K, value: (typeof DEFAULTS)[K]) {
   await query(
-    `insert into site_settings (key, value, updated_at) values ($1, $2::jsonb, now())
+    `insert into site_settings (key, value, updated_at) values ($1, $2::text::jsonb, now())
      on conflict (key) do update set value = excluded.value, updated_at = now()`,
     [key, json(value)],
   );
@@ -112,7 +112,7 @@ export async function listCategories(): Promise<Category[]> {
 
 export async function updateCategory(id: CategoryKey, c: Pick<Category, "name" | "description" | "imageUrl" | "active">) {
   await query(
-    `update product_categories set name=$2::jsonb, description=$3::jsonb, image_url=$4, active=$5 where id=$1`,
+    `update product_categories set name=$2::text::jsonb, description=$3::text::jsonb, image_url=$4, active=$5 where id=$1`,
     [id, json(c.name), json(c.description), c.imageUrl, c.active],
   );
 }

@@ -93,6 +93,7 @@ export const en: Dict = {
       ctaShop: "Shop our products",
       ctaCalc: "Calculate my needs",
       trust: ["Free delivery", "Selected products", "Simple pre-ordering"],
+      photoAlt: "Split, dried firewood stacked in slatted crates on pallets",
       card: {
         title: "{year} heating season",
         text: "Pre-order now: an advisor confirms availability and your delivery date on WhatsApp.",

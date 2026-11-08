@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight, Calculator, Check, Handshake, MessageCircle, PackageCheck, ShieldCheck, Star, Truck, Trees } from "lucide-react";
@@ -97,15 +98,18 @@ export default async function HomePage({ params }: SiteParams) {
               ))}
             </p>
           </div>
-          <div className="hidden justify-end lg:flex">
-            <div className="w-[340px] animate-fade-up rounded-2xl bg-cream/[0.08] p-6 ring-1 ring-cream/15 backdrop-blur-md [animation-delay:150ms]">
-              <p className="kicker text-wood-100">{market.flag} {market.names[site.lang]} · {market.currency}</p>
-              <p className="mt-3 font-display text-2xl">{fmt(t.home.hero.card.title, { year: season })}</p>
-              <p className="mt-2 text-sm leading-relaxed text-cream/75">{t.home.hero.card.text}</p>
-              <ul className="mt-5 space-y-2.5 text-sm">
+          <div className="relative hidden justify-end lg:flex">
+            <div className="relative h-[520px] w-[400px] animate-fade-up overflow-hidden rounded-[28px] shadow-2xl ring-1 ring-cream/15 [animation-delay:120ms]">
+              <Image src="/images/photos/kiln-dried-crates.webp" alt={t.home.hero.photoAlt} fill priority sizes="400px" className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-forest-950/50 via-transparent to-transparent" aria-hidden />
+            </div>
+            <div className="absolute -left-6 bottom-8 w-[300px] animate-fade-up rounded-2xl bg-cream p-5 text-charcoal shadow-2xl [animation-delay:260ms]">
+              <p className="kicker">{market.flag} {market.names[site.lang]} · {market.currency}</p>
+              <p className="mt-2 font-display text-xl text-forest">{fmt(t.home.hero.card.title, { year: season })}</p>
+              <ul className="mt-3 space-y-2 text-sm">
                 {t.preorder.reassurance.map((r) => (
                   <li key={r} className="flex items-center gap-2.5">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-wood/90">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-wood">
                       <Check className="h-3 w-3 text-white" />
                     </span>
                     {r}

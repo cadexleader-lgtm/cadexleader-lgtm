@@ -93,6 +93,7 @@ export const fr = {
       ctaShop: "Découvrir nos produits",
       ctaCalc: "Calculer mes besoins",
       trust: ["Livraison gratuite", "Produits sélectionnés", "Précommande simple"],
+      photoAlt: "Bûches fendues et séchées, rangées sur palettes en caisses ajourées",
       card: {
         title: "Saison de chauffe {year}",
         text: "Précommandez maintenant : un conseiller confirme la disponibilité et la date de livraison sur WhatsApp.",

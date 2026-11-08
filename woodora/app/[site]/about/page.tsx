@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight, Compass, Handshake, MessageCircle, ShieldCheck, Sprout, Scale } from "lucide-react";
 import { PageHero, ButtonLink, SectionHeading } from "@/components/ui";
-import { ProductArt } from "@/components/art/ProductArt";
+import Image from "next/image";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { routePath } from "@/lib/sites";
 import { MARKETS, MARKET_IDS } from "@/lib/markets";
@@ -36,8 +36,8 @@ export default async function AboutPage({ params }: SiteParams) {
       </section>
       <section className="border-y border-line bg-white py-16 sm:py-20">
         <div className="container-page grid items-center gap-12 lg:grid-cols-2">
-          <div className="overflow-hidden rounded-[var(--radius-card)] ring-1 ring-line">
-            <ProductArt art="logs" species="birch" seed="about-birch" className="aspect-[4/3] w-full" />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] ring-1 ring-line">
+            <Image src="/images/photos/firewood-crates-yard.webp" alt={t.about.blocks[0].title} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </div>
           <div>
             <SectionHeading title={t.about.values.title} />

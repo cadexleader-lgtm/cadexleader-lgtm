@@ -51,9 +51,9 @@ export async function saveZone(z: Omit<DeliveryZone, "id"> & { id?: string }): P
   ];
   if (z.id) {
     await query(
-      `update delivery_zones set market_id=$1, supplier_id=$2, name=$3, region_codes=$4::jsonb,
-         excluded_postal_prefixes=$5::jsonb, excluded_product_ids=$6::jsonb, free_delivery=$7, free_delivery_min_cents=$8,
-         lead_time_days_min=$9, lead_time_days_max=$10, remote_area_note=$11::jsonb, active=$12, updated_at=now()
+      `update delivery_zones set market_id=$1, supplier_id=$2, name=$3, region_codes=$4::text::jsonb,
+         excluded_postal_prefixes=$5::text::jsonb, excluded_product_ids=$6::text::jsonb, free_delivery=$7, free_delivery_min_cents=$8,
+         lead_time_days_min=$9, lead_time_days_max=$10, remote_area_note=$11::text::jsonb, active=$12, updated_at=now()
        where id=$13`,
       [...params, z.id],
     );
@@ -62,7 +62,7 @@ export async function saveZone(z: Omit<DeliveryZone, "id"> & { id?: string }): P
   const [row] = await query<{ id: string }>(
     `insert into delivery_zones (market_id, supplier_id, name, region_codes, excluded_postal_prefixes, excluded_product_ids,
        free_delivery, free_delivery_min_cents, lead_time_days_min, lead_time_days_max, remote_area_note, active)
-     values ($1,$2,$3,$4::jsonb,$5::jsonb,$6::jsonb,$7,$8,$9,$10,$11::jsonb,$12) returning id`,
+     values ($1,$2,$3,$4::text::jsonb,$5::text::jsonb,$6::text::jsonb,$7,$8,$9,$10,$11::text::jsonb,$12) returning id`,
     params,
   );
   return row.id;

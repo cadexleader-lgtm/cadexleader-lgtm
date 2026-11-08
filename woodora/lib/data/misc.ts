@@ -69,7 +69,7 @@ export async function setContactStatus(id: string, status: ContactMessage["statu
 export async function saveCalculation(market: MarketId, lang: Lang, postalPrefix: string, inputs: unknown, results: unknown) {
   const [row] = await query<{ id: string }>(
     `insert into heating_calculations (market_id, language, postal_prefix, inputs, results)
-     values ($1,$2,$3,$4::jsonb,$5::jsonb) returning id`,
+     values ($1,$2,$3,$4::text::jsonb,$5::text::jsonb) returning id`,
     [market, lang, postalPrefix, json(inputs), json(results)],
   );
   return row.id;

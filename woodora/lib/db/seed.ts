@@ -71,7 +71,7 @@ async function seedMarkets(q: Queryable) {
     await q.query(
       `insert into markets (id, name, currency, default_language, languages, timezone, whatsapp_number, contact_email,
          contact_phone, business_hours, prices_include_tax, tax_note, free_delivery_note)
-       values ($1,$2,$3,$4,$5::jsonb,$6,$7,$8,$9,$10::jsonb,$11,$12::jsonb,$13::jsonb)
+       values ($1,$2,$3,$4,$5::text::jsonb,$6,$7,$8,$9,$10::text::jsonb,$11,$12::text::jsonb,$13::text::jsonb)
        on conflict (id) do nothing`,
       [
         id,
@@ -96,9 +96,9 @@ async function seedCategories(q: Queryable) {
   let pos = 0;
   for (const c of SEED_CATEGORIES) {
     await q.query(
-      `insert into product_categories (id, position, name, description) values ($1,$2,$3::jsonb,$4::jsonb)
+      `insert into product_categories (id, position, name, description, image_url) values ($1,$2,$3::text::jsonb,$4::text::jsonb,$5)
        on conflict (id) do nothing`,
-      [c.id, pos++, json(c.name), json(c.description)],
+      [c.id, pos++, json(c.name), json(c.description), CATEGORY_PHOTOS[c.id] ?? null],
     );
   }
 }
@@ -124,14 +124,38 @@ async function seedSuppliers(q: Queryable): Promise<Record<string, string>> {
   return ids;
 }
 
+// Photos supplied for the launch (public/images/photos). Products without a
+// matching photo keep their illustration until real photos are uploaded.
+const PHOTO = {
+  delivery: "/images/photos/delivery-trailer.webp",
+  yard: "/images/photos/firewood-crates-yard.webp",
+  crates: "/images/photos/kiln-dried-crates.webp",
+  bigBag: "/images/photos/firewood-big-bag.webp",
+  compressed: "/images/photos/compressed-logs-cages.webp",
+};
+
+function seedImages(p: { art: string; packaging: string; market: string; unit: string }): string[] {
+  if (p.art === "logs" && p.packaging === "bulk") return p.market === "fr" ? [PHOTO.delivery, PHOTO.bigBag, PHOTO.yard] : [PHOTO.delivery, PHOTO.yard];
+  if (p.art === "kiln") return [PHOTO.crates, PHOTO.delivery];
+  if (p.art === "logs-pallet") return [PHOTO.crates, PHOTO.yard];
+  if (p.art === "briquettes" && p.unit === "pallet") return [PHOTO.compressed];
+  return [];
+}
+
+export const CATEGORY_PHOTOS: Record<string, string> = {
+  firewood: PHOTO.yard,
+  "kiln-dried": PHOTO.crates,
+  briquettes: PHOTO.compressed,
+};
+
 async function seedProducts(q: Queryable, suppliers: Record<string, string>) {
   let pos = 0;
   for (const p of SEED_PRODUCTS) {
     const [row] = await q.query<{ id: string }>(
       `insert into products (market_id, category_id, supplier_id, slug, sku, name, short_description, description,
          delivery_info, art, species, moisture_pct, length_cm, packaging, unit, unit_volume_m3, unit_weight_kg, packing,
-         min_qty, price_cents, cost_cents, featured, position)
-       values ($1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8::jsonb,$9::jsonb,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23)
+         min_qty, price_cents, cost_cents, featured, position, images)
+       values ($1,$2,$3,$4,$5,$6::text::jsonb,$7::text::jsonb,$8::text::jsonb,$9::text::jsonb,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24::text::jsonb)
        returning id`,
       [
         p.market,
@@ -157,6 +181,7 @@ async function seedProducts(q: Queryable, suppliers: Record<string, string>) {
         p.cost,
         p.featured ?? false,
         pos,
+        json(seedImages(p)),
       ],
     );
     await q.query(
@@ -171,7 +196,7 @@ async function seedZones(q: Queryable, suppliers: Record<string, string>) {
     await q.query(
       `insert into delivery_zones (market_id, supplier_id, name, region_codes, excluded_postal_prefixes, free_delivery,
          free_delivery_min_cents, lead_time_days_min, lead_time_days_max, remote_area_note)
-       values ($1,$2,$3,$4::jsonb,$5::jsonb,true,$6,$7,$8,$9::jsonb)`,
+       values ($1,$2,$3,$4::text::jsonb,$5::text::jsonb,true,$6,$7,$8,$9::text::jsonb)`,
       [z.market, suppliers[z.market], z.name, json(z.regions), json(z.excluded), z.freeMin, z.leadMin, z.leadMax, json(z.remote)],
     );
   }
@@ -184,7 +209,7 @@ async function seedArticles(q: Queryable) {
     await q.query(
       `insert into blog_articles (language, markets, slug, title, excerpt, content, cover_art, reading_minutes, status,
          published_at, author)
-       values ($1,$2::jsonb,$3,$4,$5,$6,$7,$8,'published',$9,'Woodora')
+       values ($1,$2::text::jsonb,$3,$4,$5,$6,$7,$8,'published',$9,'Woodora')
        on conflict (language, slug) do nothing`,
       [a.language, json(a.markets), a.slug, a.title, a.excerpt, a.content, a.art, a.minutes, new Date(now - (i++ % 6) * 86400000 * 9).toISOString()],
     );
@@ -208,7 +233,7 @@ async function seedSettings(q: Queryable) {
   };
   for (const [key, value] of Object.entries(settings)) {
     await q.query(
-      `insert into site_settings (key, value) values ($1, $2::jsonb) on conflict (key) do nothing`,
+      `insert into site_settings (key, value) values ($1, $2::text::jsonb) on conflict (key) do nothing`,
       [key, json(value)],
     );
   }

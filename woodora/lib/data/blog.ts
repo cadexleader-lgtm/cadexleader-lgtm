@@ -58,7 +58,7 @@ export async function saveArticle(a: Omit<Article, "id" | "createdAt" | "updated
   ];
   if (a.id) {
     await query(
-      `update blog_articles set language=$1, markets=$2::jsonb, slug=$3, title=$4, excerpt=$5, content=$6, cover_art=$7,
+      `update blog_articles set language=$1, markets=$2::text::jsonb, slug=$3, title=$4, excerpt=$5, content=$6, cover_art=$7,
          cover_image=$8, reading_minutes=$9, status=$10, published_at=$11, author=$12, seo_title=$13, seo_description=$14,
          updated_at=now() where id=$15`,
       [...params, a.id],
@@ -68,7 +68,7 @@ export async function saveArticle(a: Omit<Article, "id" | "createdAt" | "updated
   const [row] = await query<{ id: string }>(
     `insert into blog_articles (language, markets, slug, title, excerpt, content, cover_art, cover_image, reading_minutes,
        status, published_at, author, seo_title, seo_description)
-     values ($1,$2::jsonb,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) returning id`,
+     values ($1,$2::text::jsonb,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) returning id`,
     params,
   );
   return row.id;

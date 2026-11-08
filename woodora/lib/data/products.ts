@@ -171,7 +171,7 @@ export async function getProductBySlug(market: MarketId, slug: string): Promise<
 export async function getProductsByIds(market: MarketId, ids: string[]): Promise<Product[]> {
   if (ids.length === 0) return [];
   const rows = await query(
-    `${SELECT} where p.market_id = $1 and p.id in (select jsonb_array_elements_text($2::jsonb)::uuid)`,
+    `${SELECT} where p.market_id = $1 and p.id in (select jsonb_array_elements_text($2::text::jsonb)::uuid)`,
     [market, json(ids)],
   );
   return rows.map(map);
@@ -228,8 +228,8 @@ export async function saveProduct(input: ProductInput): Promise<string> {
     let id = input.id;
     if (id) {
       await q.query(
-        `update products set market_id=$1, category_id=$2, supplier_id=$3, slug=$4, sku=$5, name=$6::jsonb,
-           short_description=$7::jsonb, description=$8::jsonb, delivery_info=$9::jsonb, images=$10::jsonb, art=$11,
+        `update products set market_id=$1, category_id=$2, supplier_id=$3, slug=$4, sku=$5, name=$6::text::jsonb,
+           short_description=$7::text::jsonb, description=$8::text::jsonb, delivery_info=$9::text::jsonb, images=$10::text::jsonb, art=$11,
            species=$12, moisture_pct=$13, length_cm=$14, packaging=$15, unit=$16, unit_volume_m3=$17, unit_weight_kg=$18,
            packing=$19, energy_kwh_override=$20, min_qty=$21, max_qty=$22, price_cents=$23, compare_at_cents=$24,
            cost_cents=$25, is_available=$26, active=$27, featured=$28, updated_at=now()
@@ -242,7 +242,7 @@ export async function saveProduct(input: ProductInput): Promise<string> {
            delivery_info, images, art, species, moisture_pct, length_cm, packaging, unit, unit_volume_m3, unit_weight_kg,
            packing, energy_kwh_override, min_qty, max_qty, price_cents, compare_at_cents, cost_cents, is_available, active,
            featured, position)
-         values ($1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8::jsonb,$9::jsonb,$10::jsonb,$11,$12,$13,$14,$15,$16,$17,$18,$19,
+         values ($1,$2,$3,$4,$5,$6::text::jsonb,$7::text::jsonb,$8::text::jsonb,$9::text::jsonb,$10::text::jsonb,$11,$12,$13,$14,$15,$16,$17,$18,$19,
            $20,$21,$22,$23,$24,$25,$26,$27,$28, (select coalesce(max(position),0)+1 from products))
          returning id`,
         params,
