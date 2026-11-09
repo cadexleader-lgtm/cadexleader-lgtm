@@ -59,7 +59,7 @@ Tout se fait depuis le tableau de bord Vercel : hébergement, base de données P
 4. **Variables d'environnement** (*Settings → Environment Variables*) :
    - `SESSION_SECRET` : 48 caractères aléatoires (`openssl rand -base64 48`)
    - `ADMIN_EMAIL` et `ADMIN_PASSWORD` : votre accès à l'administration (12 caractères minimum)
-   - `NEXT_PUBLIC_SITE_URL` : `https://foyerwood.com`
+   - facultatif : `NEXT_PUBLIC_SITE_URL`. Sans cette variable, le site utilise automatiquement l'adresse de production Vercel (`…vercel.app`, puis votre domaine dès qu'il est ajouté). Si vous la renseignez, mettez l'adresse réelle du site, sinon le sitemap pointera vers une adresse qui ne répond pas.
    - facultatif : `WHATSAPP_CA`, `WHATSAPP_US`, `WHATSAPP_FR`, `CONTACT_EMAIL` (modifiables ensuite dans l'admin)
 5. **Déployer**. À la première visite, le site crée automatiquement les tables, le catalogue de départ et votre compte administrateur.
 

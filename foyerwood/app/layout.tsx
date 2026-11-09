@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
+import { siteUrl } from "@/lib/site-url";
 import "@fontsource-variable/instrument-sans";
 import "@fontsource/instrument-serif/400.css";
 import "@fontsource/instrument-serif/400-italic.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(siteUrl()),
   title: { default: "Foyerwood", template: "%s · Foyerwood" },
   applicationName: "Foyerwood",
   formatDetection: { telephone: false },

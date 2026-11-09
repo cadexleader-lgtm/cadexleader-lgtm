@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { siteUrl } from "@/lib/site-url";
 import { SITES, SITE_IDS, LEGAL_DOCS, CATEGORY_KEYS, blogPath, categoryPath, legalPath, productPath, routePath } from "@/lib/sites";
 import { listProducts } from "@/lib/data/products";
 import { listPublishedArticles } from "@/lib/data/blog";
@@ -6,7 +7,7 @@ import { listPublishedArticles } from "@/lib/data/blog";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const base = siteUrl();
   const out: MetadataRoute.Sitemap = [];
   const now = new Date();
   for (const id of SITE_IDS) {
