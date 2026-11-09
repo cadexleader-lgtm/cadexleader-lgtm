@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui";
-import { ProductArt } from "@/components/art/ProductArt";
+import { articleCover } from "@/lib/illustrations";
 import { ProductVisual } from "@/components/site/ProductVisual";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { listPublishedArticles } from "@/lib/data/blog";
@@ -27,11 +27,7 @@ export default async function BlogPage({ params }: SiteParams) {
           <>
             <Link href={blogPath(site, first.slug)} className="group card grid overflow-hidden md:grid-cols-2">
               <div className="aspect-[16/10] overflow-hidden md:aspect-auto">
-                {first.coverImage ? (
-                  <ProductVisual image={first.coverImage} art={null} species={null} seed={first.slug} alt={first.title} className="h-full min-h-64 w-full" />
-                ) : (
-                  <ProductArt art={first.coverArt} seed={first.slug} className="h-full w-full transition duration-500 group-hover:scale-[1.03]" />
-                )}
+                <ProductVisual image={articleCover(first)} alt={first.title} sizes="(min-width: 768px) 50vw, 100vw" className="h-full min-h-64 w-full transition duration-700 group-hover:scale-[1.03]" />
               </div>
               <div className="flex flex-col justify-center p-8 sm:p-10">
                 <p className="text-xs uppercase tracking-wider text-wood-600">
@@ -46,11 +42,7 @@ export default async function BlogPage({ params }: SiteParams) {
               {rest.map((a) => (
                 <Link key={a.id} href={blogPath(site, a.slug)} className="group card overflow-hidden">
                   <div className="aspect-[16/9] overflow-hidden">
-                    {a.coverImage ? (
-                      <ProductVisual image={a.coverImage} art={null} species={null} seed={a.slug} alt={a.title} className="h-full w-full" />
-                    ) : (
-                      <ProductArt art={a.coverArt} seed={a.slug} className="h-full w-full transition duration-500 group-hover:scale-[1.03]" />
-                    )}
+                    <ProductVisual image={articleCover(a)} alt={a.title} sizes="(min-width: 768px) 33vw, 100vw" className="h-full w-full transition duration-700 group-hover:scale-[1.03]" />
                   </div>
                   <div className="p-6">
                     <p className="text-xs uppercase tracking-wider text-wood-600">{fmt(t.common.minutes, { n: a.readingMinutes })}</p>

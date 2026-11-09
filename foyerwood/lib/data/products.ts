@@ -17,7 +17,12 @@ export interface Product {
   shortDescription: LText;
   description: LText;
   deliveryInfo: LText;
+  /** Photos to display: the product's own photos, else the catalogue photo for its species × packaging. */
   images: string[];
+  /** Photos uploaded on this product only (what the admin product form edits). */
+  ownImages: string[];
+  /** Where images[0] comes from. */
+  photoSource: "own" | "catalog" | "file" | null;
   art: string | null;
   species: SpeciesKey | null;
   moisturePct: number | null;
@@ -117,15 +122,30 @@ export function toPublicProduct(p: Product, lang: Lang): PublicProduct {
 
 const SELECT = `
   select p.*, coalesce(i.track_stock, false) as track_stock, coalesce(i.quantity, 0) as stock_quantity,
-         coalesce(i.low_stock_threshold, 0) as low_stock_threshold
-  from products p left join inventory i on i.product_id = p.id`;
+         coalesce(i.low_stock_threshold, 0) as low_stock_threshold, cp.url as catalog_photo
+  from products p
+  left join inventory i on i.product_id = p.id
+  left join catalog_photos cp on cp.species = p.species and cp.packaging = p.packaging`;
 
+// Photo precedence: the product's own photos (admin product form), then the
+// species × packaging photo from Administration → Photos du catalogue, then a
+// file in public/images/products/ (see lib/product-photos.ts).
 function map(row: Record<string, unknown>): Product {
-  const p = camelize<Product>(row);
-  p.images = Array.isArray(p.images) ? p.images : [];
+  const { catalogPhoto, ...rest } = camelize<Product & { catalogPhoto: string | null }>(row);
+  const p = rest as Product;
+  p.ownImages = Array.isArray(p.images) ? p.images : [];
+  p.images = p.ownImages;
+  p.photoSource = p.ownImages.length > 0 ? "own" : null;
+  if (p.images.length === 0 && catalogPhoto) {
+    p.images = [catalogPhoto];
+    p.photoSource = "catalog";
+  }
   if (p.images.length === 0) {
-    const auto = autoProductPhoto(p.species, p.packaging);
-    if (auto) p.images = [auto];
+    const file = autoProductPhoto(p.species, p.packaging);
+    if (file) {
+      p.images = [file];
+      p.photoSource = "file";
+    }
   }
   return p;
 }
@@ -198,7 +218,7 @@ export async function adminGetProduct(id: string): Promise<Product | null> {
   return row ? map(row) : null;
 }
 
-export type ProductInput = Omit<Product, "id" | "createdAt" | "updatedAt" | "position"> & { id?: string };
+export type ProductInput = Omit<Product, "id" | "createdAt" | "updatedAt" | "position" | "ownImages" | "photoSource"> & { id?: string };
 
 export async function saveProduct(input: ProductInput): Promise<string> {
   return tx(async (q) => {

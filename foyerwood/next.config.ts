@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
     ],
   },
   poweredByHeader: false,
+  experimental: {
+    // Photo uploads go through Server Actions (default limit: 1 MB). Photos are
+    // resized in the browser first; Vercel caps request bodies at 4.5 MB.
+    serverActions: { bodySizeLimit: "4mb" },
+  },
   async headers() {
     return [
       {

@@ -14,14 +14,14 @@ const ALLOWED: Record<string, string> = {
   "image/webp": "webp",
   "image/avif": "avif",
 };
-export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 export class UploadError extends Error {}
 
 export async function uploadImage(file: File, folder: string): Promise<string> {
   const ext = ALLOWED[file.type];
   if (!ext) throw new UploadError("Format non pris en charge (JPEG, PNG, WebP ou AVIF uniquement).");
-  if (file.size > MAX_UPLOAD_BYTES) throw new UploadError("Image trop lourde (5 Mo maximum).");
+  if (file.size > MAX_UPLOAD_BYTES) throw new UploadError("Image trop lourde (4 Mo maximum après réduction).");
   const bytes = Buffer.from(await file.arrayBuffer());
   if (!looksLikeImage(bytes, file.type)) throw new UploadError("Le fichier n'est pas une image valide.");
   const name = `${folder.replace(/[^a-z0-9-]/gi, "")}/${Date.now()}-${crypto.randomBytes(6).toString("hex")}.${ext}`;
@@ -55,7 +55,7 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(path.join(process.cwd(), "public", "uploads", name), bytes);
   } catch {
-    throw new UploadError("Stockage indisponible : configurez Supabase Storage pour envoyer des photos en production.");
+    throw new UploadError("Stockage des photos non connecté : sur Vercel, ouvrez Storage → Blob et connectez-le au projet, puis redéployez.");
   }
   return `/uploads/${name}`;
 }

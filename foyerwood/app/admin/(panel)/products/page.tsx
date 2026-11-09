@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Flash, PageTitle, TabLinks, MARKET_TABS, type SearchProps } from "@/components/admin/AdminUi";
 import { Badge } from "@/components/ui";
-import { ProductArt } from "@/components/art/ProductArt";
+import { PhotoPending } from "@/components/site/ProductVisual";
 import { adminListProducts, availabilityOf } from "@/lib/data/products";
 import { listCategories } from "@/lib/data/settings";
 import { listSuppliers } from "@/lib/data/suppliers";
@@ -48,7 +48,7 @@ export default async function ProductsPage({ searchParams }: SearchProps) {
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={p.images[0]} alt="" className="h-full w-full object-cover" />
                         ) : (
-                          <ProductArt art={p.art} species={p.species} seed={p.slug} className="h-full w-full" />
+                          <PhotoPending compact className="h-full w-full" />
                         )}
                       </span>
                       <span>

@@ -5,7 +5,7 @@ import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, Landmark, Loader2, MapPin, MessageCircle, ShieldCheck, ShoppingBasket, Trash2, Truck } from "lucide-react";
 import { useCart } from "./CartProvider";
 import { QuantityInput } from "./AddToCart";
-import { ProductArt } from "@/components/art/ProductArt";
+import { ProductVisual } from "@/components/site/ProductVisual";
 import { btn } from "@/components/ui";
 import { checkDeliveryAction, submitPreorderAction, type DeliveryCheckResult, type FormState } from "@/app/[site]/actions";
 import type { PublicProduct } from "@/lib/data/products";
@@ -162,13 +162,8 @@ export function PreorderClient(p: Props) {
               const blocked = delivery?.blockedProductIds.includes(pr.id);
               return (
                 <li key={l.id} className="flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center">
-                  <Link href={`${p.productBase}/${pr.slug}`} className="h-20 w-24 shrink-0 overflow-hidden rounded-xl ring-1 ring-line">
-                    {pr.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={pr.image} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <ProductArt art={pr.art} species={pr.species} seed={pr.slug} className="h-full w-full" />
-                    )}
+                  <Link href={`${p.productBase}/${pr.slug}`} className="h-20 w-24 shrink-0 overflow-hidden rounded-[var(--radius-card)] ring-1 ring-line">
+                    <ProductVisual image={pr.image} alt="" compact sizes="96px" className="h-full w-full" />
                   </Link>
                   <div className="min-w-0 flex-1">
                     <Link href={`${p.productBase}/${pr.slug}`} className="font-medium text-forest hover:text-pine">{pr.name}</Link>

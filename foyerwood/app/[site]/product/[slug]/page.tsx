@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Calculator, Info, Landmark, ShieldCheck, Truck, Handshake } from "lucide-react";
 import { Breadcrumbs, Badge } from "@/components/ui";
 import { Gallery } from "@/components/site/Gallery";
-import { ProductArt } from "@/components/art/ProductArt";
+import { PhotoPending } from "@/components/site/ProductVisual";
 import { ProductCard } from "@/components/site/ProductCard";
 import { AddToCart } from "@/components/cart/AddToCart";
 import { loadSite } from "@/lib/site-context";
@@ -117,10 +117,7 @@ export default async function ProductPage({ params }: Props) {
             {p.images.length > 0 ? (
               <Gallery images={p.images} alt={name} label={t.product.gallery} />
             ) : (
-              <div className="relative overflow-hidden rounded-[var(--radius-card)] ring-1 ring-line">
-                <ProductArt art={p.art} species={p.species} seed={p.slug} label={name} className="aspect-[5/4] w-full" />
-                <span className="absolute bottom-3 right-3 rounded-full bg-white/85 px-2.5 py-1 text-[0.7rem] text-stone backdrop-blur">{t.common.illustration}</span>
-              </div>
+              <PhotoPending label={t.common.photoPending} className="aspect-[5/4] w-full rounded-[var(--radius-card)] ring-1 ring-line" />
             )}
           </div>
 

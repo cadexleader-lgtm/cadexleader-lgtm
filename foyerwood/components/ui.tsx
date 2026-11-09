@@ -91,19 +91,20 @@ export function Badge({ tone = "neutral", children, className = "" }: { tone?: k
   );
 }
 
-export function Breadcrumbs({ items }: { items: Array<{ label: string; href?: string }> }) {
+export function Breadcrumbs({ items, tone = "dark" }: { items: Array<{ label: string; href?: string }>; tone?: "dark" | "light" }) {
+  const light = tone === "light";
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-stone">
+    <nav aria-label="Breadcrumb" className={`text-sm ${light ? "text-cream/60" : "text-stone"}`}>
       <ol className="flex flex-wrap items-center gap-1.5">
         {items.map((it, i) => (
           <li key={i} className="flex items-center gap-1.5">
-            {i > 0 && <span aria-hidden className="text-stone/50">/</span>}
+            {i > 0 && <span aria-hidden className={light ? "text-cream/35" : "text-stone/50"}>/</span>}
             {it.href ? (
-              <Link href={it.href} className="hover:text-forest">
+              <Link href={it.href} className={light ? "hover:text-cream" : "hover:text-forest"}>
                 {it.label}
               </Link>
             ) : (
-              <span aria-current="page" className="text-charcoal">{it.label}</span>
+              <span aria-current="page" className={light ? "text-cream" : "text-charcoal"}>{it.label}</span>
             )}
           </li>
         ))}

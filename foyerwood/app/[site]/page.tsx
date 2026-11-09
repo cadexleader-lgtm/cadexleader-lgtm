@@ -6,7 +6,6 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { Carousel } from "@/components/site/Carousel";
 import { HeroSlider, type Slide } from "@/components/site/HeroSlider";
 import { emphasize } from "@/lib/emphasize";
-import { SpeciesDisc } from "@/components/site/SpeciesDisc";
 import { ButtonLink, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/motion/Reveal";
 import { loadSite, type SiteParams } from "@/lib/site-context";
@@ -66,8 +65,10 @@ export default async function HomePage({ params }: SiteParams) {
   const { site, t, market } = ctx;
   const [products, reviews, stats] = await Promise.all([listProducts(site.market, site.lang), listApprovedReviews(site.market, 3), reviewStats(site.market)]);
 
-  const featured = [...products.filter((p) => p.featured), ...products.filter((p) => !p.featured && p.categoryId === "firewood")].slice(0, 8);
-  const kiln = products.filter((p) => ["kiln-dried", "pellets", "briquettes"].includes(p.categoryId)).slice(0, 10);
+  // Products that already have a real photo come first in the showcases.
+  const photoFirst = (list: Product[]) => [...list.filter((p) => p.images.length > 0), ...list.filter((p) => p.images.length === 0)];
+  const featured = photoFirst([...products.filter((p) => p.featured), ...products.filter((p) => !p.featured && p.categoryId === "firewood")]).slice(0, 8);
+  const kiln = photoFirst(products.filter((p) => ["kiln-dried", "pellets", "briquettes"].includes(p.categoryId))).slice(0, 10);
   const speciesList = CATALOG_SPECIES.filter((s) => products.some((p) => p.species === s));
   const card = (p: Product, priority = false) => (
     <ProductCard key={p.id} p={toPublicProduct(p, site.lang)} site={site} t={t} currency={market.currency} formatLabel={formatLabel(p, t, site.lang)} priority={priority} />
@@ -200,6 +201,8 @@ export default async function HomePage({ params }: SiteParams) {
                 {speciesList.map((sp) => {
                   const sc = SPECIES_SCORES[sp];
                   const n = products.filter((p) => p.species === sp).length;
+                  const thumb = products.find((p) => p.species === sp && p.images.length > 0)?.images[0];
+                  const name = SPECIES[sp].names[site.lang];
                   return (
                     <Link
                       key={sp}
@@ -207,9 +210,15 @@ export default async function HomePage({ params }: SiteParams) {
                       className="group grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-4 border-b border-line px-6 py-5 transition-colors last:border-b-0 hover:bg-cream md:grid-cols-[2.2fr_1fr_1fr_1fr_0.7fr_auto] md:gap-6"
                     >
                       <span className="flex items-center gap-4">
-                        <SpeciesDisc species={sp} className="h-12 w-12 shrink-0" />
+                        <span className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden bg-cream-200 ring-1 ring-line" aria-hidden>
+                          {thumb ? (
+                            <Image src={thumb} alt="" fill sizes="48px" className="object-cover" />
+                          ) : (
+                            <span className="font-display text-2xl leading-none text-forest/70">{name.charAt(0)}</span>
+                          )}
+                        </span>
                         <span>
-                          <span className="block font-display text-[1.7rem] leading-none text-forest">{SPECIES[sp].names[site.lang]}</span>
+                          <span className="block font-display text-[1.7rem] leading-none text-forest">{name}</span>
                           <span className="mt-1 block text-[0.82rem] text-stone">{t.home.species.taglines[sp]}</span>
                         </span>
                       </span>

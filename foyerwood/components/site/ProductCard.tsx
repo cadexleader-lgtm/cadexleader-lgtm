@@ -33,10 +33,8 @@ export function ProductCard({
       <Link href={href} className="relative block overflow-hidden bg-cream-200" tabIndex={-1} aria-hidden>
         <ProductVisual
           image={p.image}
-          art={p.art}
-          species={p.species}
-          seed={p.slug}
           alt={p.name}
+          pendingLabel={t.common.photoPending}
           priority={priority}
           className="aspect-square transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 80vw"

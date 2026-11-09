@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Calculator } from "lucide-react";
 import { Breadcrumbs, ButtonLink } from "@/components/ui";
 import { Markdown } from "@/components/Markdown";
-import { ProductArt } from "@/components/art/ProductArt";
+import { articleCover } from "@/lib/illustrations";
 import { ProductVisual } from "@/components/site/ProductVisual";
 import { loadSite } from "@/lib/site-context";
 import { getPublishedArticle, listPublishedArticles } from "@/lib/data/blog";
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: a.seoTitle || a.title,
     description: a.seoDescription || a.excerpt,
     alternates: { canonical: blogPath(site, a.slug) },
-    openGraph: { type: "article", images: a.coverImage ? [a.coverImage] : undefined },
+    openGraph: { type: "article", images: [articleCover(a)] },
   };
 }
 
@@ -48,7 +48,7 @@ export default async function ArticlePage({ params }: Props) {
       <header className="bg-forest text-cream">
         <div className="container-page max-w-4xl py-12 sm:py-16">
           <div className="[&_a]:text-cream/70 [&_a:hover]:text-cream [&_span]:text-cream/80 [&_li>span]:text-cream/40">
-            <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.blog, href: blogPath(site) }, { label: a.title }]} />
+            <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.blog, href: blogPath(site) }, { label: a.title }]} tone="light" />
           </div>
           <h1 className="mt-6 text-4xl leading-[1.1] sm:text-5xl">{a.title}</h1>
           <p className="mt-4 text-lg text-cream/75">{a.excerpt}</p>
@@ -59,11 +59,7 @@ export default async function ArticlePage({ params }: Props) {
       </header>
       <div className="container-page max-w-4xl">
         <div className="-mt-px overflow-hidden rounded-b-[var(--radius-card)]">
-          {a.coverImage ? (
-            <ProductVisual image={a.coverImage} art={null} species={null} seed={a.slug} alt={a.title} className="aspect-[21/9] w-full" priority />
-          ) : (
-            <ProductArt art={a.coverArt} seed={a.slug} className="aspect-[21/9] w-full" />
-          )}
+          <ProductVisual image={articleCover(a)} alt={a.title} sizes="(min-width: 896px) 896px, 100vw" className="aspect-[21/9] w-full" priority />
         </div>
         <div className="py-10">
           <Markdown>{a.content}</Markdown>

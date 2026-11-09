@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Flash, PageTitle, Panel, Field, TextArea, Select, SubmitButton } from "@/components/admin/AdminUi";
+import { ImageInput } from "@/components/admin/ImageInput";
 import { adminGetArticle } from "@/lib/data/blog";
 import { MARKETS, MARKET_IDS } from "@/lib/markets";
 import { saveArticleAction, deleteArticleAction } from "@/app/admin/actions";
 
 type Props = { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | undefined>> };
 
-const ARTS = [["logs", "Bûches"], ["kiln", "Bois séché"], ["pellets-bag", "Granulés"], ["briquettes", "Bûches compressées"], ["kindling", "Allumage"], ["meter", "Humidimètre"]];
 
 export default async function ArticleEditPage({ params, searchParams }: Props) {
   const { id } = await params;
@@ -58,11 +58,11 @@ export default async function ArticleEditPage({ params, searchParams }: Props) {
           </Panel>
           <Panel title="Visuel">
             <div className="space-y-4">
-              <Select label="Illustration par défaut" name="coverArt" defaultValue={a?.coverArt ?? "logs"} options={ARTS.map(([value, label]) => ({ value, label }))} />
               <Field label="URL de l'image de couverture" name="coverImage" defaultValue={a?.coverImage ?? ""} placeholder="https://…" />
+              <p className="text-xs text-stone">Sans image, une photo d'ambiance du site est utilisée.</p>
               <div>
                 <label className="field-label" htmlFor="coverFile">…ou envoyer une image</label>
-                <input id="coverFile" name="coverFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-forest file:px-4 file:py-2 file:text-cream" />
+                <ImageInput id="coverFile" name="coverFile" />
               </div>
             </div>
           </Panel>

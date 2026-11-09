@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
-  BookOpen, ClipboardList, LayoutDashboard, LogOut, Mail, Map, Menu, Package, Settings, Star, Truck, Users, X, ExternalLink,
+  BookOpen, Camera, ClipboardList, LayoutDashboard, LogOut, Mail, Map, Menu, Package, Settings, Star, Truck, Users, X, ExternalLink,
 } from "lucide-react";
 import { LogoMark } from "@/components/art/Logo";
 import { logoutAction } from "@/app/admin/actions";
@@ -13,6 +13,7 @@ const NAV = [
   { href: "/admin", label: "Tableau de bord", Icon: LayoutDashboard },
   { href: "/admin/orders", label: "Précommandes", Icon: ClipboardList, badge: "orders" },
   { href: "/admin/products", label: "Produits & stocks", Icon: Package },
+  { href: "/admin/photos", label: "Photos du catalogue", Icon: Camera },
   { href: "/admin/suppliers", label: "Fournisseurs", Icon: Truck },
   { href: "/admin/zones", label: "Zones de livraison", Icon: Map },
   { href: "/admin/reviews", label: "Avis clients", Icon: Star, badge: "reviews" },

@@ -67,7 +67,7 @@ export const en: Dict = {
     home: "Home",
     error: "Something went wrong. Please try again.",
     noPayment: "No online payment: you pay by bank transfer after receiving your pro forma invoice.",
-    illustration: "Illustrative image",
+    photoPending: "Photo coming soon",
     previous: "Previous",
     next: "Next",
     slide: "Slide {n} of {total}",

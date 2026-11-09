@@ -30,6 +30,9 @@ import { isSaleUnit, isSpeciesKey, MARKET_UNITS } from "@/lib/energy";
 import { isOrderStatus } from "@/lib/order-status";
 import { slugify } from "@/lib/format";
 import { uploadImage, UploadError } from "@/lib/storage";
+import { deleteCatalogPhoto, setCatalogPhoto } from "@/lib/data/catalog-photos";
+import { CATALOG_PACKAGINGS, CATALOG_SPECIES, type CatalogPackaging, type CatalogSpecies } from "@/lib/db/seed-species-catalog";
+import { PACKAGING_GUIDE, SPECIES_GUIDE } from "@/lib/photo-guide";
 import { rateLimit } from "@/lib/rate-limit";
 
 const s = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -107,7 +110,7 @@ export async function saveProductAction(fd: FormData) {
   const supplierId = s(fd, "supplierId");
 
   // Photos: keep the ones not removed, add uploads and URLs.
-  const existing = id ? (await adminGetProduct(id))?.images ?? [] : [];
+  const existing = id ? (await adminGetProduct(id))?.ownImages ?? [] : [];
   const removed = new Set(fd.getAll("removeImage").map(String));
   const images = existing.filter((u) => !removed.has(u));
   const imageUrl = s(fd, "imageUrl");
@@ -168,6 +171,37 @@ export async function toggleProductAction(fd: FormData) {
   const id = s(fd, "id");
   if (isUuid(id)) await setProductActive(id, s(fd, "active") === "1");
   redirect(s(fd, "redirect") || "/admin/products");
+}
+
+// ---------------------------------------------------------------- catalogue photos
+
+const isCatalogSpecies = (v: string): v is CatalogSpecies => (CATALOG_SPECIES as readonly string[]).includes(v);
+const isCatalogPackaging = (v: string): v is CatalogPackaging => (CATALOG_PACKAGINGS as readonly string[]).includes(v);
+
+export async function uploadCatalogPhotoAction(fd: FormData) {
+  await requireAdmin();
+  const species = s(fd, "species");
+  const packaging = s(fd, "packaging");
+  if (!isCatalogSpecies(species) || !isCatalogPackaging(packaging)) redirect(back("/admin/photos", { error: "Combinaison inconnue." }));
+  const file = fd.get("photo");
+  if (!(file instanceof File) || file.size === 0) redirect(back("/admin/photos", { error: "Choisissez une photo." }));
+  let url: string;
+  try {
+    url = await uploadImage(file, "catalog");
+  } catch (e) {
+    redirect(back("/admin/photos", { error: e instanceof UploadError ? e.message : "Échec de l'envoi de la photo." }));
+  }
+  await setCatalogPhoto(species, packaging, url);
+  const label = `${SPECIES_GUIDE[species].fr} · ${PACKAGING_GUIDE[packaging].fr}`;
+  redirect(`${back("/admin/photos", { ok: `Photo enregistrée : ${label}. Elle s'affiche dans les 3 pays.` })}#${species}-${packaging}`);
+}
+
+export async function removeCatalogPhotoAction(fd: FormData) {
+  await requireAdmin();
+  const species = s(fd, "species");
+  const packaging = s(fd, "packaging");
+  if (isCatalogSpecies(species) && isCatalogPackaging(packaging)) await deleteCatalogPhoto(species, packaging);
+  redirect(`${back("/admin/photos", { ok: "Photo retirée." })}#${species}-${packaging}`);
 }
 
 // ---------------------------------------------------------------- suppliers

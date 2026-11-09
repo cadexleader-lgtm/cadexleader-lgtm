@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Logo } from "@/components/art/Logo";
-import { HeroScene } from "@/components/art/HeroScene";
+import Image from "next/image";
+import { AMBIANCE } from "@/lib/illustrations";
 import { MarketChoice } from "@/components/chooser/MarketChoice";
 
 export const metadata: Metadata = {
@@ -55,7 +56,7 @@ export default async function ChooserPage() {
   ];
   return (
     <main className="relative flex min-h-dvh flex-col overflow-hidden bg-forest-950 text-cream">
-      <HeroScene className="absolute inset-0 h-full w-full opacity-90" />
+      <Image src={AMBIANCE.livingRoom} alt="" fill priority sizes="100vw" className="object-cover" />
       <div className="absolute inset-0 bg-gradient-to-b from-forest-950/30 via-forest-950/55 to-forest-950/90" aria-hidden />
       <div className="container-page relative flex flex-1 flex-col py-10">
         <Logo tone="light" />

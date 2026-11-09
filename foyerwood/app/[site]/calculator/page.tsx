@@ -27,7 +27,7 @@ export default async function CalculatorPage({ params }: SiteParams) {
       <section className="relative overflow-hidden bg-forest text-cream">
         <div className="grain absolute inset-0" aria-hidden />
         <div className="container-page relative py-12 sm:py-16">
-          <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.calculator }]} />
+          <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.calculator }]} tone="light" />
           <p className="kicker mt-6 text-wood-100">{t.home.calculator.kicker}</p>
           <h1 className="mt-4 max-w-3xl text-4xl leading-[1.08] sm:text-[3.4rem]">{t.calculator.title}</h1>
           <p className="mt-4 max-w-2xl text-lg text-cream/75">{t.calculator.subtitle}</p>

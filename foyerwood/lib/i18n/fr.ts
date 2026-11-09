@@ -67,7 +67,7 @@ export const fr = {
     home: "Accueil",
     error: "Une erreur est survenue. Merci de réessayer.",
     noPayment: "Aucun paiement en ligne : vous réglez par virement après réception de la facture pro forma.",
-    illustration: "Visuel indicatif",
+    photoPending: "Photo à venir",
     previous: "Précédent",
     next: "Suivant",
     slide: "Diapositive {n} sur {total}",

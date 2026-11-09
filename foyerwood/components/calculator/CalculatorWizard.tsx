@@ -27,7 +27,7 @@ import { isValidPostalCode } from "@/lib/regions";
 import type { Dict } from "@/lib/i18n";
 import type { MarketId } from "@/lib/markets";
 import { useCart } from "@/components/cart/CartProvider";
-import { ProductArt } from "@/components/art/ProductArt";
+import { ProductVisual } from "@/components/site/ProductVisual";
 import { btn } from "@/components/ui";
 
 type L = Dict["calculator"];
@@ -486,12 +486,7 @@ function ResultView({
             {response.recommendations.map(({ product, suggestedQty, coversPct }) => (
               <article key={product.id} className="card flex flex-col overflow-hidden">
                 <Link href={`${p.productBase}/${product.slug}`} className="block aspect-[16/10] overflow-hidden">
-                  {product.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <ProductArt art={product.art} species={product.species} seed={product.slug} className="h-full w-full" />
-                  )}
+                  <ProductVisual image={product.image} alt={product.name} sizes="(min-width: 768px) 33vw, 100vw" className="h-full w-full" />
                 </Link>
                 <div className="flex flex-1 flex-col p-5">
                   <Link href={`${p.productBase}/${product.slug}`} className="font-display text-xl leading-snug text-forest hover:text-pine">
@@ -532,7 +527,7 @@ function ResultView({
               {response.complements.map((c) => (
                 <div key={c.id} className="flex items-center gap-4 rounded-2xl bg-white p-3 ring-1 ring-line">
                   <div className="h-16 w-20 shrink-0 overflow-hidden rounded-xl">
-                    <ProductArt art={c.art} species={c.species} seed={c.slug} className="h-full w-full" />
+                    <ProductVisual image={c.image} alt="" compact sizes="80px" className="h-full w-full" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <Link href={`${p.productBase}/${c.slug}`} className="block truncate font-medium text-forest hover:text-pine">{c.name}</Link>

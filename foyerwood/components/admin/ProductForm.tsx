@@ -4,27 +4,9 @@ import type { Supplier } from "@/lib/data/suppliers";
 import type { Category } from "@/lib/data/settings";
 import { MARKETS, MARKET_IDS } from "@/lib/markets";
 import { MARKET_UNITS, SALE_UNITS, SPECIES, SPECIES_KEYS, unitLabel } from "@/lib/energy";
+import Link from "next/link";
 import { saveProductAction } from "@/app/admin/actions";
-
-const ARTS = [
-  ["bulk", "Vrac (selon l'essence)"],
-  ["pallet", "Palette (selon l'essence)"],
-  ["big-bag", "Big Bag (selon l'essence)"],
-  ["net-bag", "Filet (selon l'essence)"],
-  ["bag", "Sac (selon l'essence)"],
-  ["box", "Carton (selon l'essence)"],
-  ["logs", "Bûches empilées"],
-  ["kiln", "Bois séché au four"],
-  ["logs-pallet", "Palette de bûches"],
-  ["logs-bag", "Sac de bûches"],
-  ["pellets-bag", "Sac de granulés"],
-  ["pellets-pallet", "Palette de granulés"],
-  ["briquettes", "Bûches compressées"],
-  ["kindling", "Bois d'allumage"],
-  ["starters", "Allume-feu"],
-  ["meter", "Humidimètre"],
-  ["carrier", "Sac / panier de transport"],
-];
+import { ImageInput } from "./ImageInput";
 
 const PACKAGINGS = [
   ["bulk", "Vrac"],
@@ -101,9 +83,19 @@ export function ProductForm({ product, suppliers, categories }: { product?: Prod
         </Panel>
 
         <Panel title="Photos">
-          {p && p.images.length > 0 && (
+          {p && p.ownImages.length === 0 && p.images[0] && (
+            <div className="mb-4 flex items-center gap-4 rounded-lg bg-cream p-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.images[0]} alt="" className="h-16 w-20 shrink-0 rounded-md object-cover ring-1 ring-line" />
+              <p className="text-xs leading-relaxed text-stone">
+                Ce produit affiche la photo du catalogue pour son essence et son conditionnement (commune aux 3 pays).{" "}
+                <Link href="/admin/photos" className="font-medium text-forest underline">Gérer les photos du catalogue</Link>. Ajoutez une photo ici uniquement pour la remplacer sur ce produit.
+              </p>
+            </div>
+          )}
+          {p && p.ownImages.length > 0 && (
             <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {p.images.map((src, i) => (
+              {p.ownImages.map((src, i) => (
                 <div key={src} className="overflow-hidden rounded-xl ring-1 ring-line">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={src} alt="" className="aspect-square w-full object-cover" />
@@ -118,11 +110,9 @@ export function ProductForm({ product, suppliers, categories }: { product?: Prod
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="field-label" htmlFor="f-images">Ajouter des photos</label>
-              <input id="f-images" name="images" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple className="block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-forest file:px-4 file:py-2 file:text-cream" />
-              <p className="mt-1 text-xs text-stone">JPEG, PNG, WebP ou AVIF, 5 Mo maximum par image.</p>
+              <ImageInput id="f-images" name="images" multiple />
             </div>
             <Field label="…ou ajouter une URL d'image" name="imageUrl" placeholder="https://…" />
-            <Select label="Illustration de remplacement (sans photo)" name="art" defaultValue={p?.art ?? "logs"} options={ARTS.map(([value, label]) => ({ value, label }))} />
           </div>
         </Panel>
       </div>

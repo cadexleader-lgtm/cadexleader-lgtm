@@ -2,7 +2,8 @@ import { headers } from "next/headers";
 import { getDict } from "@/lib/i18n";
 import { getSite } from "@/lib/sites";
 import { ButtonLink } from "@/components/ui";
-import { ProductArt } from "@/components/art/ProductArt";
+import Image from "next/image";
+import { AMBIANCE } from "@/lib/illustrations";
 
 export default async function SiteNotFound() {
   const h = await headers();
@@ -18,7 +19,9 @@ export default async function SiteNotFound() {
           {t.notFound.cta}
         </ButtonLink>
       </div>
-      <ProductArt art="kindling" seed="404" className="w-full rounded-3xl" />
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)]">
+        <Image src={AMBIANCE.logEnds} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+      </div>
     </section>
   );
 }

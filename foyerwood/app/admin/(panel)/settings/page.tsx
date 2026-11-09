@@ -1,3 +1,4 @@
+import { ImageInput } from "@/components/admin/ImageInput";
 import { Flash, PageTitle, Panel, Field, TextArea, Select, Check, SubmitButton, type SearchProps } from "@/components/admin/AdminUi";
 import { Badge } from "@/components/ui";
 import { listMarketSettings, getSetting, listCategories } from "@/lib/data/settings";
@@ -93,7 +94,7 @@ export default async function SettingsPage({ searchParams }: SearchProps) {
                   <Field label="Image (URL)" name="imageUrl" defaultValue={c.imageUrl ?? ""} />
                   <div>
                     <label className="field-label" htmlFor={`cat-${c.id}`}>…ou envoyer une image</label>
-                    <input id={`cat-${c.id}`} name="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="block w-full text-xs file:mr-2 file:rounded-full file:border-0 file:bg-forest file:px-3 file:py-1.5 file:text-cream" />
+                    <ImageInput id={`cat-${c.id}`} name="imageFile" compact />
                   </div>
                   <Check label="Catégorie active" name="active" defaultChecked={c.active} />
                 </div>
