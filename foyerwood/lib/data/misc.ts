@@ -97,6 +97,11 @@ export async function findUserByEmail(email: string): Promise<User | null> {
   return row ? camelize<User>(row) : null;
 }
 
+export async function countActiveAdmins(): Promise<number> {
+  const row = await queryOne<{ n: number }>(`select count(*)::int as n from users where active = true`);
+  return row?.n ?? 0;
+}
+
 export async function getUser(id: string): Promise<User | null> {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
   const row = await queryOne(`select * from users where id = $1 and active`, [id]);

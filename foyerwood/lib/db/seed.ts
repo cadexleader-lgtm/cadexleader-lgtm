@@ -1,7 +1,7 @@
 import type { Db, Queryable } from "./client";
 import { json } from "./client";
 import { MARKETS, MARKET_IDS } from "../markets";
-import { hashPassword } from "../auth";
+import { hashPassword, verifyPassword } from "../auth";
 import { SEED_CATEGORIES, SEED_PRODUCTS, SEED_SUPPLIERS, SEED_ZONES } from "./seed-catalog";
 import { SEED_ARTICLES } from "./seed-articles";
 
@@ -234,33 +234,68 @@ async function seedSettings(q: Queryable) {
   }
 }
 
+/** ADMIN_EMAIL / ADMIN_PASSWORD as set in the host (trimmed, surrounding quotes removed). */
+export function adminFromEnv(): { email: string; password: string } | null {
+  const clean = (v: string | undefined) => v?.trim().replace(/^(["'])(.*)\1$/, "$2").trim() || "";
+  const email = clean(process.env.ADMIN_EMAIL).toLowerCase();
+  const password = clean(process.env.ADMIN_PASSWORD);
+  return email && password ? { email, password } : null;
+}
+
+const ADMIN_SYNC_KEY = "admin_env_sync";
+
 /**
- * Creates the first administrator from ADMIN_EMAIL / ADMIN_PASSWORD.
- * Without them, a local demo account is created only for the embedded database
- * outside production.
+ * Keeps the main administrator in line with ADMIN_EMAIL / ADMIN_PASSWORD.
+ * - The account is created if it does not exist yet (even if other users exist).
+ * - When those variables change (new value + redeploy), the password is reset
+ *   to the new value and the account re-enabled. A password changed later in the
+ *   administration is kept as long as the variables stay the same.
+ * Without the variables, a local demo account is created only for the embedded
+ * database outside production, and only when there is no user at all.
  */
 export async function ensureAdmin(db: Queryable & { kind?: string }, log: (m: string) => void = () => {}) {
-  const [{ n }] = await db.query<{ n: number }>("select count(*)::int as n from users");
-  if (n > 0) return;
-  let email = process.env.ADMIN_EMAIL;
-  let password = process.env.ADMIN_PASSWORD;
-  if (!email || !password) {
+  const env = adminFromEnv();
+  if (!env) {
+    const [{ n }] = await db.query<{ n: number }>("select count(*)::int as n from users");
+    if (n > 0) return;
     if (db.kind !== "pglite" || process.env.NODE_ENV === "production") {
       log("No administrator: set ADMIN_EMAIL and ADMIN_PASSWORD, or run `npm run admin:create`.");
       return;
     }
-    email = "admin@foyerwood.local";
-    password = "foyerwood-demo";
-    console.info(`[foyerwood] Demo administrator created: ${email} / ${password} (local database only)`);
+    const email = "admin@foyerwood.local";
+    await db.query(`insert into users (email, name, password_hash, role) values ($1, $2, $3, 'admin')`, [
+      email,
+      "Administrateur",
+      hashPassword("foyerwood-demo"),
+    ]);
+    console.info(`[foyerwood] Demo administrator created: ${email} / foyerwood-demo (local database only)`);
+    return;
   }
+  const { email, password } = env;
   if (password.length < 10 && db.kind !== "pglite") {
     log("ADMIN_PASSWORD must contain at least 10 characters.");
     return;
   }
-  await db.query(`insert into users (email, name, password_hash, role) values ($1, $2, $3, 'admin')`, [
-    email.toLowerCase(),
-    "Administrateur",
-    hashPassword(password),
-  ]);
-  log(`Administrator ${email} created.`);
+  // Fingerprint of the variables last applied (scrypt hash, never the password itself).
+  const fingerprint = `${email}\n${password}`;
+  const [saved] = await db.query<{ value: unknown }>("select value from site_settings where key = $1", [ADMIN_SYNC_KEY]);
+  const unchanged = typeof saved?.value === "string" && verifyPassword(fingerprint, saved.value);
+  const [user] = await db.query<{ id: string }>("select id from users where email = $1", [email]);
+  if (user && unchanged) return;
+  if (!user) {
+    await db.query(`insert into users (email, name, password_hash, role) values ($1, $2, $3, 'admin')`, [
+      email,
+      "Administrateur",
+      hashPassword(password),
+    ]);
+    log(`Administrator ${email} created.`);
+  } else {
+    await db.query("update users set password_hash = $2, active = true, role = 'admin' where id = $1", [user.id, hashPassword(password)]);
+    log(`Administrator ${email} updated from ADMIN_PASSWORD.`);
+  }
+  await db.query(
+    `insert into site_settings (key, value) values ($1, $2::text::jsonb)
+     on conflict (key) do update set value = excluded.value, updated_at = now()`,
+    [ADMIN_SYNC_KEY, json(hashPassword(fingerprint))],
+  );
 }
