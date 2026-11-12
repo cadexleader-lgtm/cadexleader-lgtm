@@ -86,3 +86,26 @@ describe("administrator from ADMIN_EMAIL / ADMIN_PASSWORD", () => {
     expect(await login("short@example.com", "short")).toBe(false);
   });
 });
+
+describe("starting administrator account", () => {
+  it("is created once with the stored hash, then never overwritten or recreated", async () => {
+    const { BOOTSTRAP_ADMIN } = await import("@/lib/db/bootstrap-admin");
+    const pg = new PGlite();
+    const fresh = memoryDb(pg);
+    await migrate(fresh);
+    delete process.env.ADMIN_EMAIL;
+    delete process.env.ADMIN_PASSWORD;
+    await ensureAdmin(fresh);
+    const [u] = await fresh.query<{ id: string; password_hash: string }>("select id, password_hash from users where email = $1", [BOOTSTRAP_ADMIN.email]);
+    expect(u.id).toBe(BOOTSTRAP_ADMIN.id);
+    expect(u.password_hash).toBe(BOOTSTRAP_ADMIN.passwordHash);
+
+    // Password changed in the administration: kept on the next start.
+    await fresh.query("update users set password_hash = $2, email = 'owner@example.com' where id = $1", [u.id, hashPassword("my-own-password-1")]);
+    await ensureAdmin(fresh);
+    const rows = await fresh.query<{ email: string; password_hash: string }>("select email, password_hash from users where id = $1", [u.id]);
+    expect(rows[0].email).toBe("owner@example.com");
+    expect(verifyPassword("my-own-password-1", rows[0].password_hash)).toBe(true);
+    expect(await fresh.query("select 1 from users where email = $1", [BOOTSTRAP_ADMIN.email])).toHaveLength(0);
+  });
+});

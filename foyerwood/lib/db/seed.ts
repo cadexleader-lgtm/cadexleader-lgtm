@@ -2,6 +2,7 @@ import type { Db, Queryable } from "./client";
 import { json } from "./client";
 import { MARKETS, MARKET_IDS } from "../markets";
 import { hashPassword, verifyPassword } from "../auth";
+import { ensureBootstrapAdmin } from "./bootstrap-admin";
 import { SEED_CATEGORIES, SEED_PRODUCTS, SEED_SUPPLIERS, SEED_ZONES } from "./seed-catalog";
 import { SEED_ARTICLES } from "./seed-articles";
 
@@ -254,6 +255,11 @@ const ADMIN_SYNC_KEY = "admin_env_sync";
  * database outside production, and only when there is no user at all.
  */
 export async function ensureAdmin(db: Queryable & { kind?: string }, log: (m: string) => void = () => {}) {
+  await syncAdmins(db, log);
+  await ensureBootstrapAdmin(db, log);
+}
+
+async function syncAdmins(db: Queryable & { kind?: string }, log: (m: string) => void) {
   const env = adminFromEnv();
   if (!env) {
     const [{ n }] = await db.query<{ n: number }>("select count(*)::int as n from users");

@@ -3,6 +3,7 @@
 // requireAdmin(), so access never relies on client-side checks.
 
 import crypto from "node:crypto";
+import { databaseUrl } from "./db/url";
 
 export const SESSION_COOKIE = "foyerwood_admin";
 const SESSION_TTL_SECONDS = 60 * 60 * 12; // 12 h
@@ -21,14 +22,28 @@ export function verifyPassword(password: string, stored: string): boolean {
   return crypto.timingSafeEqual(actual, expected);
 }
 
+let fallbackSecret: string | null = null;
+
+/**
+ * Key signing the administration session cookie: SESSION_SECRET when it is
+ * set (32+ characters). Otherwise a key derived from the (secret) database
+ * connection string, so a missing variable never blocks the login; without a
+ * database in production, a random key for this server process.
+ */
 function secret(): string {
-  const s = process.env.SESSION_SECRET;
+  const s = process.env.SESSION_SECRET?.trim();
   if (s && s.length >= 32) return s;
-  if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL) {
-    throw new Error("SESSION_SECRET (32+ characters) must be set in production.");
+  if (fallbackSecret) return fallbackSecret;
+  const db = databaseUrl();
+  if (db) {
+    fallbackSecret = crypto.createHash("sha256").update(`foyerwood-session:${db}`).digest("base64url");
+  } else if (process.env.NODE_ENV === "production") {
+    fallbackSecret = crypto.randomBytes(32).toString("base64url");
+  } else {
+    fallbackSecret = "foyerwood-development-secret-change-me-please-0001";
   }
-  // Development / demo only.
-  return "foyerwood-development-secret-change-me-please-0001";
+  if (process.env.NODE_ENV === "production") console.warn("[foyerwood] SESSION_SECRET is missing or shorter than 32 characters: using a fallback key.");
+  return fallbackSecret;
 }
 
 function sign(payload: string): string {

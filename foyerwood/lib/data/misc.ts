@@ -120,6 +120,10 @@ export async function createUser(email: string, name: string, passwordHash: stri
   await query(`insert into users (email, name, password_hash, role) values (lower($1), $2, $3, $4)`, [email.trim(), name, passwordHash, role]);
 }
 
+export async function updateUserProfile(id: string, email: string, name: string) {
+  await query(`update users set email = lower($2), name = $3 where id = $1`, [id, email.trim(), name.trim()]);
+}
+
 export async function updateUserPassword(id: string, passwordHash: string) {
   await query(`update users set password_hash = $2 where id = $1`, [id, passwordHash]);
 }

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createSessionToken, hashPassword, SESSION_COOKIE, verifyPassword } from "@/lib/auth";
-import { createUser, findUserByEmail, setContactStatus, setSubscriberStatus, setUserActive, touchLogin, updateUserPassword } from "@/lib/data/misc";
+import { createUser, findUserByEmail, setContactStatus, setSubscriberStatus, setUserActive, touchLogin, updateUserPassword, updateUserProfile } from "@/lib/data/misc";
 import { saveProduct, setProductActive, slugExists, adminGetProduct, type ProductInput } from "@/lib/data/products";
 import { saveSupplier } from "@/lib/data/suppliers";
 import { deleteZone, saveZone } from "@/lib/data/zones";
@@ -562,6 +562,20 @@ export async function changePasswordAction(fd: FormData) {
   if (next.length < 12) redirect(`/admin/settings?error=${encodeURIComponent("Nouveau mot de passe trop court (12 caractères minimum).")}#users`);
   await updateUserPassword(user.id, hashPassword(next));
   redirect(`/admin/settings?ok=${encodeURIComponent("Mot de passe modifié.")}#users`);
+}
+
+export async function changeProfileAction(fd: FormData) {
+  const user = await requireAdmin();
+  const done = (k: "ok" | "error", m: string) => redirect(`/admin/settings?${k}=${encodeURIComponent(m)}#users`);
+  const current = String(fd.get("current") ?? "");
+  const email = s(fd, "email").toLowerCase();
+  const name = s(fd, "name") || user.name;
+  if (!verifyPassword(current, user.passwordHash)) done("error", "Mot de passe actuel incorrect.");
+  if (!z.email().safeParse(email).success) done("error", "Adresse e-mail invalide.");
+  const other = await findUserByEmail(email);
+  if (other && other.id !== user.id) done("error", "Cette adresse e-mail est déjà utilisée par un autre compte.");
+  await updateUserProfile(user.id, email, name);
+  done("ok", "E-mail et nom mis à jour. Utilisez la nouvelle adresse à votre prochaine connexion.");
 }
 
 export async function toggleUserAction(fd: FormData) {

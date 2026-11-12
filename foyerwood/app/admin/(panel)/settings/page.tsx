@@ -7,7 +7,7 @@ import { getCurrentUser } from "@/lib/admin-auth";
 import { MARKETS } from "@/lib/markets";
 import { formatDateTime } from "@/lib/format";
 import {
-  saveMarketSettingsAction, saveCompanyAction, saveCategoryAction, createUserAction, changePasswordAction, toggleUserAction,
+  saveMarketSettingsAction, saveCompanyAction, saveCategoryAction, createUserAction, changePasswordAction, changeProfileAction, toggleUserAction,
 } from "@/app/admin/actions";
 
 export default async function SettingsPage({ searchParams }: SearchProps) {
@@ -135,12 +135,21 @@ export default async function SettingsPage({ searchParams }: SearchProps) {
               <Select label="Rôle" name="role" options={[{ value: "admin", label: "Administrateur" }, { value: "staff", label: "Équipe" }]} />
               <SubmitButton variant="secondary">Créer</SubmitButton>
             </form>
-            <form action={changePasswordAction} className="space-y-3 rounded-xl bg-cream/60 p-4 ring-1 ring-line">
-              <p className="text-sm font-semibold text-forest">Changer mon mot de passe</p>
-              <Field label="Mot de passe actuel" name="current" type="password" required autoComplete="current-password" />
-              <Field label="Nouveau mot de passe" name="next" type="password" required minLength={12} autoComplete="new-password" />
-              <SubmitButton variant="secondary">Modifier</SubmitButton>
-            </form>
+            <div className="space-y-6">
+              <form action={changePasswordAction} className="space-y-3 rounded-xl bg-cream/60 p-4 ring-1 ring-line">
+                <p className="text-sm font-semibold text-forest">Changer mon mot de passe</p>
+                <Field label="Mot de passe actuel" name="current" type="password" required autoComplete="current-password" />
+                <Field label="Nouveau mot de passe" name="next" type="password" required minLength={12} autoComplete="new-password" />
+                <SubmitButton variant="secondary">Modifier</SubmitButton>
+              </form>
+              <form action={changeProfileAction} className="space-y-3 rounded-xl bg-cream/60 p-4 ring-1 ring-line">
+                <p className="text-sm font-semibold text-forest">Changer mon e-mail de connexion</p>
+                <Field label="Nouvel e-mail" name="email" type="email" required defaultValue={me?.email ?? ""} autoComplete="email" />
+                <Field label="Mon nom" name="name" defaultValue={me?.name ?? ""} autoComplete="name" />
+                <Field label="Mot de passe actuel" name="current" type="password" required autoComplete="current-password" />
+                <SubmitButton variant="secondary">Enregistrer</SubmitButton>
+              </form>
+            </div>
           </div>
         </Panel>
       </div>
