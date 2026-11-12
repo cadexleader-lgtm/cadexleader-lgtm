@@ -22,6 +22,8 @@ export interface HeaderProps {
   sites: Array<{ id: string; label: string; sublabel: string; flag: string; href: string; current: boolean; sameMarket: boolean }>;
   current: { flag: string; currency: string; short: string };
   contact: { phone: string | null; email: string | null; whatsappHref: string | null; freeLabel: string };
+  /** Rotating announcements (real season countdown, zero-risk, free delivery). */
+  promos?: string[];
   labels: {
     home: string;
     shop: string;
@@ -166,9 +168,7 @@ export function Header(p: HeaderProps) {
                 <MessageCircle className="h-3.5 w-3.5 text-wood" /> {p.labels.whatsapp}
               </a>
             )}
-            <span className="flex items-center gap-1.5 truncate font-medium uppercase tracking-wider text-cream">
-              <Truck className="h-3.5 w-3.5 shrink-0 text-wood" /> {p.contact.freeLabel}
-            </span>
+            <PromoTicker messages={p.promos?.length ? p.promos : [p.contact.freeLabel]} />
           </div>
           <div className="flex items-center gap-2">
             <form onSubmit={onSearch} role="search" className="hidden h-8 items-center overflow-hidden rounded-[3px] bg-white md:flex">
@@ -183,7 +183,7 @@ export function Header(p: HeaderProps) {
                 <Search className="h-4 w-4" />
               </button>
             </form>
-            <Link href={p.trackHref} className="hidden items-center gap-1.5 px-2 font-medium uppercase tracking-wide hover:text-cream xl:flex">
+            <Link href={p.trackHref} className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap px-2 font-medium uppercase tracking-wide hover:text-cream xl:flex">
               <PackageSearch className="h-3.5 w-3.5 text-wood" /> {p.labels.track}
             </Link>
             <div className="relative" ref={siteRef}>
@@ -192,7 +192,7 @@ export function Header(p: HeaderProps) {
                 onClick={() => setSiteOpen((v) => !v)}
                 aria-expanded={siteOpen}
                 aria-label={p.labels.country}
-                className="flex h-8 items-center gap-1.5 rounded-md px-2 font-medium hover:bg-cream/10 hover:text-cream"
+                className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-2 font-medium hover:bg-cream/10 hover:text-cream"
               >
                 <span className="text-sm leading-none">{p.current.flag}</span>
                 {p.current.short} · {p.current.currency}
@@ -355,3 +355,27 @@ function SiteMenu({
     </div>
   );
 }
+
+/** Announcement bar: one message at a time, changing every few seconds. */
+function PromoTicker({ messages }: { messages: string[] }) {
+  const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  useEffect(() => {
+    if (messages.length < 2 || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = setInterval(() => setI((n) => (n + 1) % messages.length), 4500);
+    return () => clearInterval(timer);
+  }, [messages.length, paused]);
+  const msg = messages[i % messages.length];
+  return (
+    <span
+      className="flex min-w-0 items-center gap-1.5 font-medium uppercase tracking-wider text-cream"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      aria-live="off"
+    >
+      {!msg.startsWith("❄") && <Truck className="h-3.5 w-3.5 shrink-0 text-wood" />}
+      <span key={i} className="truncate animate-fade-in">{msg}</span>
+    </span>
+  );
+}
+

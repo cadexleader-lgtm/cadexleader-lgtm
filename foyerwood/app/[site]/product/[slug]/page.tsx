@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calculator, Droplet, Flame, Info, Landmark, Ruler, ShieldCheck, Truck, Handshake, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Calculator, Droplet, Flame, Info, Landmark, Ruler, ShieldCheck, Snowflake, Star, Truck, Handshake, type LucideIcon } from "lucide-react";
 import { Breadcrumbs, Badge } from "@/components/ui";
 import { Gallery } from "@/components/site/Gallery";
 import { PhotoPending } from "@/components/site/ProductVisual";
@@ -10,9 +10,12 @@ import { AddToCart } from "@/components/cart/AddToCart";
 import { loadSite } from "@/lib/site-context";
 import { availabilityOf, canOrder, getProductBySlug, listProducts, productEnergyKwh, toPublicProduct } from "@/lib/data/products";
 import { categoryPath, productPath, routePath, SITES } from "@/lib/sites";
-import { fmt, formatNumber, loc, money } from "@/lib/format";
+import { fmt, formatMoney, formatNumber, loc, money } from "@/lib/format";
 import { SPECIES, unitContentSummary, unitDefinition, unitLabel } from "@/lib/energy";
 import { formatLabel } from "@/lib/product-format";
+import { reviewStats } from "@/lib/data/reviews";
+import { seasonMessage } from "@/lib/season";
+import { StickyBuyBar } from "@/components/cart/StickyBuyBar";
 
 type Props = { params: Promise<{ site: string; slug: string }> };
 
@@ -71,6 +74,24 @@ export default async function ProductPage({ params }: Props) {
         ? `${formatNumber(p.lengthCm, site.locale, 0)} cm`
         : `${formatNumber(p.lengthCm / 2.54, site.locale, 0)} ${lang === "fr" ? "po" : "in"} (${formatNumber(p.lengthCm, site.locale, 0)} cm)`
       : null;
+
+  // Conversion cues, all from real data: verified reviews, real stock, real season, price per kWh.
+  const stats = await reviewStats(site.market);
+  const proof =
+    stats.count > 0 && stats.average != null
+      ? fmt(stats.count === 1 ? t.marketing.reviewsOne : t.marketing.reviews, { avg: formatNumber(stats.average, site.locale, 1), n: stats.count })
+      : null;
+  const perKwh =
+    energy && energy > 0
+      ? fmt(t.marketing.perKwh, {
+          price: new Intl.NumberFormat(site.locale, { style: "currency", currency: market.currency, minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(p.priceCents / 100 / energy),
+        })
+      : null;
+  const stockLeft =
+    p.trackStock && availability === "limited" && p.stockQuantity > 0
+      ? fmt(t.marketing.stockLeft, { n: p.stockQuantity, unit: p.stockQuantity > 1 ? unitMany : unitOne })
+      : null;
+  const zeroToday = t.marketing.zeroToday.replace("{zero}", formatMoney(0, market.currency, site.locale));
 
   // Benefits strip: only facts we can state for this product.
   const perksT = t.product.perks;
@@ -138,6 +159,16 @@ export default async function ProductPage({ params }: Props) {
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-wood-600">{formatLabel(p, t, lang)}</p>
             <h1 className="mt-2 text-[2.2rem] leading-tight text-forest sm:text-5xl">{name}</h1>
+            {proof && (
+              <Link href={routePath(site, "reviews")} className="mt-3 inline-flex items-center gap-2 text-sm text-charcoal hover:underline">
+                <span className="flex" aria-hidden>
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <Star key={i} className={`h-4 w-4 ${i < Math.floor((stats.average ?? 0) + 0.25) ? "fill-wood text-wood" : "text-line"}`} />
+                  ))}
+                </span>
+                {proof}
+              </Link>
+            )}
             <p className="mt-3 text-lg text-stone">{loc(p.shortDescription, lang)}</p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -147,11 +178,17 @@ export default async function ProductPage({ params }: Props) {
               </p>
               <Badge tone={AVAIL_TONE[availability]}>{t.availability[availability]}</Badge>
             </div>
+            {perKwh && <p className="mt-1 text-sm font-medium text-wood-600">{perKwh}</p>}
             <p className="mt-2 text-sm text-stone">
               {loc(settings.taxNote, lang)} {t.product.priceNote}
             </p>
 
-            <div className="mt-7 rounded-[var(--radius-card)] bg-white p-5 ring-1 ring-line/80">
+            <div id="buy-box" className="mt-7 rounded-[var(--radius-card)] bg-white p-5 ring-1 ring-line/80">
+              {stockLeft && (
+                <p className="mb-4 flex items-center gap-2 rounded-[3px] bg-wood-100 px-3 py-2 text-sm font-semibold text-wood-600">
+                  <AlertTriangle className="h-4 w-4 shrink-0" /> {stockLeft}
+                </p>
+              )}
               {orderable ? (
                 <AddToCart
                   productId={p.id}
@@ -171,7 +208,13 @@ export default async function ProductPage({ params }: Props) {
               ) : (
                 <p className="text-sm text-stone">{t.product.notOrderable}</p>
               )}
-              <p className="mt-4 flex items-center gap-2 text-sm text-stone">
+              <p className="mt-4 flex items-center gap-2 text-sm font-semibold text-success">
+                <ShieldCheck className="h-4 w-4" /> {zeroToday} — {t.marketing.payAfter}
+              </p>
+              <p className="mt-2 flex items-center gap-2 text-sm text-stone">
+                <Snowflake className="h-4 w-4 text-wood" /> {seasonMessage(t.marketing.season).replace(/^❄\s*/, "")}
+              </p>
+              <p className="mt-2 flex items-center gap-2 text-sm text-stone">
                 <Landmark className="h-4 w-4 text-wood" /> {t.common.noPayment}
               </p>
             </div>
@@ -286,6 +329,19 @@ export default async function ProductPage({ params }: Props) {
           </section>
         )}
       </div>
+      {orderable && (
+        <StickyBuyBar
+          targetId="buy-box"
+          productId={p.id}
+          name={name}
+          image={p.images[0] ?? null}
+          price={money(site, p.priceCents, market.currency)}
+          unit={fmt(t.common.perUnit, { unit: unitOne })}
+          minQty={p.minQty}
+          note={zeroToday}
+          labels={{ add: t.marketing.sticky, added: t.common.added }}
+        />
+      )}
     </>
   );
 }

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Pause, Play } from "lucide-react";
+import { ArrowRight, Check, Pause, Play, Star } from "lucide-react";
 import { emphasize } from "@/lib/emphasize";
 
 export interface Slide {
@@ -23,10 +23,13 @@ export function HeroSlider({
   slides,
   labels,
   mascot,
+  assurances = [],
 }: {
   slides: Slide[];
   labels: { prev: string; next: string; slide: string; pause: string; play: string };
   mascot?: { src: string; bubble: string };
+  /** Short reassurances shown under the buttons (zero payment today, verified rating). */
+  assurances?: Array<{ text: string; icon: "check" | "star" }>;
 }) {
   const [index, setIndex] = useState(0);
   // The slideshow keeps running under the mouse; it only stops with the pause button
@@ -89,6 +92,16 @@ export function HeroSlider({
                   </Link>
                 )}
               </div>
+              {assurances.length > 0 && (
+                <ul className="mt-6 flex animate-fade-up flex-wrap gap-x-6 gap-y-2 text-[0.85rem] text-cream/80 [animation-delay:400ms]">
+                  {assurances.map((a) => (
+                    <li key={a.text} className="flex items-center gap-2">
+                      {a.icon === "star" ? <Star className="h-4 w-4 fill-wood text-wood" /> : <Check className="h-4 w-4 text-wood" />}
+                      {a.text}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           ) : null,
         )}

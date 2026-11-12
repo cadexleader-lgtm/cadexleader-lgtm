@@ -5,6 +5,7 @@ import { listPublishedArticles } from "@/lib/data/blog";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { FloatingCart } from "@/components/cart/FloatingCart";
+import { ExitIntent } from "@/components/cart/ExitIntent";
 import { listProducts, toPublicProduct } from "@/lib/data/products";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { SITES, SITE_IDS, blogPath, categoryPath, productPath, routePath, siblingSites } from "@/lib/sites";
@@ -12,6 +13,8 @@ import { MARKETS } from "@/lib/markets";
 import { getDict } from "@/lib/i18n";
 import { loc, money } from "@/lib/format";
 import { whatsappLink } from "@/lib/whatsapp";
+import { seasonMessage } from "@/lib/season";
+import { formatMoney } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +83,13 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
           .filter((c) => c.active)
           .map((c) => ({ key: c.id, name: loc(c.name, site.lang), description: loc(c.description, site.lang), href: categoryPath(site, c.id) }))}
         sites={sites}
+        promos={[
+          seasonMessage(t.marketing.season),
+          t.marketing.zeroPay.replace("{zero}", formatMoney(0, market.currency, site.locale)),
+          ctx.freeThresholdCents
+            ? t.topbar.freeDeliveryFrom.replace("{amount}", money(site, ctx.freeThresholdCents, market.currency))
+            : t.topbar.freeDelivery,
+        ]}
         current={{ flag: market.flag, currency: market.currency, short: market.languages.length > 1 ? site.lang.toUpperCase() : market.id.toUpperCase() }}
         contact={{
           phone: ctx.settings.contactPhone,
@@ -137,7 +147,14 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
           increase: t.common.increase,
           quantity: t.common.quantity,
           photoPending: t.common.photoPending,
+          notReserved: t.marketing.notReserved,
+          zeroToday: t.marketing.zeroToday.replace("{zero}", formatMoney(0, market.currency, site.locale)),
         }}
+      />
+      <ExitIntent
+        hideOn={[routePath(site, "preorder")]}
+        preorderHref={routePath(site, "preorder")}
+        labels={t.marketing.exit}
       />
     </CartProvider>
   );

@@ -267,3 +267,8 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Floating cart moves above the product page's sticky buy bar. */
+.floating-cart { transition: bottom 0.3s ease, opacity 0.2s ease; }
+html[data-sticky-bar="true"] .floating-cart { bottom: 5.75rem; }
+

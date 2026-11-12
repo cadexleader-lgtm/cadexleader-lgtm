@@ -43,6 +43,8 @@ export interface CartDrawerLabels {
   increase: string;
   quantity: string;
   photoPending: string;
+  notReserved: string;
+  zeroToday: string;
 }
 
 /** Slide-in pre-order panel, opened whenever a product is added. */
@@ -239,12 +241,16 @@ export function CartDrawer({
                 <Landmark className="mt-0.5 h-3.5 w-3.5 shrink-0 text-wood-600" />
                 {labels.note}
               </p>
+              <p className="mt-3 flex items-center gap-2 rounded-[3px] bg-wood-100 px-3 py-2 text-xs font-semibold text-wood-600">
+                <AlertCircle className="h-4 w-4 shrink-0" /> {labels.notReserved}
+              </p>
               <Link
                 href={preorderHref}
                 onClick={closeDrawer}
-                className="mt-4 flex h-12 w-full items-center justify-center rounded-[3px] bg-wood text-[0.95rem] font-semibold text-ink transition-colors hover:bg-ember"
+                className="mt-3 flex h-14 w-full flex-col items-center justify-center rounded-[3px] bg-wood text-ink transition-colors hover:bg-ember"
               >
-                {labels.checkout}
+                <span className="text-[0.95rem] font-semibold leading-tight">{labels.checkout}</span>
+                <span className="text-[0.72rem] font-medium leading-tight opacity-80">{labels.zeroToday}</span>
               </Link>
               <button type="button" onClick={closeDrawer} className="mt-2 h-10 w-full text-sm font-medium text-forest underline-offset-4 hover:underline">
                 {labels.continue}

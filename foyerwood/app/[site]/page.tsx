@@ -12,7 +12,7 @@ import { loadSite, type SiteParams } from "@/lib/site-context";
 import { listProducts, toPublicProduct, type Product } from "@/lib/data/products";
 import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
 import { blogPath, categoryPath, routePath, SITES } from "@/lib/sites";
-import { fmt, formatNumber } from "@/lib/format";
+import { fmt, formatMoney, formatNumber } from "@/lib/format";
 import { formatLabel } from "@/lib/product-format";
 import { estimateHeatingNeeds } from "@/lib/calculator";
 import { SPECIES } from "@/lib/energy";
@@ -111,7 +111,15 @@ export default async function HomePage({ params }: SiteParams) {
 
   return (
     <>
-      <HeroSlider slides={slides} labels={{ prev: t.common.previous, next: t.common.next, slide: t.common.slide, pause: t.common.pause, play: t.common.play }} mascot={{ src: "/illustrations/foyo.svg", bubble: t.home.heroMascot }} />
+      <HeroSlider slides={slides} labels={{ prev: t.common.previous, next: t.common.next, slide: t.common.slide, pause: t.common.pause, play: t.common.play }} mascot={{ src: "/illustrations/foyo.svg", bubble: t.home.heroMascot }}
+        assurances={[
+          { icon: "check", text: t.marketing.zeroToday.replace("{zero}", formatMoney(0, market.currency, site.locale)) },
+          { icon: "check", text: t.marketing.payAfter },
+          ...(stats.count > 0 && stats.average != null
+            ? [{ icon: "star" as const, text: fmt(stats.count === 1 ? t.marketing.reviewsOne : t.marketing.reviews, { avg: formatNumber(stats.average, site.locale, 1), n: stats.count }) }]
+            : []),
+        ]}
+      />
 
       {/* ------------------------------------------------------------ Commitments */}
       <section className="border-b border-line bg-white">

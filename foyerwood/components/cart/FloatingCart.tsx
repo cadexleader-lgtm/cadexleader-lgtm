@@ -95,7 +95,7 @@ export function FloatingCart({
         {announce}
       </p>
       {!hidden && (
-        <div className={`fixed bottom-4 right-4 z-[60] sm:bottom-8 sm:right-8 ${drawerOpen ? "pointer-events-none opacity-0" : "animate-pop-in"} transition-opacity`}>
+        <div className={`floating-cart fixed bottom-4 right-4 z-[60] sm:bottom-8 sm:right-8 ${drawerOpen ? "pointer-events-none opacity-0" : "animate-pop-in"} transition-opacity`}>
           <button
             ref={btnRef}
             type="button"
