@@ -19,7 +19,15 @@ export interface Slide {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function HeroSlider({ slides, labels }: { slides: Slide[]; labels: { prev: string; next: string; slide: string; pause: string; play: string } }) {
+export function HeroSlider({
+  slides,
+  labels,
+  mascot,
+}: {
+  slides: Slide[];
+  labels: { prev: string; next: string; slide: string; pause: string; play: string };
+  mascot?: { src: string; bubble: string };
+}) {
   const [index, setIndex] = useState(0);
   // The slideshow keeps running under the mouse; it only stops with the pause button
   // (or for visitors who ask their system to reduce motion).
@@ -85,6 +93,21 @@ export function HeroSlider({ slides, labels }: { slides: Slide[]; labels: { prev
           ) : null,
         )}
       </div>
+
+      {mascot && (
+        <>
+          <div aria-hidden className="pointer-events-none absolute bottom-24 right-[5%] z-20 hidden animate-pop-in items-end gap-2 [animation-delay:800ms] lg:flex xl:right-[8%]">
+            <p className="relative mb-36 max-w-[230px] rounded-2xl bg-cream px-4 py-3 text-[0.92rem] font-medium leading-snug text-charcoal shadow-[0_14px_30px_-12px_rgb(0_0_0/0.5)]">
+              {mascot.bubble}
+              <span className="absolute -bottom-1.5 right-5 h-3.5 w-3.5 rotate-45 bg-cream" />
+            </p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={mascot.src} alt="" className="h-60 w-auto drop-shadow-[0_16px_24px_rgb(0_0_0/0.45)]" />
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img aria-hidden src={mascot.src} alt="" className="pointer-events-none absolute right-3 top-4 z-20 h-24 w-auto animate-pop-in drop-shadow-[0_10px_16px_rgb(0_0_0/0.45)] [animation-delay:800ms] lg:hidden" />
+        </>
+      )}
 
       <div className="absolute inset-x-0 bottom-0 z-20 border-t border-cream/10">
         <div className="container-page flex h-16 items-center gap-6">

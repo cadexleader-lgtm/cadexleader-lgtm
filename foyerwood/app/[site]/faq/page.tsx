@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { PageHero, ButtonLink } from "@/components/ui";
+import { MascotTip } from "@/components/site/MascotTip";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { faqFor } from "@/lib/content/faq";
 import { routePath } from "@/lib/sites";
@@ -28,7 +29,10 @@ export default async function FaqPage({ params }: SiteParams) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <PageHero kicker={t.faq.kicker} title={t.faq.title} intro={t.faq.subtitle} image={AMBIANCE.modernFireplace} />
-      <div className="container-page grid gap-10 py-14 lg:grid-cols-[240px_1fr]">
+      <div className="container-page pt-10">
+        <MascotTip text={t.home.faqTip} href={routePath(site, "contact")} cta={t.home.faqTipCta} />
+      </div>
+      <div className="container-page grid gap-10 py-10 lg:grid-cols-[240px_1fr]">
         <nav className="hidden lg:block" aria-label={t.faq.kicker}>
           <ul className="sticky top-28 space-y-1 text-sm">
             {groups.map((g, i) => (

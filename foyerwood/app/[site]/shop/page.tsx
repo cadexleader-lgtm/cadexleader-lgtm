@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Catalog, type CatalogSearch } from "@/components/site/Catalog";
+import { MascotTip } from "@/components/site/MascotTip";
 import { Breadcrumbs, PageHero } from "@/components/ui";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { routePath } from "@/lib/sites";
@@ -22,6 +23,7 @@ export default async function ShopPage({ params, searchParams }: SiteParams & { 
         breadcrumbs={<Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.shop.title }]} tone="light" />}
       />
       <div className="container-page py-10 sm:py-12">
+        <MascotTip text={t.home.shopTip} href={routePath(site, "calculator")} cta={t.home.shopTipCta} className="mb-8" />
         <Catalog ctx={ctx} search={await searchParams} />
       </div>
     </>

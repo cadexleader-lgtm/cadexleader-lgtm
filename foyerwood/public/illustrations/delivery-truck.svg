@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 64 640 206" role="img" aria-labelledby="t">
+  <title id="t">Le camion Foyerwood livre une caisse de bûches, Foyo au volant</title>
+  <defs>
+    <linearGradient id="cab" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f7a83a"/>
+      <stop offset="1" stop-color="#e2870f"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#e3eff6"/>
+      <stop offset="1" stop-color="#bcd3e1"/>
+    </linearGradient>
+    <clipPath id="scene"><rect width="640" height="270"/></clipPath>
+    <clipPath id="window"><rect x="402" y="130" width="62" height="34" rx="7"/></clipPath>
+  </defs>
+  <style>
+    .trees { animation: trees 9s linear infinite; }
+    .hills { animation: trees 22s linear infinite; }
+    .road { animation: road .6s linear infinite; }
+    .truck { animation: bob .42s ease-in-out infinite alternate; }
+    .wheel { animation: spin .7s linear infinite; transform-box: fill-box; transform-origin: center; }
+    .puff { animation: puff 1.6s ease-out infinite; opacity: 0; transform-box: fill-box; transform-origin: center; }
+    .puff.b { animation-delay: .5s; } .puff.c { animation-delay: 1s; }
+    .blink { animation: blink 4s infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes trees { from { transform: translateX(0); } to { transform: translateX(-640px); } }
+    @keyframes road { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 48; } }
+    @keyframes bob { from { transform: translateY(0); } to { transform: translateY(-1.6px); } }
+    @keyframes spin { to { transform: rotate(-360deg); } }
+    @keyframes puff { 0% { opacity: 0; transform: translate(0, 0) scale(.5); } 20% { opacity: .7; } 100% { opacity: 0; transform: translate(-46px, -16px) scale(1.6); } }
+    @keyframes blink { 0%, 46%, 50%, 100% { transform: scaleY(1); } 48% { transform: scaleY(.1); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } .puff { opacity: .5; } }
+  </style>
+
+  <g clip-path="url(#scene)">
+    <!-- distant hills -->
+    <g class="hills" fill="#efe3cf">
+      <path d="M0 196 C80 150 150 150 230 186 C300 150 380 140 460 182 C530 152 590 156 640 180 V230 H0 Z"/>
+      <path d="M640 196 C720 150 790 150 870 186 C940 150 1020 140 1100 182 C1170 152 1230 156 1280 180 V230 H640 Z"/>
+    </g>
+    <!-- trees -->
+    <g class="trees">
+      <g id="forest">
+        <g transform="translate(30 0)"><rect x="-3" y="196" width="6" height="22" fill="#8f5f3c"/><path d="M0 140 L22 200 H-22 Z" fill="#7aa35a"/><path d="M0 128 L16 172 H-16 Z" fill="#8bb46a"/></g>
+        <g transform="translate(118 0)"><rect x="-3" y="200" width="6" height="18" fill="#8f5f3c"/><circle cx="0" cy="186" r="22" fill="#9cbf7a"/></g>
+        <g transform="translate(206 0)"><rect x="-3" y="196" width="6" height="22" fill="#8f5f3c"/><path d="M0 132 L26 202 H-26 Z" fill="#6b9450"/><path d="M0 120 L18 170 H-18 Z" fill="#7aa35a"/></g>
+        <g transform="translate(300 0)"><rect x="-3" y="202" width="6" height="16" fill="#8f5f3c"/><circle cx="0" cy="190" r="17" fill="#a9c98a"/></g>
+        <g transform="translate(372 0)"><rect x="-3" y="196" width="6" height="22" fill="#8f5f3c"/><path d="M0 144 L20 202 H-20 Z" fill="#7aa35a"/></g>
+        <g transform="translate(470 0)"><rect x="-3" y="196" width="6" height="22" fill="#8f5f3c"/><path d="M0 128 L26 202 H-26 Z" fill="#6b9450"/><path d="M0 116 L18 166 H-18 Z" fill="#7aa35a"/></g>
+        <g transform="translate(566 0)"><rect x="-3" y="200" width="6" height="18" fill="#8f5f3c"/><circle cx="0" cy="184" r="24" fill="#9cbf7a"/></g>
+      </g>
+      <use href="#forest" x="640"/>
+    </g>
+
+    <!-- road -->
+    <rect x="0" y="218" width="640" height="52" fill="#3a3636"/>
+    <rect x="0" y="218" width="640" height="5" fill="#2a2828"/>
+    <path class="road" d="M0 246 H640" stroke="#f4efe6" stroke-width="4" stroke-dasharray="26 22"/>
+
+    <!-- truck -->
+    <g class="truck">
+      <!-- exhaust -->
+      <circle class="puff" cx="146" cy="190" r="8" fill="#d9d2c7"/>
+      <circle class="puff b" cx="146" cy="190" r="7" fill="#d9d2c7"/>
+      <circle class="puff c" cx="146" cy="190" r="9" fill="#d9d2c7"/>
+      <rect x="146" y="184" width="12" height="6" rx="2" fill="#2a2828"/>
+
+      <!-- chassis and flatbed -->
+      <rect x="150" y="182" width="360" height="12" rx="4" fill="#2a2828"/>
+      <rect x="152" y="168" width="234" height="16" rx="3" fill="#433f3f"/>
+
+      <!-- crate of logs -->
+      <rect x="166" y="90" width="206" height="78" rx="3" fill="#7a4e30"/>
+      <g fill="#ecca92" stroke="#b07a42" stroke-width="2">
+        <circle cx="184" cy="108" r="11"/><circle cx="208" cy="106" r="10"/><circle cx="232" cy="109" r="11"/><circle cx="257" cy="106" r="10"/><circle cx="281" cy="108" r="11"/><circle cx="306" cy="106" r="10"/><circle cx="330" cy="108" r="11"/><circle cx="354" cy="106" r="10"/>
+        <circle cx="194" cy="130" r="10"/><circle cx="219" cy="132" r="11"/><circle cx="244" cy="129" r="10"/><circle cx="269" cy="132" r="11"/><circle cx="294" cy="130" r="10"/><circle cx="318" cy="132" r="11"/><circle cx="343" cy="130" r="10"/>
+        <circle cx="184" cy="153" r="11"/><circle cx="208" cy="152" r="10"/><circle cx="232" cy="154" r="11"/><circle cx="257" cy="152" r="10"/><circle cx="281" cy="154" r="11"/><circle cx="306" cy="152" r="10"/><circle cx="330" cy="154" r="11"/><circle cx="354" cy="152" r="10"/>
+      </g>
+      <g fill="none" stroke="#c98f4c" stroke-width="1.3">
+        <circle cx="184" cy="108" r="5"/><circle cx="232" cy="109" r="5"/><circle cx="281" cy="108" r="5"/><circle cx="330" cy="108" r="5"/>
+        <circle cx="219" cy="132" r="5"/><circle cx="269" cy="132" r="5"/><circle cx="318" cy="132" r="5"/>
+        <circle cx="208" cy="152" r="4.5"/><circle cx="257" cy="152" r="4.5"/><circle cx="306" cy="152" r="4.5"/><circle cx="354" cy="152" r="4.5"/>
+      </g>
+      <g fill="#d9a96a">
+        <rect x="162" y="86" width="214" height="8" rx="2"/>
+        <rect x="162" y="124" width="214" height="6" rx="2"/>
+        <rect x="162" y="162" width="214" height="8" rx="2"/>
+        <rect x="162" y="86" width="9" height="84" rx="2"/>
+        <rect x="265" y="86" width="9" height="84" rx="2"/>
+        <rect x="367" y="86" width="9" height="84" rx="2"/>
+      </g>
+
+      <!-- cab -->
+      <path d="M390 184 V132 C390 124 396 118 404 118 H452 C462 118 468 122 472 130 L486 150 H500 C508 150 512 156 512 164 V184 Z" fill="url(#cab)"/>
+      <rect x="402" y="130" width="62" height="34" rx="7" fill="url(#glass)"/>
+      <!-- Foyo driving -->
+      <g clip-path="url(#window)">
+        <rect x="418" y="140" width="30" height="34" rx="9" fill="#9c6b45"/>
+        <ellipse cx="433" cy="141" rx="15" ry="4.5" fill="#ecca92" stroke="#6a4329" stroke-width="2"/>
+        <g class="blink">
+          <ellipse cx="428" cy="152" rx="2.4" ry="3" fill="#211f1f"/>
+          <ellipse cx="440" cy="152" rx="2.4" ry="3" fill="#211f1f"/>
+        </g>
+        <path d="M429 158 Q434 162 439 158" fill="none" stroke="#211f1f" stroke-width="1.8" stroke-linecap="round"/>
+        <rect x="414" y="162" width="40" height="6" rx="3" fill="#f39a1e"/>
+      </g>
+      <path d="M433 137 C433 132 435 129 438 126" fill="none" stroke="#5f8f3e" stroke-width="2" stroke-linecap="round"/>
+      <path d="M437 127 C441 122 448 122 450 124 C447 128 442 129 437 127 Z" fill="#7cb24f"/>
+      <path d="M402 136 L420 130" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+      <!-- door, logo, lights -->
+      <path d="M396 170 H470" stroke="#d27a0b" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="440" cy="176" r="0"/>
+      <rect x="476" y="160" width="10" height="3" rx="1.5" fill="#d27a0b"/>
+      <circle cx="505" cy="160" r="5" fill="#fff3cf"/>
+      <rect x="506" y="174" width="12" height="10" rx="3" fill="#2a2828"/>
+
+      <!-- wheels -->
+      <g>
+        <g class="wheel">
+          <circle cx="206" cy="200" r="21" fill="#211f1f"/><circle cx="206" cy="200" r="10" fill="#b9b2a8"/>
+          <path d="M206 191 V209 M197 200 H215" stroke="#6b6560" stroke-width="3"/>
+        </g>
+        <g class="wheel">
+          <circle cx="332" cy="200" r="21" fill="#211f1f"/><circle cx="332" cy="200" r="10" fill="#b9b2a8"/>
+          <path d="M332 191 V209 M323 200 H341" stroke="#6b6560" stroke-width="3"/>
+        </g>
+        <g class="wheel">
+          <circle cx="470" cy="200" r="21" fill="#211f1f"/><circle cx="470" cy="200" r="10" fill="#b9b2a8"/>
+          <path d="M470 191 V209 M461 200 H479" stroke="#6b6560" stroke-width="3"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

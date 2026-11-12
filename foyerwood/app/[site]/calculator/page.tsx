@@ -28,21 +28,25 @@ export default async function CalculatorPage({ params }: SiteParams) {
     <>
       <section className="relative isolate overflow-hidden bg-forest-950 text-cream">
         <HeroBackdrop src={AMBIANCE.stoveLivingRoom} position="50% 82%" />
-        <div className="container-page relative py-14 sm:py-20">
-          <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.calculator }]} tone="light" />
-          <p className="kicker mt-6 text-wood-100">{t.home.calculator.kicker}</p>
-          <h1 className="mt-4 max-w-3xl text-4xl leading-[1.08] sm:text-[3.4rem]">{t.calculator.title}</h1>
-          <p className="mt-4 max-w-2xl text-lg text-cream/75">{t.calculator.subtitle}</p>
-          <ul className="mt-8 grid max-w-4xl gap-3 sm:grid-cols-3">
-            {t.home.calculator.points.map((pt, i) => {
-              const Icon = icons[i];
-              return (
-                <li key={pt} className="flex items-start gap-3 rounded-xl bg-cream/[0.06] p-4 text-sm text-cream/85 ring-1 ring-cream/10">
-                  <Icon className="mt-0.5 h-4 w-4 shrink-0 text-wood-100" /> {pt}
-                </li>
-              );
-            })}
-          </ul>
+        <div className="container-page relative grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-[1fr_340px]">
+          <div>
+            <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.calculator }]} tone="light" />
+            <p className="kicker mt-6 text-wood-100">{t.home.calculator.kicker}</p>
+            <h1 className="mt-4 max-w-3xl text-4xl leading-[1.08] sm:text-[3.4rem]">{t.calculator.title}</h1>
+            <p className="mt-4 max-w-2xl text-lg text-cream/75">{t.calculator.subtitle}</p>
+            <ul className="mt-8 grid max-w-4xl gap-3 sm:grid-cols-3">
+              {t.home.calculator.points.map((pt, i) => {
+                const Icon = icons[i];
+                return (
+                  <li key={pt} className="flex items-start gap-3 rounded-xl bg-cream/[0.06] p-4 text-sm text-cream/85 ring-1 ring-cream/10">
+                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-wood-100" /> {pt}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/illustrations/warm.svg" alt={t.home.seasons.afterAlt} className="hidden w-full rounded-[var(--radius-card)] shadow-[0_24px_50px_-20px_rgb(0_0_0/0.6)] ring-1 ring-cream/15 lg:block" />
         </div>
       </section>
       <div className="container-page -mt-6 pb-20 sm:-mt-8">

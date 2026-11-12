@@ -111,7 +111,7 @@ export default async function HomePage({ params }: SiteParams) {
 
   return (
     <>
-      <HeroSlider slides={slides} labels={{ prev: t.common.previous, next: t.common.next, slide: t.common.slide, pause: t.common.pause, play: t.common.play }} />
+      <HeroSlider slides={slides} labels={{ prev: t.common.previous, next: t.common.next, slide: t.common.slide, pause: t.common.pause, play: t.common.play }} mascot={{ src: "/illustrations/foyo.svg", bubble: t.home.heroMascot }} />
 
       {/* ------------------------------------------------------------ Commitments */}
       <section className="border-b border-line bg-white">
@@ -126,6 +126,29 @@ export default async function HomePage({ params }: SiteParams) {
               <p className="mt-1 text-[0.88rem] leading-relaxed text-stone">{v.text}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------ Cosy band (illustration visible early) */}
+      <section className="overflow-hidden bg-cream-200/60">
+        <div className="container-page grid items-center gap-8 py-14 md:grid-cols-12 md:py-16">
+          <Reveal className="md:col-span-5">
+            <p className="kicker">{t.home.cosyBand.kicker}</p>
+            <h2 className="mt-4 text-[2.3rem] leading-[1.02] text-forest sm:text-[3rem]">{emphasize(t.home.cosyBand.title)}</h2>
+            <p className="mt-4 max-w-md text-[1rem] leading-relaxed text-stone">{t.home.cosyBand.text}</p>
+            <div className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3">
+              <ButtonLink href={routePath(site, "shop")} variant="wood">
+                {t.home.cosyBand.cta} <ArrowRight className="h-4 w-4" />
+              </ButtonLink>
+              <Link href={routePath(site, "calculator")} className={underline}>
+                {t.home.cosyBand.secondary}
+              </Link>
+            </div>
+          </Reveal>
+          <Reveal className="md:col-span-7" delay={120}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/illustrations/cosy-stove.svg" alt={t.home.cosyAlt} className="mx-auto block w-full max-w-[640px]" />
+          </Reveal>
         </div>
       </section>
 

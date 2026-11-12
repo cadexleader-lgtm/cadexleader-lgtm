@@ -25,7 +25,11 @@ export default async function DeliveryPage({ params }: SiteParams) {
   return (
     <>
       <PageHero kicker={t.deliveryPage.kicker} title={t.deliveryPage.title} intro={t.deliveryPage.intro} image={AMBIANCE.crateDriveway} imagePosition="55% 60%" />
-      <div className="container-page grid gap-10 py-14 lg:grid-cols-[1fr_420px]">
+      <div className="container-page pt-10">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/illustrations/delivery-truck.svg" alt={t.home.truckAlt} className="mask-fade-x mx-auto block w-full max-w-4xl" />
+      </div>
+      <div className="container-page grid gap-10 py-10 lg:grid-cols-[1fr_420px]">
         <div className="space-y-10">
           <section>
             <h2 className="text-3xl text-forest">{t.deliveryPage.zonesTitle}</h2>
