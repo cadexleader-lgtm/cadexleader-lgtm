@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calculator, Info, Landmark, ShieldCheck, Truck, Handshake } from "lucide-react";
+import { Calculator, Droplet, Flame, Info, Landmark, Ruler, ShieldCheck, Truck, Handshake, type LucideIcon } from "lucide-react";
 import { Breadcrumbs, Badge } from "@/components/ui";
 import { Gallery } from "@/components/site/Gallery";
 import { PhotoPending } from "@/components/site/ProductVisual";
@@ -71,6 +71,20 @@ export default async function ProductPage({ params }: Props) {
         ? `${formatNumber(p.lengthCm, site.locale, 0)} cm`
         : `${formatNumber(p.lengthCm / 2.54, site.locale, 0)} ${lang === "fr" ? "po" : "in"} (${formatNumber(p.lengthCm, site.locale, 0)} cm)`
       : null;
+
+  // Benefits strip: only facts we can state for this product.
+  const perksT = t.product.perks;
+  const perks: Array<{ Icon: LucideIcon; title: string; text: string }> = [{ Icon: Truck, ...perksT.delivery }];
+  if (p.moisturePct != null && p.categoryId !== "accessories") {
+    perks.push({
+      Icon: Droplet,
+      title: fmt(perksT.moisture.title, { n: formatNumber(p.moisturePct, site.locale, 0) }),
+      text: p.moisturePct <= 20 && ["firewood", "kiln-dried", "kindling"].includes(p.categoryId) ? perksT.moisture.dry : perksT.moisture.text,
+    });
+  }
+  if (lengthText) perks.push({ Icon: Ruler, title: fmt(perksT.length.title, { len: lengthText }), text: perksT.length.text });
+  if (energy) perks.push({ Icon: Flame, title: fmt(perksT.energy.title, { n: formatNumber(energy, site.locale, 0), unit: unitOne }), text: perksT.energy.text });
+  perks.push({ Icon: Landmark, ...perksT.payment });
 
   const specs: Array<[string, string]> = [];
   if (p.species) specs.push([t.product.species, SPECIES[p.species].names[lang]]);
@@ -223,6 +237,23 @@ export default async function ProductPage({ params }: Props) {
             )}
           </div>
         </div>
+
+        <ul
+          className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-card)] bg-line ring-1 ring-line md:[grid-template-columns:repeat(var(--n),minmax(0,1fr))]"
+          style={{ ["--n" as string]: perks.length }}
+        >
+          {perks.map(({ Icon, title, text }) => (
+            <li key={title} className="flex flex-col items-start gap-3 bg-white p-5 last:odd:col-span-2 md:last:odd:col-span-1">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-wood-100 text-wood-600">
+                <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
+              </span>
+              <span>
+                <span className="block text-[0.95rem] font-semibold leading-snug text-forest">{title}</span>
+                <span className="mt-0.5 block text-[0.82rem] leading-snug text-stone">{text}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
 
         {sameSpecies.length > 0 && (
           <section className="mt-20">

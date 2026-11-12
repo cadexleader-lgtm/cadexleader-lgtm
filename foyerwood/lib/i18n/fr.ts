@@ -302,6 +302,13 @@ export const fr = {
     },
   },
   product: {
+    perks: {
+      delivery: { title: "Livraison offerte", text: "Dans nos zones desservies" },
+      moisture: { title: "Humidité {n} % max.", dry: "Bois sec, prêt à brûler", text: "Indiquée sur chaque fiche" },
+      length: { title: "Bûches de {len}", text: "Vérifiez la profondeur de votre foyer" },
+      energy: { title: "≈ {n} kWh par {unit}", text: "Énergie estimée selon l'humidité" },
+      payment: { title: "Aucun paiement en ligne", text: "Virement après facture pro forma" },
+    },
     specs: "Caractéristiques",
     species: "Essence",
     moisture: "Humidité visée",

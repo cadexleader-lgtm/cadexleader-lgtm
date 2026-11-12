@@ -302,6 +302,13 @@ export const en: Dict = {
     },
   },
   product: {
+    perks: {
+      delivery: { title: "Free delivery", text: "Within our service areas" },
+      moisture: { title: "{n}% moisture max.", dry: "Dry wood, ready to burn", text: "Shown on every product page" },
+      length: { title: "{len} logs", text: "Check the depth of your firebox" },
+      energy: { title: "≈ {n} kWh per {unit}", text: "Estimated energy, based on moisture" },
+      payment: { title: "No online payment", text: "Bank transfer after the pro forma invoice" },
+    },
     specs: "Specifications",
     species: "Species",
     moisture: "Target moisture",
