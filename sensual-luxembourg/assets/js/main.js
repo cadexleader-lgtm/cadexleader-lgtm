@@ -5,14 +5,8 @@
 (function () {
   "use strict";
 
-  /* ---------------------------------------------------------
-     CONFIGURATION — à compléter quand le client fournit ses infos
-     --------------------------------------------------------- */
-  const CONFIG = {
-    whatsapp: "",          // format international sans "+" ni espaces, ex. "352621123456"
-    whatsappDisplay: "",   // affichage, ex. "+352 621 123 456"
-    email: "",             // ex. "contact@sensual-luxembourg.lu"
-  };
+  const CONFIG = window.SL_CONFIG || {};
+  const SL = (window.SL = window.SL || {});
 
   const root = document.documentElement;
   const body = document.body;
@@ -243,7 +237,9 @@
     if (!body.classList.contains("menu-open")) nav.classList.toggle("is-hidden", y > 400 && y > lastY + 2);
     if (y < lastY - 2) nav.classList.remove("is-hidden");
     lastY = y;
-    qs("[data-fab]").classList.toggle("is-visible", y > window.innerHeight * 0.7);
+    const past = y > window.innerHeight * 0.7;
+    qs("[data-fab]").classList.toggle("is-visible", past);
+    qs("[data-mbar]").classList.toggle("is-visible", past);
   };
   if (lenis) lenis.on("scroll", ({ scroll }) => onScroll(scroll));
   else window.addEventListener("scroll", () => onScroll(window.scrollY), { passive: true });
@@ -266,12 +262,11 @@
   // Ancres internes en défilement fluide
   document.addEventListener("click", (e) => {
     const a = e.target.closest('a[href^="#"]');
-    if (!a) return;
+    if (!a || a.hasAttribute("data-wa")) return;
     const id = a.getAttribute("href");
     if (id.length < 2 && id !== "#") return;
     e.preventDefault();
     if (body.classList.contains("menu-open")) toggleMenu(false);
-    if (a.dataset.book) preselectService(a.dataset.book);
     if (id === "#" || id === "#top") scrollToTarget(0);
     else if (qs(id)) scrollToTarget(qs(id));
   });
@@ -357,7 +352,7 @@
   }
 
   /* ---------------------------------------------------------
-     Apparitions au défilement
+     Apparitions au défilement (effets « waouh »)
      --------------------------------------------------------- */
   if (reduced) {
     gsap.set("[data-reveal], [data-reveal-card]", { opacity: 1 });
@@ -366,10 +361,43 @@
       start: "top 88%", once: true,
       onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1.3, stagger: 0.1 }),
     });
-    ScrollTrigger.batch("[data-reveal-card]", {
+    // cartes génériques
+    ScrollTrigger.batch("[data-reveal-card]:not(.service):not(.price):not(.bento__item)", {
       start: "top 90%", once: true,
       onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 90, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 1.5, stagger: 0.12, clearProps: "scale" }),
     });
+    // massages : les cartes basculent en 3D, l'image se dévoile comme un rideau
+    gsap.set(".service", { transformPerspective: 1100, transformOrigin: "50% 0%" });
+    ScrollTrigger.batch(".service", {
+      start: "top 92%", once: true,
+      onEnter: (els) => {
+        gsap.fromTo(els, { opacity: 0, rotationX: -48, y: 140, z: -260 }, { opacity: 1, rotationX: 0, y: 0, z: 0, duration: 1.8, stagger: 0.14 });
+        els.forEach((card, k) => {
+          gsap.fromTo(qs(".service__media", card), { clipPath: "inset(100% 0% 0% 0% round 22px)" }, { clipPath: "inset(0% 0% 0% 0% round 22px)", duration: 1.6, delay: 0.15 + k * 0.14, ease: "expo.inOut" });
+          gsap.fromTo(qs(".service__media img", card), { scale: 1.5 }, { scale: 1, duration: 2.2, delay: 0.15 + k * 0.14, clearProps: "transform" });
+        });
+      },
+    });
+    // engagements : la grille s'assemble depuis le centre
+    gsap.set(".bento__item", { transformPerspective: 1000 });
+    ScrollTrigger.create({
+      trigger: ".bento", start: "top 80%", once: true,
+      onEnter: () => gsap.fromTo(".bento__item", { opacity: 0, scale: 0.7, rotationX: 30, y: 80 }, { opacity: 1, scale: 1, rotationX: 0, y: 0, duration: 1.6, stagger: { each: 0.1, from: "center" }, clearProps: "scale" }),
+    });
+    // tarifs : les cartes s'ouvrent en éventail
+    ScrollTrigger.create({
+      trigger: ".pricing__grid", start: "top 82%", once: true,
+      onEnter: () => {
+        const cards = qsa(".pricing__grid .price");
+        const wide = window.innerWidth > 1180;
+        cards.forEach((c, k) => {
+          const side = wide ? (c.classList.contains("price--featured") ? 0 : (k === 0 ? -1 : 1)) : 0;
+          gsap.fromTo(c, { opacity: 0, x: -side * 260, y: 120, rotation: side * 14, scale: 0.9 },
+            { opacity: 1, x: 0, y: 0, rotation: 0, scale: 1, duration: 1.8, delay: side === 0 ? 0 : 0.15, clearProps: "scale,rotation" });
+        });
+      },
+    });
+    // titres de section : les mots remontent derrière un masque
     qsa("[data-split]").forEach((title) => {
       const words = splitWordsMasked(title);
       gsap.from(words, {
@@ -377,6 +405,25 @@
         scrollTrigger: { trigger: title, start: "top 86%", once: true },
       });
     });
+    // pied de page : le grand « Sensual » se lève lettre par lettre au défilement
+    const giant = qs(".footer__giant");
+    if (giant) {
+      const letters = [...giant.textContent].map((c) => `<span class="split-char" style="background:inherit;-webkit-background-clip:text;background-clip:text">${c}</span>`).join("");
+      giant.innerHTML = letters;
+      gsap.from(qsa(".split-char", giant), {
+        yPercent: 70, opacity: 0, rotationX: -70, stagger: 0.06, ease: "none",
+        scrollTrigger: { trigger: giant, start: "top bottom", end: "bottom 85%", scrub: 0.8 },
+      });
+    }
+    // déformation légère des images selon la vitesse du défilement
+    if (lenis) {
+      const skewables = qsa(".service__media, .step__media, .bento__item--hero > img");
+      const setSkew = skewables.map((el) => gsap.quickTo(el, "skewY", { duration: 0.6, ease: "power3.out" }));
+      lenis.on("scroll", ({ velocity }) => {
+        const k = gsap.utils.clamp(-4, 4, velocity * 0.12);
+        setSkew.forEach((fn) => fn(k));
+      });
+    }
   }
 
   // Manifeste : les mots s'allument au fil du défilement
@@ -460,6 +507,10 @@
         xPercent: 4, ease: "none",
         scrollTrigger: { trigger: step, containerAnimation: tween, start: "left right", end: "right left", scrub: true },
       });
+      gsap.fromTo(step, { rotationY: -28, z: -120, transformPerspective: 1200 }, {
+        rotationY: 20, z: -60, ease: "none",
+        scrollTrigger: { trigger: step, containerAnimation: tween, start: "left right", end: "right left", scrub: true },
+      });
     });
     return () => gsap.set(track, { clearProps: "x" });
   });
@@ -499,14 +550,8 @@
   }
 
   /* ---------------------------------------------------------
-     Galerie : colonnes en parallaxe + visionneuse
+     Visionneuse photo (galerie 3D)
      --------------------------------------------------------- */
-  if (!reduced) {
-    qsa(".gallery__col").forEach((col) => {
-      const s = Number(col.dataset.speed) || 0;
-      gsap.fromTo(col, { yPercent: -s }, { yPercent: s, ease: "none", scrollTrigger: { trigger: "[data-gallery]", start: "top bottom", end: "bottom top", scrub: true } });
-    });
-  }
   const lb = qs("[data-lightbox]");
   const lbImg = qs("[data-lightbox-img]");
   const closeLb = () => {
@@ -514,7 +559,7 @@
     setTimeout(() => { lb.hidden = true; }, 400);
     lockScroll(false);
   };
-  qsa(".gallery__item").forEach((item) => {
+  qsa(".tunnel__item").forEach((item) => {
     item.addEventListener("click", () => {
       const img = qs("img", item);
       lbImg.src = img.currentSrc || img.src;
@@ -539,6 +584,7 @@
   qsa("[data-place]", sw).forEach((btn) => {
     btn.addEventListener("click", () => {
       qsa("[data-place]", sw).forEach((b) => b.classList.toggle("is-active", b === btn));
+      SL.pricePlace = btn.dataset.place;
       moveSw(btn);
       qsa("[data-price]").forEach((el) => {
         const o = { v: Number(el.textContent) };
@@ -562,18 +608,8 @@
   });
 
   /* ---------------------------------------------------------
-     Réservation → message WhatsApp pré-rempli
+     Notifications + liens WhatsApp directs
      --------------------------------------------------------- */
-  const form = qs("[data-booking]");
-  const select = qs("#f-service");
-  function preselectService(name) {
-    const opt = [...select.options].find((o) => o.text === name);
-    if (opt) { select.value = opt.value || opt.text; select.closest(".field").classList.remove("is-invalid"); }
-  }
-  const dateInput = qs("#f-date");
-  const today = new Date();
-  dateInput.min = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-
   const toast = qs("[data-toast]");
   let toastTimer;
   function showToast(html, ms = 5200) {
@@ -582,54 +618,25 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove("is-visible"), ms);
   }
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    let valid = true;
-    qsa("[required]", form).forEach((input) => {
-      const wrap = input.closest(".field") || input.closest(".consent");
-      const bad = input.type === "checkbox" ? !input.checked : !input.value;
-      wrap?.classList.toggle("is-invalid", bad);
-      if (bad) valid = false;
-    });
-    if (!valid) {
-      gsap.fromTo(form, { x: -8 }, { x: 0, duration: 0.6, ease: "elastic.out(1, 0.3)" });
-      showToast("Merci de compléter les champs indiqués en rouge.", 3500);
-      return;
-    }
-    const d = new FormData(form);
-    const date = new Date(d.get("date") + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
-    const lines = [
-      "Bonjour Sensual Luxembourg,",
-      "je souhaite réserver :",
-      `• Massage : ${d.get("service")}`,
-      `• Date : ${date} à ${d.get("time")}`,
-      `• Lieu : ${d.get("place")}`,
-      `• Prénom : ${d.get("name")}`,
-    ];
-    if (d.get("message")) lines.push(`• Message : ${d.get("message")}`);
-    const text = lines.join("\n");
+  const waLink = (text) => CONFIG.whatsapp ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}` : "";
+  const hello = "Bonjour Sensual Luxembourg, j'aimerais avoir des informations sur vos massages.";
+  qsa("[data-wa]").forEach((a) => {
     if (CONFIG.whatsapp) {
-      window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
-      showToast("<strong>WhatsApp s'ouvre…</strong> il ne vous reste qu'à envoyer le message.");
+      a.href = waLink(hello);
+      a.target = "_blank";
+      a.rel = "noopener";
     } else {
-      showToast("<strong>Mode démo :</strong> la demande est prête. Elle partira directement sur le WhatsApp de Sensual Luxembourg dès l'ajout du numéro.");
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        showToast("<strong>Mode démo :</strong> ce bouton ouvrira la conversation WhatsApp du salon dès que le numéro sera ajouté.");
+      });
     }
   });
-  qsa("input, select", form).forEach((el) => el.addEventListener("input", () => (el.closest(".field") || el.closest(".consent"))?.classList.remove("is-invalid")));
-
-  // Coordonnées (si renseignées dans CONFIG)
   if (CONFIG.whatsappDisplay) qs("[data-whatsapp-label]").textContent = CONFIG.whatsappDisplay;
-  if (CONFIG.email) {
-    const mailEl = qs("[data-email-label]");
-    mailEl.innerHTML = `<a href="mailto:${CONFIG.email}">${CONFIG.email}</a>`;
-  }
-  if (CONFIG.whatsapp) {
-    const fab = qs("[data-fab]");
-    fab.href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent("Bonjour Sensual Luxembourg, je souhaite réserver un massage.")}`;
-    fab.target = "_blank";
-    fab.rel = "noopener";
-  }
+  if (CONFIG.email) qs("[data-email-label]").innerHTML = `<a href="mailto:${CONFIG.email}">${CONFIG.email}</a>`;
+
+  // API partagée avec booking.js, reel.js et tunnel.js
+  Object.assign(SL, { lenis, lockScroll, scrollToTarget, showToast, waLink, closeMenu: () => toggleMenu(false), reduced, finePointer });
 
   qsa("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
 

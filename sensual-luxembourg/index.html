@@ -87,29 +87,29 @@
         <img src="assets/img/logo.svg" alt="Sensual Luxembourg" width="172" height="53">
       </a>
       <nav class="nav__links" aria-label="Navigation principale">
+        <a href="#rituel">Le rituel</a>
         <a href="#massages">Massages</a>
-        <a href="#experience">Expérience</a>
-        <a href="#ambiance">Ambiance</a>
+        <a href="#galerie">Galerie</a>
         <a href="#tarifs">Tarifs</a>
         <a href="#avis">Avis</a>
         <a href="#contact">Contact</a>
       </nav>
-      <a class="btn btn--primary btn--sm nav__cta" href="#contact" data-magnetic><svg><use href="#i-whatsapp"/></svg><span>Réserver</span></a>
+      <button class="btn btn--primary btn--sm nav__cta" data-book data-magnetic><svg><use href="#i-calendar"/></svg><span>Réserver</span></button>
       <button class="nav__burger" aria-label="Ouvrir le menu" aria-expanded="false" data-burger><span></span><span></span></button>
     </div>
   </header>
 
   <div class="menu" data-menu aria-hidden="true">
     <nav class="menu__links">
-      <a href="#massages"><small>01</small>Massages</a>
-      <a href="#experience"><small>02</small>Expérience</a>
-      <a href="#ambiance"><small>03</small>Ambiance</a>
+      <a href="#rituel"><small>01</small>Le rituel</a>
+      <a href="#massages"><small>02</small>Massages</a>
+      <a href="#galerie"><small>03</small>Galerie</a>
       <a href="#tarifs"><small>04</small>Tarifs</a>
       <a href="#avis"><small>05</small>Avis</a>
       <a href="#contact"><small>06</small>Contact</a>
     </nav>
     <div class="menu__foot">
-      <a class="btn btn--primary" href="#contact"><svg><use href="#i-whatsapp"/></svg><span>Réserver sur WhatsApp</span></a>
+      <button class="btn btn--primary" data-book><svg><use href="#i-calendar"/></svg><span>Réserver un massage</span></button>
       <p>7j/7 · 10h – 02h · Luxembourg</p>
     </div>
   </div>
@@ -129,8 +129,8 @@
           </h1>
           <p class="hero__lead" data-hero-fade>Massages relaxants et massages sensuels prodigués par des praticiennes professionnelles, dans un cadre raffiné et d'une discrétion absolue.</p>
           <div class="hero__cta" data-hero-fade>
-            <a class="btn btn--primary btn--lg" href="#contact" data-magnetic><svg><use href="#i-whatsapp"/></svg><span>Réserver sur WhatsApp</span></a>
-            <a class="btn btn--ghost btn--lg" href="#massages" data-magnetic><span>Découvrir les massages</span><svg><use href="#i-arrow"/></svg></a>
+            <button class="btn btn--primary btn--lg" data-book data-magnetic><svg><use href="#i-calendar"/></svg><span>Réserver un massage</span></button>
+            <a class="btn btn--ghost btn--lg" href="#" data-wa data-magnetic><svg><use href="#i-whatsapp"/></svg><span>Écrire sur WhatsApp</span></a>
           </div>
           <ul class="hero__trust" data-hero-fade>
             <li><span class="stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></span><strong>4,9/5</strong> · +300 avis</li>
@@ -168,7 +168,7 @@
           </div>
         </div>
       </div>
-      <a class="hero__scroll" href="#manifeste" aria-label="Défiler vers le bas"><span>Défiler</span><i></i></a>
+      <a class="hero__scroll" href="#rituel" aria-label="Défiler vers le bas"><span>Défiler</span><i></i></a>
     </section>
 
     <!-- ===== Bandeau défilant ===== -->
@@ -178,6 +178,66 @@
         <span>Relaxation</span><b>✦</b><span class="o">Sensualité</span><b>✦</b><span>Discrétion</span><b>✦</b><span class="o">Élégance</span><b>✦</b><span>Volupté</span><b>✦</b><span class="o">Luxembourg</span><b>✦</b>
       </div>
     </div>
+
+    <!-- ===== Film interactif piloté par le défilement ===== -->
+    <section class="reel" id="rituel" aria-label="Le rituel — film interactif" data-reel>
+      <div class="reel__sticky">
+        <canvas class="reel__canvas" data-reel-canvas aria-hidden="true"></canvas>
+        <div class="reel__shade" aria-hidden="true"></div>
+        <div class="reel__bars" aria-hidden="true" data-reel-bars><i></i><i></i></div>
+        <div class="reel__top" aria-hidden="true">
+          <span class="reel__state" data-reel-state>❚❚ Pause</span>
+          <span class="reel__label">Sensual Luxembourg — <em>Le Rituel</em></span>
+          <span class="reel__tc" data-reel-tc>00:00:00</span>
+        </div>
+        <div class="reel__chapters">
+          <article class="reel__chapter" data-chapter data-img="assets/img/luxembourg-nuit.webp">
+            <span class="reel__num">Chapitre 01</span>
+            <h2>L'arrivée</h2>
+            <p>Au cœur de Luxembourg, loin du tumulte, votre parenthèse commence.</p>
+          </article>
+          <article class="reel__chapter" data-chapter data-img="assets/img/hammam-bougie.webp">
+            <span class="reel__num">Chapitre 02</span>
+            <h2>L'accueil</h2>
+            <p>Lumière tamisée, serviettes chaudes et silence feutré.</p>
+          </article>
+          <article class="reel__chapter" data-chapter data-img="assets/img/huile-goutte.webp">
+            <span class="reel__num">Chapitre 03</span>
+            <h2>Les huiles</h2>
+            <p>Des huiles bio, chauffées à la température de la peau.</p>
+          </article>
+          <article class="reel__chapter" data-chapter data-img="assets/img/mains-ombre.webp">
+            <span class="reel__num">Chapitre 04</span>
+            <h2>Le toucher</h2>
+            <p>Des gestes lents, précis, enveloppants.</p>
+          </article>
+          <article class="reel__chapter" data-chapter data-img="assets/img/pierres-mains.webp">
+            <span class="reel__num">Chapitre 05</span>
+            <h2>La chaleur</h2>
+            <p>Les pierres chaudes dénouent chaque tension.</p>
+          </article>
+          <article class="reel__chapter" data-chapter data-img="assets/img/dos-lumiere.webp">
+            <span class="reel__num">Chapitre 06</span>
+            <h2>L'abandon</h2>
+            <p>Le temps s'arrête. Il ne reste que la sensation.</p>
+          </article>
+        </div>
+        <div class="reel__end" data-reel-end data-img="assets/img/soie-rouge.webp">
+          <img src="assets/img/logo-mark.svg" alt="" width="84" height="84">
+          <h2>Votre rituel <em>vous attend.</em></h2>
+          <p>Choisissez votre massage et votre créneau en moins d'une minute.</p>
+          <div class="reel__cta">
+            <button class="btn btn--primary btn--lg" data-book data-magnetic><svg><use href="#i-calendar"/></svg><span>Réserver mon rituel</span></button>
+            <a class="btn btn--ghost btn--lg" href="#massages"><span>Voir les massages</span><svg><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+        <div class="reel__bottom" aria-hidden="true">
+          <div class="reel__track"><span data-reel-progress></span></div>
+          <div class="reel__marks"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>✦</span></div>
+          <span class="reel__hint" data-reel-hint>Faites défiler pour lire le film</span>
+        </div>
+      </div>
+    </section>
 
     <!-- ===== Manifeste ===== -->
     <section class="manifesto" id="manifeste">
@@ -219,10 +279,10 @@
         </header>
 
         <div class="services__grid" data-services>
-          <article class="card service" data-cat="bien-etre" data-tilt data-reveal-card>
+          <article class="card service" data-cat="bien-etre" data-tilt data-reveal-card data-service="relaxant" data-name="Massage Relaxant" data-prices="60:90,90:130" data-img="assets/img/mains-dos.webp" data-group="Bien-être" data-cursor="Réserver">
             <div class="service__media"><img src="assets/img/mains-dos.webp" alt="Mains d'une praticienne massant un dos" loading="lazy"><span class="tag tag--blue"><svg><use href="#i-leaf"/></svg>Bien-être</span></div>
             <div class="service__body">
-              <a class="service__link" href="#contact" data-book="Massage Relaxant" aria-label="Réserver un massage relaxant"><svg><use href="#i-arrow-ur"/></svg></a>
+              <button class="service__link" data-book="relaxant" aria-label="Réserver un massage relaxant"><svg><use href="#i-arrow-ur"/></svg></button>
               <h3>Massage Relaxant</h3>
               <p>Un massage enveloppant aux huiles chaudes pour relâcher les tensions et retrouver une profonde sérénité.</p>
               <div class="service__meta"><span><svg><use href="#i-clock"/></svg>60 · 90 min</span><strong>dès 90 €</strong></div>
@@ -230,10 +290,10 @@
             <span class="card__glare" aria-hidden="true"></span>
           </article>
 
-          <article class="card service" data-cat="bien-etre" data-tilt data-reveal-card>
+          <article class="card service" data-cat="bien-etre" data-tilt data-reveal-card data-service="pierres" data-name="Pierres Chaudes" data-prices="75:110,90:130" data-img="assets/img/pierres-chaudes.webp" data-group="Bien-être" data-cursor="Réserver">
             <div class="service__media"><img src="assets/img/pierres-chaudes.webp" alt="Pierres chaudes déposées le long d'un dos" loading="lazy"><span class="tag tag--blue"><svg><use href="#i-leaf"/></svg>Bien-être</span></div>
             <div class="service__body">
-              <a class="service__link" href="#contact" data-book="Massage aux pierres chaudes" aria-label="Réserver un massage aux pierres chaudes"><svg><use href="#i-arrow-ur"/></svg></a>
+              <button class="service__link" data-book="pierres" aria-label="Réserver un massage aux pierres chaudes"><svg><use href="#i-arrow-ur"/></svg></button>
               <h3>Pierres Chaudes</h3>
               <p>La chaleur des pierres volcaniques associée à des gestes lents pour détendre les muscles en profondeur.</p>
               <div class="service__meta"><span><svg><use href="#i-clock"/></svg>75 · 90 min</span><strong>dès 110 €</strong></div>
@@ -241,10 +301,10 @@
             <span class="card__glare" aria-hidden="true"></span>
           </article>
 
-          <article class="card service" data-cat="bien-etre" data-tilt data-reveal-card>
+          <article class="card service" data-cat="bien-etre" data-tilt data-reveal-card data-service="californien" data-name="Massage Californien" data-prices="60:100,90:140" data-img="assets/img/massage-serviette.webp" data-group="Bien-être" data-cursor="Réserver">
             <div class="service__media"><img src="assets/img/massage-serviette.webp" alt="Massage des jambes sur une serviette bleue" loading="lazy"><span class="tag tag--blue"><svg><use href="#i-leaf"/></svg>Bien-être</span></div>
             <div class="service__body">
-              <a class="service__link" href="#contact" data-book="Massage Californien" aria-label="Réserver un massage californien"><svg><use href="#i-arrow-ur"/></svg></a>
+              <button class="service__link" data-book="californien" aria-label="Réserver un massage californien"><svg><use href="#i-arrow-ur"/></svg></button>
               <h3>Massage Californien</h3>
               <p>Des mouvements longs et fluides qui harmonisent le corps et l'esprit. Idéal pour lâcher prise.</p>
               <div class="service__meta"><span><svg><use href="#i-clock"/></svg>60 · 90 min</span><strong>dès 100 €</strong></div>
@@ -252,10 +312,10 @@
             <span class="card__glare" aria-hidden="true"></span>
           </article>
 
-          <article class="card service" data-cat="sensuel" data-tilt data-reveal-card>
+          <article class="card service" data-cat="sensuel" data-tilt data-reveal-card data-service="sensuel" data-name="Massage Sensuel" data-prices="60:150,90:200" data-img="assets/img/mains-ombre.webp" data-group="Sensuel" data-cursor="Réserver">
             <div class="service__media"><img src="assets/img/mains-ombre.webp" alt="Deux mains se frôlant dans la pénombre" loading="lazy"><span class="tag tag--red"><svg><use href="#i-flame"/></svg>Sensuel</span><span class="ribbon">Le plus demandé</span></div>
             <div class="service__body">
-              <a class="service__link" href="#contact" data-book="Massage Sensuel" aria-label="Réserver un massage sensuel"><svg><use href="#i-arrow-ur"/></svg></a>
+              <button class="service__link" data-book="sensuel" aria-label="Réserver un massage sensuel"><svg><use href="#i-arrow-ur"/></svg></button>
               <h3>Massage Sensuel</h3>
               <p>Un voyage des sens tout en délicatesse, où chaque effleurement invite au lâcher-prise le plus total.</p>
               <div class="service__meta"><span><svg><use href="#i-clock"/></svg>60 · 90 min</span><strong>dès 150 €</strong></div>
@@ -263,10 +323,10 @@
             <span class="card__glare" aria-hidden="true"></span>
           </article>
 
-          <article class="card service" data-cat="sensuel" data-tilt data-reveal-card>
+          <article class="card service" data-cat="sensuel" data-tilt data-reveal-card data-service="tantrique" data-name="Massage Tantrique" data-prices="90:200,120:260" data-img="assets/img/corps-nb.webp" data-group="Sensuel" data-cursor="Réserver">
             <div class="service__media"><img src="assets/img/corps-nb.webp" alt="Silhouette en noir et blanc éclairée en clair-obscur" loading="lazy"><span class="tag tag--red"><svg><use href="#i-flame"/></svg>Sensuel</span></div>
             <div class="service__body">
-              <a class="service__link" href="#contact" data-book="Massage Tantrique" aria-label="Réserver un massage tantrique"><svg><use href="#i-arrow-ur"/></svg></a>
+              <button class="service__link" data-book="tantrique" aria-label="Réserver un massage tantrique"><svg><use href="#i-arrow-ur"/></svg></button>
               <h3>Massage Tantrique</h3>
               <p>Un rituel inspiré du tantra : respiration, lenteur et connexion pour une expérience intense et profonde.</p>
               <div class="service__meta"><span><svg><use href="#i-clock"/></svg>90 · 120 min</span><strong>dès 200 €</strong></div>
@@ -274,10 +334,10 @@
             <span class="card__glare" aria-hidden="true"></span>
           </article>
 
-          <article class="card service" data-cat="sensuel" data-tilt data-reveal-card>
+          <article class="card service" data-cat="sensuel" data-tilt data-reveal-card data-service="quatre-mains" data-name="Signature à 4 mains" data-prices="60:280,90:380" data-img="assets/img/soie-rouge.webp" data-group="Sensuel" data-cursor="Réserver">
             <div class="service__media"><img src="assets/img/soie-rouge.webp" alt="Drapé de soie rouge" loading="lazy"><span class="tag tag--red"><svg><use href="#i-gem"/></svg>Signature</span><span class="ribbon ribbon--blue">Exclusif</span></div>
             <div class="service__body">
-              <a class="service__link" href="#contact" data-book="Signature à 4 mains" aria-label="Réserver l'expérience Signature à 4 mains"><svg><use href="#i-arrow-ur"/></svg></a>
+              <button class="service__link" data-book="quatre-mains" aria-label="Réserver l'expérience Signature à 4 mains"><svg><use href="#i-arrow-ur"/></svg></button>
               <h3>Signature à 4 mains</h3>
               <p>Deux praticiennes, une chorégraphie parfaitement synchronisée. Notre expérience la plus exclusive.</p>
               <div class="service__meta"><span><svg><use href="#i-clock"/></svg>60 · 90 min</span><strong>dès 280 €</strong></div>
@@ -292,26 +352,27 @@
     <section class="steps" id="experience">
       <div class="steps__pin" data-steps-pin>
         <div class="container steps__head">
-          <span class="eyebrow" data-reveal>Votre expérience</span>
+          <span class="eyebrow" data-reveal>Réserver, c'est simple</span>
           <h2 class="section__title" data-split>Quatre étapes vers <em>le lâcher-prise</em></h2>
           <div class="steps__progress" aria-hidden="true"><span data-steps-bar></span></div>
+          <button class="btn btn--primary steps__cta" data-book data-magnetic><svg><use href="#i-calendar"/></svg><span>Commencer ma réservation</span></button>
         </div>
         <div class="steps__track" data-steps-track>
           <article class="step card">
             <div class="step__media"><img src="assets/img/luxembourg-nuit.webp" alt="Luxembourg-Ville illuminée à l'heure bleue" loading="lazy"></div>
-            <div class="step__body"><span class="step__num">01</span><h3>Prise de contact</h3><p>Écrivez-nous sur WhatsApp ou via le formulaire. Réponse rapide, en toute discrétion.</p></div>
+            <div class="step__body"><span class="step__num">01</span><h3>Choisissez</h3><p>Votre massage, sa durée et le lieu : notre salon privé ou votre chambre d'hôtel.</p></div>
           </article>
           <article class="step card">
             <div class="step__media"><img src="assets/img/huile-goutte.webp" alt="Goutte d'huile de massage versée dans une main" loading="lazy"></div>
-            <div class="step__body"><span class="step__num">02</span><h3>Sur mesure</h3><p>Choisissez votre massage, la durée et le lieu : notre salon privé ou votre chambre d'hôtel.</p></div>
+            <div class="step__body"><span class="step__num">02</span><h3>Réservez</h3><p>Sélectionnez le jour et l'heure qui vous conviennent, 7j/7 de 10h à 02h.</p></div>
           </article>
           <article class="step card">
             <div class="step__media"><img src="assets/img/hammam-bougie.webp" alt="Espace détente éclairé à la bougie" loading="lazy"></div>
-            <div class="step__body"><span class="step__num">03</span><h3>L'accueil</h3><p>Douche, serviettes chaudes, lumière tamisée et musique douce : tout est prêt pour vous.</p></div>
+            <div class="step__body"><span class="step__num">03</span><h3>Confirmez</h3><p>Votre demande arrive pré-remplie sur WhatsApp : nous confirmons en quelques minutes.</p></div>
           </article>
           <article class="step card">
             <div class="step__media"><img src="assets/img/pierres-mains.webp" alt="Massage aux pierres chaudes" loading="lazy"></div>
-            <div class="step__body"><span class="step__num">04</span><h3>Lâcher-prise</h3><p>Laissez-vous porter. Le temps s'arrête, place à une détente absolue et profonde.</p></div>
+            <div class="step__body"><span class="step__num">04</span><h3>Profitez</h3><p>Réglez en ligne en toute sécurité ou sur place, puis laissez-vous porter.</p></div>
           </article>
         </div>
       </div>
@@ -390,30 +451,29 @@
     </section>
 
     <!-- ===== Galerie ===== -->
-    <section class="section gallery">
-      <div class="container">
-        <header class="section__head">
-          <div>
-            <span class="eyebrow" data-reveal>Galerie</span>
-            <h2 class="section__title" data-split>Une atmosphère <em>envoûtante</em></h2>
-          </div>
-          <p class="section__aside" data-reveal>Bougies, soie, huiles précieuses et lumière tamisée : découvrez l'univers feutré qui vous attend.</p>
-        </header>
-        <div class="gallery__grid" data-gallery>
-          <div class="gallery__col" data-speed="-4">
-            <button class="gallery__item" data-cursor="Voir"><img src="assets/img/roses-rouges.webp" alt="Bouquet de roses rouges" loading="lazy"></button>
-            <button class="gallery__item" data-cursor="Voir"><img src="assets/img/pierre-main.webp" alt="Massage aux pierres chaudes" loading="lazy"></button>
-          </div>
-          <div class="gallery__col" data-speed="5">
-            <button class="gallery__item" data-cursor="Voir"><img src="assets/img/hammam-bougie.webp" alt="Hammam éclairé à la bougie" loading="lazy"></button>
-            <button class="gallery__item" data-cursor="Voir"><img src="assets/img/bougie.webp" alt="Bougie allumée dans une ambiance chaleureuse" loading="lazy"></button>
-            <button class="gallery__item" data-cursor="Voir"><img src="assets/img/sauna-rouge.webp" alt="Sauna aux lumières rouges" loading="lazy"></button>
-          </div>
-          <div class="gallery__col" data-speed="-6">
-            <button class="gallery__item" data-cursor="Voir"><img src="assets/img/pierres-noires.webp" alt="Pierres noires de massage" loading="lazy"></button>
-            <button class="gallery__item" data-cursor="Voir"><img src="assets/img/soie-blanche.webp" alt="Drapé de soie blanche" loading="lazy"></button>
-          </div>
+    <section class="tunnel" id="galerie" aria-label="Galerie" data-tunnel>
+      <div class="tunnel__sticky">
+        <div class="tunnel__intro" data-tunnel-intro>
+          <span class="eyebrow">Galerie</span>
+          <h2 class="section__title">Une atmosphère <em>envoûtante</em></h2>
+          <p>Défilez pour traverser l'univers Sensual.</p>
         </div>
+        <div class="tunnel__space" data-tunnel-space>
+          <button class="tunnel__item" data-x="-30" data-y="-8" data-w="24" data-cursor="Voir"><img src="assets/img/roses-rouges.webp" alt="Bouquet de roses rouges" loading="lazy"></button>
+          <button class="tunnel__item" data-x="28" data-y="10" data-w="30" data-cursor="Voir"><img src="assets/img/hammam-bougie.webp" alt="Hammam éclairé à la bougie" loading="lazy"></button>
+          <button class="tunnel__item" data-x="-24" data-y="14" data-w="28" data-cursor="Voir"><img src="assets/img/pierre-main.webp" alt="Massage aux pierres chaudes" loading="lazy"></button>
+          <button class="tunnel__item" data-x="30" data-y="-12" data-w="22" data-cursor="Voir"><img src="assets/img/bougie.webp" alt="Bougie allumée" loading="lazy"></button>
+          <button class="tunnel__item" data-x="-30" data-y="-4" data-w="30" data-cursor="Voir"><img src="assets/img/sauna-rouge.webp" alt="Sauna aux lumières rouges" loading="lazy"></button>
+          <button class="tunnel__item" data-x="26" data-y="12" data-w="22" data-cursor="Voir"><img src="assets/img/pierres-noires.webp" alt="Pierres noires de massage" loading="lazy"></button>
+          <button class="tunnel__item" data-x="-26" data-y="10" data-w="24" data-cursor="Voir"><img src="assets/img/soie-blanche.webp" alt="Drapé de soie blanche" loading="lazy"></button>
+          <button class="tunnel__item" data-x="28" data-y="-10" data-w="30" data-cursor="Voir"><img src="assets/img/spa-piscine.webp" alt="Salon privé avec bassin" loading="lazy"></button>
+          <button class="tunnel__item" data-x="-28" data-y="-12" data-w="22" data-cursor="Voir"><img src="assets/img/rose-sombre.webp" alt="Rose rouge dans la pénombre" loading="lazy"></button>
+        </div>
+        <div class="tunnel__outro" data-tunnel-outro>
+          <h2 class="section__title">Et si c'était <em>votre soirée ?</em></h2>
+          <button class="btn btn--primary btn--lg" data-book data-magnetic><svg><use href="#i-calendar"/></svg><span>Réserver un créneau</span></button>
+        </div>
+        <div class="tunnel__progress" aria-hidden="true"><span data-tunnel-bar></span></div>
       </div>
     </section>
 
@@ -430,7 +490,7 @@
           </div>
         </header>
         <div class="pricing__grid">
-          <article class="price card" data-reveal-card data-tilt>
+          <article class="price card" data-reveal-card data-tilt data-service="evasion" data-name="Formule Évasion" data-prices="60:120" data-img="assets/img/bougie.webp" data-group="Formules">
             <div class="price__head"><span class="price__name">Évasion</span><span class="price__dur">60 min</span></div>
             <div class="price__amount"><span data-price data-salon="120" data-hotel="160">120</span><sup>€</sup></div>
             <ul class="price__list">
@@ -439,10 +499,10 @@
               <li><svg><use href="#i-check"/></svg>Douche & serviettes chaudes</li>
               <li><svg><use href="#i-check"/></svg>Boisson offerte</li>
             </ul>
-            <a class="btn btn--ghost btn--block" href="#contact" data-book="Formule Évasion (60 min)"><span>Réserver</span><svg><use href="#i-arrow"/></svg></a>
+            <button class="btn btn--ghost btn--block" data-book="evasion"><span>Réserver</span><svg><use href="#i-arrow"/></svg></button>
             <span class="card__glare" aria-hidden="true"></span>
           </article>
-          <article class="price price--featured card" data-reveal-card data-tilt>
+          <article class="price price--featured card" data-reveal-card data-tilt data-service="signature" data-name="Formule Signature" data-prices="90:180" data-img="assets/img/hammam-bougie.webp" data-group="Formules">
             <span class="price__badge">Le plus choisi</span>
             <div class="price__head"><span class="price__name">Signature</span><span class="price__dur">90 min</span></div>
             <div class="price__amount"><span data-price data-salon="180" data-hotel="220">180</span><sup>€</sup></div>
@@ -452,10 +512,10 @@
               <li><svg><use href="#i-check"/></svg>Rituel d'accueil aux bougies</li>
               <li><svg><use href="#i-check"/></svg>Temps de détente après le soin</li>
             </ul>
-            <a class="btn btn--primary btn--block" href="#contact" data-book="Formule Signature (90 min)"><svg><use href="#i-whatsapp"/></svg><span>Réserver</span></a>
+            <button class="btn btn--primary btn--block" data-book="signature"><svg><use href="#i-calendar"/></svg><span>Réserver</span></button>
             <span class="card__glare" aria-hidden="true"></span>
           </article>
-          <article class="price card" data-reveal-card data-tilt>
+          <article class="price card" data-reveal-card data-tilt data-service="prestige" data-name="Formule Prestige" data-prices="120:250" data-img="assets/img/roses-rouges.webp" data-group="Formules">
             <div class="price__head"><span class="price__name">Prestige</span><span class="price__dur">120 min</span></div>
             <div class="price__amount"><span data-price data-salon="250" data-hotel="290">250</span><sup>€</sup></div>
             <ul class="price__list">
@@ -464,11 +524,11 @@
               <li><svg><use href="#i-check"/></svg>Coupe de champagne offerte</li>
               <li><svg><use href="#i-check"/></svg>Réservation prioritaire</li>
             </ul>
-            <a class="btn btn--ghost btn--block" href="#contact" data-book="Formule Prestige (120 min)"><span>Réserver</span><svg><use href="#i-arrow"/></svg></a>
+            <button class="btn btn--ghost btn--block" data-book="prestige"><span>Réserver</span><svg><use href="#i-arrow"/></svg></button>
             <span class="card__glare" aria-hidden="true"></span>
           </article>
         </div>
-        <p class="pricing__note" data-reveal>Paiement en espèces, carte bancaire ou Payconiq. Tarifs donnés à titre indicatif.</p>
+        <p class="pricing__note" data-reveal>Paiement en ligne sécurisé (acompte ou totalité) ou sur place : espèces, carte, Payconiq. Tarifs indicatifs.</p>
       </div>
     </section>
 
@@ -513,7 +573,7 @@
         <div class="faq__list" data-faq>
           <div class="faq__item card" data-reveal-card>
             <button class="faq__q" aria-expanded="true"><span>Comment réserver un massage ?</span><i><svg><use href="#i-plus"/></svg></i></button>
-            <div class="faq__a"><div><p>Le plus simple : un message WhatsApp ou le formulaire en bas de page. Indiquez le massage souhaité, la durée, le jour et le lieu ; nous confirmons votre créneau en quelques minutes.</p></div></div>
+            <div class="faq__a"><div><p>Cliquez sur « Réserver », choisissez votre massage, la durée, le lieu puis votre créneau. Votre demande s'ouvre pré-remplie dans WhatsApp : il suffit de l'envoyer, nous confirmons en quelques minutes.</p></div></div>
           </div>
           <div class="faq__item card" data-reveal-card>
             <button class="faq__q" aria-expanded="false"><span>Où se déroulent les massages ?</span><i><svg><use href="#i-plus"/></svg></i></button>
@@ -524,8 +584,8 @@
             <div class="faq__a"><div><p>Absolument. Vos échanges restent confidentiels, l'entrée du salon est discrète et aucune mention explicite n'apparaît lors du paiement.</p></div></div>
           </div>
           <div class="faq__item card" data-reveal-card>
-            <button class="faq__q" aria-expanded="false"><span>Quels moyens de paiement acceptez-vous ?</span><i><svg><use href="#i-plus"/></svg></i></button>
-            <div class="faq__a"><div><p>Espèces, carte bancaire et Payconiq. Le règlement s'effectue au début de la séance.</p></div></div>
+            <button class="faq__q" aria-expanded="false"><span>Puis-je payer en ligne ?</span><i><svg><use href="#i-plus"/></svg></i></button>
+            <div class="faq__a"><div><p>Oui. Lors de la réservation, vous choisissez de régler un acompte ou la totalité en ligne, de façon sécurisée, ou de payer sur place (espèces, carte, Payconiq). Le libellé de paiement reste discret.</p></div></div>
           </div>
           <div class="faq__item card" data-reveal-card>
             <button class="faq__q" aria-expanded="false"><span>Quelles sont les règles de la maison ?</span><i><svg><use href="#i-plus"/></svg></i></button>
@@ -542,7 +602,7 @@
         <div class="contact__info">
           <span class="eyebrow" data-reveal>Réservation</span>
           <h2 class="section__title" data-split>Réservez votre <em>moment</em></h2>
-          <p class="contact__lead" data-reveal>Remplissez le formulaire : votre demande s'ouvre directement dans WhatsApp, prête à être envoyée.</p>
+          <p class="contact__lead" data-reveal>Choisissez votre massage et votre créneau : votre demande s'ouvre directement dans WhatsApp, prête à être envoyée. Vous pouvez régler en ligne ou sur place.</p>
           <ul class="contact__list">
             <li class="glass" data-reveal-card><span class="contact__ico contact__ico--green"><svg><use href="#i-whatsapp"/></svg></span><div><small>WhatsApp</small><strong data-whatsapp-label>Numéro bientôt disponible</strong></div></li>
             <li class="glass" data-reveal-card><span class="contact__ico"><svg><use href="#i-mail"/></svg></span><div><small>E-mail</small><strong data-email-label>Adresse bientôt disponible</strong></div></li>
@@ -551,54 +611,20 @@
           </ul>
         </div>
 
-        <form class="booking card" data-booking novalidate data-reveal-card>
-          <div class="booking__head">
-            <h3>Demande de réservation</h3>
+        <div class="book-cta card" data-reveal-card>
+          <div class="book-cta__head">
+            <h3>Réservez en <em>3 étapes</em></h3>
             <span class="pill pill--sm"><span class="pill__dot"></span>Réponse en ~10 min</span>
           </div>
-          <div class="field">
-            <input id="f-name" name="name" type="text" placeholder=" " autocomplete="given-name" required>
-            <label for="f-name">Prénom ou pseudo</label>
-          </div>
-          <div class="field field--select">
-            <select id="f-service" name="service" required>
-              <option value="" selected disabled hidden></option>
-              <option>Massage Relaxant</option>
-              <option>Massage aux pierres chaudes</option>
-              <option>Massage Californien</option>
-              <option>Massage Sensuel</option>
-              <option>Massage Tantrique</option>
-              <option>Signature à 4 mains</option>
-              <option>Formule Évasion (60 min)</option>
-              <option>Formule Signature (90 min)</option>
-              <option>Formule Prestige (120 min)</option>
-            </select>
-            <label for="f-service">Massage souhaité</label>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <input id="f-date" name="date" type="date" placeholder=" " required>
-              <label for="f-date">Date</label>
-            </div>
-            <div class="field">
-              <input id="f-time" name="time" type="time" placeholder=" " required>
-              <label for="f-time">Heure</label>
-            </div>
-          </div>
-          <fieldset class="chips">
-            <legend>Lieu</legend>
-            <label><input type="radio" name="place" value="Salon privé" checked><span>Salon privé</span></label>
-            <label><input type="radio" name="place" value="Mon hôtel"><span>Mon hôtel</span></label>
-            <label><input type="radio" name="place" value="Domicile"><span>Domicile</span></label>
-          </fieldset>
-          <div class="field">
-            <textarea id="f-msg" name="message" rows="3" placeholder=" "></textarea>
-            <label for="f-msg">Message (facultatif)</label>
-          </div>
-          <label class="consent"><input type="checkbox" name="adult" required><span>Je certifie avoir 18 ans ou plus.</span></label>
-          <button class="btn btn--primary btn--lg btn--block" type="submit" data-magnetic><svg><use href="#i-whatsapp"/></svg><span>Envoyer sur WhatsApp</span></button>
-          <p class="booking__note"><svg><use href="#i-lock"/></svg>Vos informations restent strictement confidentielles.</p>
-        </form>
+          <ol class="book-cta__steps">
+            <li><span>1</span><div><strong>Votre massage</strong><small>Bien-être, sensuel ou formule · durée · lieu</small></div></li>
+            <li><span>2</span><div><strong>Votre créneau</strong><small>Le jour et l'heure qui vous conviennent</small></div></li>
+            <li><span>3</span><div><strong>Confirmation & paiement</strong><small>Envoi sur WhatsApp · en ligne ou sur place</small></div></li>
+          </ol>
+          <button class="btn btn--primary btn--lg btn--block" data-book data-magnetic><svg><use href="#i-calendar"/></svg><span>Choisir mon créneau</span></button>
+          <a class="btn btn--ghost btn--block" href="#" data-wa><svg><use href="#i-whatsapp"/></svg><span>Une question ? Écrire sur WhatsApp</span></a>
+          <p class="booking__note"><svg><use href="#i-lock"/></svg>Paiement sécurisé · Informations strictement confidentielles</p>
+        </div>
       </div>
     </section>
   </main>
@@ -636,7 +662,103 @@
   </footer>
 
   <!-- Bouton WhatsApp flottant -->
-  <a class="fab" href="#contact" aria-label="Réserver sur WhatsApp" data-fab><svg><use href="#i-whatsapp"/></svg></a>
+  <a class="fab" href="#" aria-label="Écrire sur WhatsApp" data-wa data-fab><svg><use href="#i-whatsapp"/></svg></a>
+
+  <!-- Barre de réservation mobile -->
+  <div class="mbar" data-mbar>
+    <a class="mbar__wa" href="#" data-wa aria-label="Écrire sur WhatsApp"><svg><use href="#i-whatsapp"/></svg></a>
+    <button class="btn btn--primary mbar__book" data-book><svg><use href="#i-calendar"/></svg><span>Réserver · dès 90 €</span></button>
+  </div>
+
+  <!-- Tiroir de réservation -->
+  <div class="drawer" data-drawer hidden>
+    <div class="drawer__overlay" data-drawer-close></div>
+    <aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="bd-title">
+      <header class="drawer__head">
+        <div class="drawer__brand">
+          <img src="assets/img/logo-mark.svg" alt="" width="40" height="40">
+          <div><h2 id="bd-title">Réserver un massage</h2><small>Réponse en ~10 min · 100 % discret</small></div>
+          <button class="drawer__close" data-drawer-close aria-label="Fermer la réservation"><svg><use href="#i-close"/></svg></button>
+        </div>
+        <ol class="drawer__steps" data-bd-tabs>
+          <li class="is-active"><span>1</span>Massage</li>
+          <li><span>2</span>Créneau</li>
+          <li><span>3</span>Confirmation</li>
+        </ol>
+        <div class="drawer__bar"><span data-bd-bar></span></div>
+      </header>
+
+      <div class="drawer__body" data-lenis-prevent data-bd-body>
+        <section class="bd-step is-active" data-step="1">
+          <h3 class="bd-step__title">Quel massage vous fait envie ?</h3>
+          <div class="bd-services" data-bd-services></div>
+          <div class="bd-group" data-bd-durations-wrap hidden>
+            <h4>Durée</h4>
+            <div class="bd-chips" data-bd-durations></div>
+          </div>
+          <div class="bd-group">
+            <h4>Lieu</h4>
+            <div class="bd-chips" data-bd-places></div>
+            <div class="field bd-address" data-bd-address hidden>
+              <input id="bd-address" type="text" placeholder=" " autocomplete="off">
+              <label for="bd-address">Hôtel, quartier ou adresse (facultatif)</label>
+            </div>
+          </div>
+        </section>
+
+        <section class="bd-step" data-step="2">
+          <h3 class="bd-step__title">Quand souhaitez-vous venir ?</h3>
+          <div class="bd-days" data-bd-days></div>
+          <div class="bd-slots__head"><h4>Heure d'arrivée</h4><span class="bd-legend"><i></i>Complet</span></div>
+          <div class="bd-slots" data-bd-slots></div>
+          <p class="bd-hint"><svg><use href="#i-clock"/></svg>Ouvert 7j/7 de 10h à 02h. La disponibilité est confirmée sur WhatsApp.</p>
+        </section>
+
+        <section class="bd-step" data-step="3">
+          <h3 class="bd-step__title">Vos coordonnées</h3>
+          <div class="field">
+            <input id="bd-name" type="text" placeholder=" " autocomplete="given-name">
+            <label for="bd-name">Prénom ou pseudo *</label>
+          </div>
+          <div class="field">
+            <input id="bd-phone" type="tel" placeholder=" " autocomplete="tel">
+            <label for="bd-phone">Téléphone (facultatif)</label>
+          </div>
+          <div class="field">
+            <textarea id="bd-msg" rows="2" placeholder=" "></textarea>
+            <label for="bd-msg">Une demande particulière ? (facultatif)</label>
+          </div>
+          <h4 class="bd-h4">Paiement</h4>
+          <div class="bd-pay" data-bd-pay></div>
+          <div class="bd-recap" data-bd-recap></div>
+          <label class="consent" data-bd-consent><input type="checkbox" data-bd-adult><span>Je certifie avoir 18 ans ou plus.</span></label>
+        </section>
+
+        <section class="bd-step bd-done" data-step="4">
+          <div class="bd-done__check" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
+          <h3 class="bd-step__title">Demande prête !</h3>
+          <p class="bd-done__lead" data-bd-done-lead></p>
+          <div class="bd-done__ref">Référence <strong data-bd-ref></strong></div>
+          <div class="wa-preview">
+            <div class="wa-preview__head"><span class="wa-preview__avatar"><img src="assets/img/logo-mark.svg" alt="" width="28" height="28"></span><div><strong>Sensual Luxembourg</strong><small>WhatsApp</small></div></div>
+            <div class="wa-preview__bubble" data-bd-preview></div>
+          </div>
+          <div class="bd-done__actions">
+            <button class="btn btn--primary btn--block" data-bd-paynow hidden><svg><use href="#i-lock"/></svg><span data-bd-paynow-label>Payer maintenant</span></button>
+            <div class="bd-iban" data-bd-iban hidden></div>
+            <button class="btn btn--ghost btn--block" data-bd-wa-again><svg><use href="#i-whatsapp"/></svg><span>Ouvrir WhatsApp</span></button>
+            <button class="btn btn--ghost btn--block" data-bd-ics><svg><use href="#i-calendar"/></svg><span>Ajouter à mon agenda (intitulé discret)</span></button>
+          </div>
+        </section>
+      </div>
+
+      <footer class="drawer__foot" data-bd-foot>
+        <div class="drawer__sum"><small data-bd-sum-label>Votre sélection</small><strong data-bd-total>—</strong></div>
+        <button class="btn btn--ghost btn--sm" data-bd-prev hidden><span>Retour</span></button>
+        <button class="btn btn--primary" data-bd-next><span data-bd-next-label>Continuer</span><svg><use href="#i-arrow"/></svg></button>
+      </footer>
+    </aside>
+  </div>
 
   <!-- Visionneuse photo -->
   <div class="lightbox" data-lightbox hidden>
@@ -647,10 +769,14 @@
   <!-- Notification -->
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
+  <script src="assets/js/config.js" defer></script>
   <script src="assets/vendor/gsap.min.js" defer></script>
   <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
   <script src="assets/vendor/lenis.min.js" defer></script>
   <script src="assets/js/silk.js" defer></script>
   <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/booking.js" defer></script>
+  <script src="assets/js/reel.js" defer></script>
+  <script src="assets/js/tunnel.js" defer></script>
 </body>
 </html>
