@@ -18,7 +18,7 @@ export default async function ShopPage({ params, searchParams }: SiteParams & { 
       <PageHero
         title={t.shop.title}
         intro={t.shop.subtitle}
-        image={AMBIANCE.yard}
+        image={AMBIANCE.woodStack}
         breadcrumbs={<Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.shop.title }]} tone="light" />}
       />
       <div className="container-page py-10 sm:py-12">

@@ -18,7 +18,7 @@ export default async function AboutPage({ params }: SiteParams) {
   const valueIcons = [Scale, Compass, ShieldCheck, Sprout];
   return (
     <>
-      <PageHero kicker={t.about.kicker} title={t.about.title} intro={t.about.intro} image={AMBIANCE.splitLogs} />
+      <PageHero kicker={t.about.kicker} title={t.about.title} intro={t.about.intro} image={AMBIANCE.logsByFire} />
       <section className="container-page py-16 sm:py-20">
         <div className="grid gap-5 md:grid-cols-3">
           {t.about.blocks.map((b, i) => {

@@ -97,7 +97,7 @@ export default async function HomePage({ params }: SiteParams) {
   const slides: Slide[] = [
     slide(0, "/images/ambiance/cabin-stove.webp", "50% 40%", routePath(site, "shop"), routePath(site, "calculator")),
     slide(1, "/images/ambiance/living-room-fireplace.webp", "50% 56%", routePath(site, "calculator"), routePath(site, "faq")),
-    slide(2, "/images/photos/delivery-trailer.webp", "50% 55%", routePath(site, "delivery"), routePath(site, "faq")),
+    slide(2, "/images/ambiance/crate-driveway.webp", "55% 60%", routePath(site, "delivery"), routePath(site, "faq")),
   ];
 
   const tiles = [

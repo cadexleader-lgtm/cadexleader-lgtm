@@ -24,7 +24,7 @@ export default async function DeliveryPage({ params }: SiteParams) {
   const howIcons = [CalendarClock, MapPinned, PackageOpen, ClipboardCheck];
   return (
     <>
-      <PageHero kicker={t.deliveryPage.kicker} title={t.deliveryPage.title} intro={t.deliveryPage.intro} image={AMBIANCE.trailer} />
+      <PageHero kicker={t.deliveryPage.kicker} title={t.deliveryPage.title} intro={t.deliveryPage.intro} image={AMBIANCE.crateDriveway} imagePosition="55% 60%" />
       <div className="container-page grid gap-10 py-14 lg:grid-cols-[1fr_420px]">
         <div className="space-y-10">
           <section>

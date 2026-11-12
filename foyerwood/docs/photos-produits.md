@@ -53,10 +53,10 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
-| Chêne en vrac | Oak Bulk Firewood | `oak firewood pile loose bulk` | `bois de chauffage chêne en vrac tas` | `oak-bulk.webp` | à trouver |
+| Chêne en vrac | Oak Bulk Firewood | `oak firewood pile loose bulk` | `bois de chauffage chêne en vrac tas` | `oak-bulk.webp` | ✅ fournie |
 | Chêne sur palette | Oak Firewood Pallet | `oak firewood pallet crate` | `palette bois de chauffage chêne` | `oak-pallet.webp` | ✅ fournie |
 | Chêne en big bag | Oak Firewood Big Bag | `oak firewood bulk bag` | `big bag bois de chauffage chêne` | `oak-big_bag.webp` | à trouver |
-| Chêne en filet | Oak Firewood Net Bag | `oak firewood net bag mesh` | `filet de bûches chêne` | `oak-net_bag.webp` | à trouver |
+| Chêne en filet | Oak Firewood Net Bag | `oak firewood net bag mesh` | `filet de bûches chêne` | `oak-net_bag.webp` | ✅ fournie |
 | Chêne en sac | Bagged Oak Firewood | `bagged oak firewood` | `sac de bûches chêne bois sec` | `oak-bag.webp` | à trouver |
 | Chêne en carton | Boxed Oak Firewood | `boxed kiln dried oak firewood` | `carton de bûches chêne séché au four` | `oak-box.webp` | à trouver |
 
@@ -65,7 +65,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
 | Hêtre en vrac | Beech Bulk Firewood | `beech firewood pile loose bulk` | `bois de chauffage hêtre en vrac tas` | `beech-bulk.webp` | à trouver |
-| Hêtre sur palette | Beech Firewood Pallet | `beech firewood pallet crate` | `palette bois de chauffage hêtre` | `beech-pallet.webp` | à trouver |
+| Hêtre sur palette | Beech Firewood Pallet | `beech firewood pallet crate` | `palette bois de chauffage hêtre` | `beech-pallet.webp` | ✅ fournie |
 | Hêtre en big bag | Beech Firewood Big Bag | `beech firewood bulk bag` | `big bag bois de chauffage hêtre` | `beech-big_bag.webp` | à trouver |
 | Hêtre en filet | Beech Firewood Net Bag | `beech firewood net bag mesh` | `filet de bûches hêtre` | `beech-net_bag.webp` | à trouver |
 | Hêtre en sac | Bagged Beech Firewood | `bagged beech firewood` | `sac de bûches hêtre bois sec` | `beech-bag.webp` | à trouver |
@@ -76,9 +76,9 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
 | Bouleau en vrac | Birch Bulk Firewood | `birch firewood pile loose bulk` | `bois de chauffage bouleau en vrac tas` | `birch-bulk.webp` | ✅ fournie |
-| Bouleau sur palette | Birch Firewood Pallet | `birch firewood pallet crate` | `palette bois de chauffage bouleau` | `birch-pallet.webp` | à trouver |
+| Bouleau sur palette | Birch Firewood Pallet | `birch firewood pallet crate` | `palette bois de chauffage bouleau` | `birch-pallet.webp` | ✅ fournie |
 | Bouleau en big bag | Birch Firewood Big Bag | `birch firewood bulk bag` | `big bag bois de chauffage bouleau` | `birch-big_bag.webp` | ✅ fournie |
-| Bouleau en filet | Birch Firewood Net Bag | `birch firewood net bag mesh` | `filet de bûches bouleau` | `birch-net_bag.webp` | à trouver |
+| Bouleau en filet | Birch Firewood Net Bag | `birch firewood net bag mesh` | `filet de bûches bouleau` | `birch-net_bag.webp` | ✅ fournie |
 | Bouleau en sac | Bagged Birch Firewood | `bagged birch firewood` | `sac de bûches bouleau bois sec` | `birch-bag.webp` | à trouver |
 | Bouleau en carton | Boxed Birch Firewood | `boxed kiln dried birch firewood` | `carton de bûches bouleau séché au four` | `birch-box.webp` | à trouver |
 
@@ -98,9 +98,9 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
 | Frêne en vrac | Ash Bulk Firewood | `ash firewood pile loose bulk` | `bois de chauffage frêne en vrac tas` | `ash-bulk.webp` | à trouver |
-| Frêne sur palette | Ash Firewood Pallet | `ash firewood pallet crate` | `palette bois de chauffage frêne` | `ash-pallet.webp` | à trouver |
+| Frêne sur palette | Ash Firewood Pallet | `ash firewood pallet crate` | `palette bois de chauffage frêne` | `ash-pallet.webp` | ✅ fournie |
 | Frêne en big bag | Ash Firewood Big Bag | `ash firewood bulk bag` | `big bag bois de chauffage frêne` | `ash-big_bag.webp` | à trouver |
-| Frêne en filet | Ash Firewood Net Bag | `ash firewood net bag mesh` | `filet de bûches frêne` | `ash-net_bag.webp` | à trouver |
+| Frêne en filet | Ash Firewood Net Bag | `ash firewood net bag mesh` | `filet de bûches frêne` | `ash-net_bag.webp` | ✅ fournie |
 | Frêne en sac | Bagged Ash Firewood | `bagged ash firewood` | `sac de bûches frêne bois sec` | `ash-bag.webp` | à trouver |
 | Frêne en carton | Boxed Ash Firewood | `boxed kiln dried ash firewood` | `carton de bûches frêne séché au four` | `ash-box.webp` | à trouver |
 
@@ -115,7 +115,11 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Pin en sac | Bagged Pine Firewood | `bagged pine firewood` | `sac de bûches pin bois sec` | `pine-bag.webp` | à trouver |
 | Pin en carton | Boxed Pine Firewood | `boxed kiln dried pine firewood` | `carton de bûches pin séché au four` | `pine-box.webp` | à trouver |
 
-À vérifier : la photo **Bouleau en vrac** (remorque déchargée, plaques floutées) vient de vos premières images ; l'essence est une supposition. Si ce n'est pas du bouleau, remplacez-la depuis **Photos du catalogue**.
+## Photos de notre partenaire firewood.co.uk
+
+Les photos suivantes viennent du site de notre partenaire **firewood.co.uk**, qui nous a autorisés à les utiliser (conservez cette autorisation par écrit) : chêne, frêne, bouleau et hêtre sur palette ; chêne, frêne et bouleau en filet ; chêne et bouleau en vrac ; granulés (sac et palette) ; bûches compressées (boîte et pack) ; et les photos d'ambiance « tas de bûches », « bûches devant le feu », « caisse devant la maison », « poêle au salon », « briquettes » et « granulés ».
+
+Nous n'avons pas repris les photos où figurent d'autres marques (Ecoblaze, Platinum Plus, Fire Power, Timber) ni le badge britannique « Ready to Burn », qui appartient à leur certification.
 
 ## Pour plus tard : autres essences
 

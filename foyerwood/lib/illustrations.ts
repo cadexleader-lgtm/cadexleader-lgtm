@@ -14,6 +14,13 @@ export const AMBIANCE = {
   cracked: "/images/ambiance/texture-cracked.webp",
   crates: "/images/photos/kiln-dried-crates.webp",
   yard: "/images/photos/firewood-crates-yard.webp",
+  // Photos from our partner firewood.co.uk, used with their permission.
+  woodStack: "/images/ambiance/wood-stack-wall.webp",
+  logsByFire: "/images/ambiance/logs-by-fire.webp",
+  crateDriveway: "/images/ambiance/crate-driveway.webp",
+  stoveLivingRoom: "/images/ambiance/stove-living-room.webp",
+  briquettes: "/images/ambiance/briquettes-closeup.webp",
+  pellets: "/images/ambiance/pellets-closeup.webp",
   trailer: "/images/photos/delivery-trailer.webp",
 } as const;
 
@@ -21,8 +28,8 @@ export const AMBIANCE = {
 export const CATEGORY_BANNERS: Record<CategoryKey, string> = {
   firewood: "/images/photos/firewood-crates-yard.webp",
   "kiln-dried": "/images/photos/kiln-dried-crate-covered.webp",
-  briquettes: "/images/photos/compressed-logs-cages.webp",
-  pellets: AMBIANCE.modernFireplace,
+  briquettes: AMBIANCE.briquettes,
+  pellets: AMBIANCE.pellets,
   kindling: AMBIANCE.splitLogs,
   accessories: AMBIANCE.cabinStove,
 };

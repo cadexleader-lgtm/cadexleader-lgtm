@@ -27,7 +27,7 @@ export default async function CalculatorPage({ params }: SiteParams) {
   return (
     <>
       <section className="relative isolate overflow-hidden bg-forest-950 text-cream">
-        <HeroBackdrop src={AMBIANCE.livingRoom} />
+        <HeroBackdrop src={AMBIANCE.stoveLivingRoom} position="50% 82%" />
         <div className="container-page relative py-14 sm:py-20">
           <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.calculator }]} tone="light" />
           <p className="kicker mt-6 text-wood-100">{t.home.calculator.kicker}</p>

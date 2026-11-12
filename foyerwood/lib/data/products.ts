@@ -141,7 +141,7 @@ function map(row: Record<string, unknown>): Product {
     p.photoSource = "catalog";
   }
   if (p.images.length === 0) {
-    const file = autoProductPhoto(p.species, p.packaging);
+    const file = autoProductPhoto(p.species, p.packaging, p.categoryId);
     if (file) {
       p.images = [file];
       p.photoSource = "file";

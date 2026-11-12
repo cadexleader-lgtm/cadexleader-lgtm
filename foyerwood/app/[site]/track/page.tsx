@@ -15,7 +15,7 @@ export default async function TrackPage({ params }: SiteParams) {
   const { site, t } = await loadSite((await params).site);
   return (
     <>
-      <PageHero kicker={t.nav.track} title={t.track.title} intro={t.track.subtitle} image={AMBIANCE.crates} />
+      <PageHero kicker={t.nav.track} title={t.track.title} intro={t.track.subtitle} image={AMBIANCE.trailer} imagePosition="50% 55%" />
       <div className="container-page max-w-4xl py-12">
         <TrackForm
           site={site.id}
