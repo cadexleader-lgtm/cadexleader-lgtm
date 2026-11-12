@@ -13,13 +13,13 @@ interface CartState {
   ready: boolean;
   count: number;
   calculationId: string | null;
-  /** Adds a product and opens the cart drawer (unless `silent`). */
-  add: (id: string, qty: number, opts?: { calculationId?: string; silent?: boolean }) => void;
+  /** Adds a product. `origin` (screen point of the click) feeds the fly-to-cart animation. */
+  add: (id: string, qty: number, opts?: { calculationId?: string; origin?: { x: number; y: number } }) => void;
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
   clear: () => void;
   replace: (lines: CartLine[]) => void;
-  lastAdded: { id: string; at: number } | null;
+  lastAdded: { id: string; qty: number; at: number; origin?: { x: number; y: number } } | null;
   drawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -80,7 +80,7 @@ export function CartProvider({ market, children }: { market: string; children: R
     return () => window.removeEventListener("storage", onStorage);
   }, [market]);
 
-  const add = useCallback((id: string, qty: number, opts?: { calculationId?: string; silent?: boolean }) => {
+  const add = useCallback((id: string, qty: number, opts?: { calculationId?: string; origin?: { x: number; y: number } }) => {
     const q = Math.max(1, Math.round(qty));
     setLines((prev) => {
       const found = prev.find((l) => l.id === id);
@@ -88,8 +88,7 @@ export function CartProvider({ market, children }: { market: string; children: R
       return [...prev, { id, qty: q }];
     });
     if (opts?.calculationId) setCalculationId(opts.calculationId);
-    setLastAdded({ id, at: Date.now() });
-    if (!opts?.silent) setDrawerOpen(true);
+    setLastAdded({ id, qty: q, at: Date.now(), origin: opts?.origin });
   }, []);
 
   const setQty = useCallback((id: string, qty: number) => {

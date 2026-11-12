@@ -4,6 +4,7 @@ import { Footer } from "@/components/site/Footer";
 import { listPublishedArticles } from "@/lib/data/blog";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { FloatingCart } from "@/components/cart/FloatingCart";
 import { listProducts, toPublicProduct } from "@/lib/data/products";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { SITES, SITE_IDS, blogPath, categoryPath, productPath, routePath, siblingSites } from "@/lib/sites";
@@ -116,6 +117,11 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
         {children}
       </main>
       <Footer ctx={ctx} articles={await listPublishedArticles(site.lang, site.market, 3)} />
+      <FloatingCart
+        products={drawerProducts.map(({ id, name, image }) => ({ id, name, image }))}
+        hideOn={[routePath(site, "preorder")]}
+        labels={{ open: t.nav.cartCount, added: t.cartDrawer.added }}
+      />
       <CartDrawer
         products={drawerProducts}
         currency={market.currency}

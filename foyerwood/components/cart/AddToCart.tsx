@@ -6,6 +6,12 @@ import { Check, Minus, Plus, ShoppingBasket } from "lucide-react";
 import { useCart } from "./CartProvider";
 import { btn } from "@/components/ui";
 
+/** Centre of the clicked button, used as the start of the fly-to-cart animation. */
+const originOf = (e: React.MouseEvent<HTMLElement>) => {
+  const r = e.currentTarget.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+};
+
 export function QuantityInput({
   value,
   onChange,
@@ -90,8 +96,8 @@ export function AddToCart({
         <button
           type="button"
           disabled={disabled || qty < minQty}
-          onClick={() => {
-            add(productId, qty);
+          onClick={(e) => {
+            add(productId, qty, { origin: originOf(e) });
             setDone(true);
           }}
           className={btn("wood", "lg", "flex-1 min-w-[220px]")}
@@ -124,8 +130,8 @@ export function QuickAdd({ productId, minQty, label, addedLabel }: { productId: 
   return (
     <button
       type="button"
-      onClick={() => {
-        add(productId, minQty);
+      onClick={(e) => {
+        add(productId, minQty, { origin: originOf(e) });
         setDone(true);
       }}
       aria-label={done ? addedLabel : label}
@@ -152,8 +158,8 @@ export function AddButton({ productId, minQty, label, addedLabel, disabled }: { 
     <button
       type="button"
       disabled={disabled}
-      onClick={() => {
-        add(productId, minQty);
+      onClick={(e) => {
+        add(productId, minQty, { origin: originOf(e) });
         setDone(true);
       }}
       className={`flex h-10 w-full items-center justify-center gap-2 rounded-[3px] text-[0.84rem] font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:bg-cream-300 disabled:text-stone ${

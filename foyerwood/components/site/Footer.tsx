@@ -58,11 +58,15 @@ export function Footer({ ctx, articles = [] }: { ctx: SiteContext; articles?: Ar
       {/* Newsletter row */}
       <div className="bg-cream">
         <div className="container-page grid items-center gap-6 py-12 md:grid-cols-[1fr_1.3fr]">
-          <div>
-            <p className="font-display text-3xl text-forest sm:text-[2.2rem]">
-              {t.home.newsletterTitle} <span className="text-wood">{t.home.newsletterAccent}</span>
-            </p>
-            <p className="mt-1.5 text-sm text-stone">{t.footer.newsletterText}</p>
+          <div className="flex items-center gap-5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/illustrations/foyo.svg" alt="" loading="lazy" className="hidden h-28 w-auto shrink-0 sm:block" />
+            <div>
+              <p className="font-display text-3xl text-forest sm:text-[2.2rem]">
+                {t.home.newsletterTitle} <span className="text-wood">{t.home.newsletterAccent}</span>
+              </p>
+              <p className="mt-1.5 text-sm text-stone">{t.footer.newsletterText}</p>
+            </div>
           </div>
           <NewsletterForm site={site.id} tone="light" labels={{ placeholder: t.footer.emailPlaceholder, subscribe: t.footer.subscribe, consent: t.footer.newsletterConsent }} />
         </div>

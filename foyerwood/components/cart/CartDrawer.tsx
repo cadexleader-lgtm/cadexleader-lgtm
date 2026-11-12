@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
-import { AlertCircle, Check, Landmark, Trash2, Truck, X } from "lucide-react";
+import { AlertCircle, Landmark, Trash2, Truck, X } from "lucide-react";
 import { useCart } from "./CartProvider";
 import { QuantityInput } from "./AddToCart";
 import { ProductVisual } from "@/components/site/ProductVisual";
@@ -63,7 +63,7 @@ export function CartDrawer({
   freeThresholdCents: number | null;
   labels: CartDrawerLabels;
 }) {
-  const { lines, ready, drawerOpen, closeDrawer, setQty, remove, lastAdded } = useCart();
+  const { lines, ready, drawerOpen, closeDrawer, setQty, remove } = useCart();
   const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -76,7 +76,6 @@ export function CartDrawer({
   }>;
   const subtotal = rows.reduce((sum, r) => sum + r.product.priceCents * r.line.qty, 0);
   const money = (cents: number) => formatMoney(cents, currency, locale);
-  const recent = lastAdded && Date.now() - lastAdded.at < 10_000 ? byId.get(lastAdded.id) : undefined;
   const open = drawerOpen && ready;
 
   // Close on navigation (e.g. after clicking "Complete my pre-order").
@@ -151,14 +150,6 @@ export function CartDrawer({
           </button>
         </div>
 
-        {recent && rows.length > 0 && (
-          <p key={lastAdded?.at} role="status" className="flex items-center gap-2 bg-forest px-5 py-2.5 text-sm text-cream animate-fade-in">
-            <Check className="h-4 w-4 shrink-0 text-wood" />
-            <span className="truncate">
-              {labels.added} : <strong className="font-semibold">{recent.name}</strong>
-            </span>
-          </p>
-        )}
 
         {rows.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
@@ -194,9 +185,8 @@ export function CartDrawer({
             <ul className="flex-1 divide-y divide-line overflow-y-auto px-5">
               {rows.map(({ line, product: p }) => {
                 const tooFew = line.qty < p.minQty;
-                const highlight = recent?.id === p.id;
                 return (
-                  <li key={p.id} className={`flex gap-4 py-4 ${highlight ? "animate-fade-in" : ""}`}>
+                  <li key={p.id} className="flex gap-4 py-4">
                     <Link href={p.href} onClick={closeDrawer} className="h-20 w-20 shrink-0 overflow-hidden rounded-[var(--radius-card)] ring-1 ring-line">
                       <ProductVisual image={p.image} alt="" compact sizes="80px" className="h-full w-full" />
                     </Link>

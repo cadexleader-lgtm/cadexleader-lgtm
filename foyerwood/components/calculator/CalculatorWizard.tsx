@@ -403,8 +403,8 @@ function ResultView({
     [t.result.rows.energy, t.result.energyValue.replace("{low}", nf(result.fuelEnergyKwh.low, 0)).replace("{high}", nf(result.fuelEnergyKwh.high, 0))],
   ];
 
-  const addLine = (id: string, qty: number) => {
-    add(id, qty, { calculationId: response.calculationId ?? undefined });
+  const addLine = (id: string, qty: number, origin?: { x: number; y: number }) => {
+    add(id, qty, { calculationId: response.calculationId ?? undefined, origin });
     setAdded((a) => [...a, id]);
   };
 
@@ -506,7 +506,10 @@ function ResultView({
                   </div>
                   <button
                     type="button"
-                    onClick={() => addLine(product.id, suggestedQty)}
+                    onClick={(e) => {
+                      const r = e.currentTarget.getBoundingClientRect();
+                      addLine(product.id, suggestedQty, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
+                    }}
                     className={btn(added.includes(product.id) ? "secondary" : "primary", "md", "mt-4 w-full")}
                   >
                     {added.includes(product.id) ? <Check className="h-4 w-4" /> : <ShoppingBasket className="h-4 w-4" />}
@@ -535,7 +538,10 @@ function ResultView({
                   </div>
                   <button
                     type="button"
-                    onClick={() => addLine(c.id, c.minQty)}
+                    onClick={(e) => {
+                      const r = e.currentTarget.getBoundingClientRect();
+                      addLine(c.id, c.minQty, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
+                    }}
                     aria-label={p.common.addToPreorder}
                     className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ring-1 transition ${added.includes(c.id) ? "bg-pine text-cream ring-pine" : "ring-line hover:bg-forest hover:text-cream"}`}
                   >

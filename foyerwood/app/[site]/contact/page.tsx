@@ -57,6 +57,8 @@ export default async function ContactPage({ params }: SiteParams) {
               </span>
             </div>
           )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/illustrations/foyo.svg" alt="" loading="lazy" className="mx-auto hidden h-44 w-auto pt-4 lg:block" />
         </aside>
         <section className="card p-6 sm:p-8">
           <h2 className="mb-6 font-display text-3xl text-forest">{t.contact.formTitle}</h2>

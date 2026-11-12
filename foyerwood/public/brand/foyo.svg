@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 280" role="img" aria-labelledby="t">
+  <title id="t">Foyo, la mascotte Foyerwood</title>
+  <defs>
+    <linearGradient id="bark" x1="0" x2="1">
+      <stop offset="0" stop-color="#7d5235"/>
+      <stop offset="0.45" stop-color="#9c6b45"/>
+      <stop offset="1" stop-color="#6a4329"/>
+    </linearGradient>
+    <radialGradient id="grain" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0" stop-color="#f7dfb2"/>
+      <stop offset="1" stop-color="#e9c48a"/>
+    </radialGradient>
+    <linearGradient id="scarf" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f7a83a"/>
+      <stop offset="1" stop-color="#e2870f"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .bob { animation: bob 3.2s ease-in-out infinite; }
+    .shadow { animation: shadow 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .eyes { animation: blink 5s infinite; transform-box: fill-box; transform-origin: center; }
+    .wave { animation: wave 2.4s ease-in-out infinite; transform-box: view-box; transform-origin: 170px 186px; }
+    .tail { animation: tail 2.8s ease-in-out infinite; transform-box: view-box; transform-origin: 152px 182px; }
+    .sprout { animation: sprout 4s ease-in-out infinite; transform-box: view-box; transform-origin: 120px 70px; }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes shadow { 0%, 100% { transform: scaleX(1); opacity: .16; } 50% { transform: scaleX(.9); opacity: .1; } }
+    @keyframes blink { 0%, 44%, 48%, 100% { transform: scaleY(1); } 46% { transform: scaleY(.1); } }
+    @keyframes wave { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-18deg); } 50% { transform: rotate(4deg); } 75% { transform: rotate(-14deg); } }
+    @keyframes tail { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(7deg); } }
+    @keyframes sprout { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(5deg); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <ellipse class="shadow" cx="120" cy="252" rx="62" ry="9" fill="#2a2828" opacity=".16"/>
+
+  <g class="bob">
+    <!-- feet -->
+    <ellipse cx="98" cy="240" rx="18" ry="9" fill="#5a3a24"/>
+    <ellipse cx="142" cy="240" rx="18" ry="9" fill="#5a3a24"/>
+
+    <!-- left arm (resting) -->
+    <path d="M74 188 C58 194 50 206 48 216" fill="none" stroke="#6f4a2f" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="48" cy="218" r="8" fill="#7d5235"/>
+
+    <!-- body: standing log -->
+    <rect x="68" y="72" width="104" height="166" rx="26" fill="url(#bark)"/>
+    <g stroke="#5a3a24" stroke-width="3" stroke-linecap="round" opacity=".55">
+      <path d="M84 104 v26"/>
+      <path d="M90 208 v18"/>
+      <path d="M156 100 v20"/>
+      <path d="M160 196 v24"/>
+      <path d="M150 214 v10"/>
+    </g>
+
+    <!-- end grain on top -->
+    <ellipse cx="120" cy="76" rx="52" ry="17" fill="#6a4329"/>
+    <ellipse cx="120" cy="75" rx="46" ry="13.5" fill="url(#grain)"/>
+    <g fill="none" stroke="#d8a565" stroke-width="1.6">
+      <ellipse cx="120" cy="75" rx="34" ry="9.5"/>
+      <ellipse cx="120" cy="75" rx="22" ry="6"/>
+      <ellipse cx="120" cy="75" rx="10" ry="2.8"/>
+    </g>
+    <path d="M120 75 l20 -5" stroke="#c98f4c" stroke-width="1.4" stroke-linecap="round"/>
+
+    <!-- sprout -->
+    <g class="sprout">
+      <path d="M120 72 C119 60 122 52 126 44" fill="none" stroke="#5f8f3e" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M125 48 C134 36 150 36 154 40 C148 50 136 54 125 48 Z" fill="#7cb24f"/>
+      <path d="M123 54 C114 44 100 44 96 48 C102 57 114 59 123 54 Z" fill="#6aa043"/>
+    </g>
+
+    <!-- face -->
+    <g class="eyes">
+      <ellipse cx="102" cy="128" rx="7.5" ry="9.5" fill="#211f1f"/>
+      <ellipse cx="138" cy="128" rx="7.5" ry="9.5" fill="#211f1f"/>
+      <circle cx="105" cy="124" r="2.8" fill="#fff"/>
+      <circle cx="141" cy="124" r="2.8" fill="#fff"/>
+    </g>
+    <circle cx="90" cy="146" r="8" fill="#f2836b" opacity=".55"/>
+    <circle cx="150" cy="146" r="8" fill="#f2836b" opacity=".55"/>
+    <path d="M108 145 Q120 162 132 145 Z" fill="#211f1f"/>
+    <path d="M113 152 Q120 158 127 152 Q120 149 113 152 Z" fill="#e0715a"/>
+
+    <!-- scarf -->
+    <rect x="62" y="168" width="116" height="22" rx="11" fill="url(#scarf)"/>
+    <g fill="#fbf8f2" opacity=".9">
+      <rect x="86" y="168" width="6" height="22"/>
+      <rect x="112" y="168" width="6" height="22"/>
+      <rect x="138" y="168" width="6" height="22"/>
+    </g>
+    <g class="tail">
+      <path d="M146 182 C152 198 156 214 166 228 L180 222 C170 208 166 194 162 180 Z" fill="url(#scarf)"/>
+      <path d="M166 228 l-2 8 M171 226 l0 8 M176 224 l2 8" stroke="#e2870f" stroke-width="3" stroke-linecap="round"/>
+      <path d="M152 196 l13 -4 M157 210 l13 -4" stroke="#fbf8f2" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+    </g>
+
+    <!-- right arm (waving) -->
+    <g class="wave">
+      <path d="M168 186 C184 178 194 164 198 150" fill="none" stroke="#6f4a2f" stroke-width="11" stroke-linecap="round"/>
+      <circle cx="199" cy="146" r="9" fill="#7d5235"/>
+      <path d="M204 138 C210 130 218 130 220 132 C216 139 210 141 204 138 Z" fill="#7cb24f"/>
+    </g>
+  </g>
+</svg>

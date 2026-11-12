@@ -85,6 +85,8 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
           <p className="mt-6 flex items-start gap-3 rounded-xl bg-sage-100/70 p-4 text-sm text-pine">
             <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" /> {t.confirmation.security}
           </p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/illustrations/cosy-stove.svg" alt={t.home.cosyAlt} className="mx-auto mt-10 block w-full max-w-[520px]" />
         </section>
         <aside className="card h-fit p-6">
           <h2 className="font-display text-2xl text-forest">{t.confirmation.summary}</h2>
