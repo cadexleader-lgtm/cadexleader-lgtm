@@ -13,12 +13,16 @@ interface CartState {
   ready: boolean;
   count: number;
   calculationId: string | null;
-  add: (id: string, qty: number, opts?: { calculationId?: string }) => void;
+  /** Adds a product and opens the cart drawer (unless `silent`). */
+  add: (id: string, qty: number, opts?: { calculationId?: string; silent?: boolean }) => void;
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
   clear: () => void;
   replace: (lines: CartLine[]) => void;
   lastAdded: { id: string; at: number } | null;
+  drawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
 }
 
 const CartContext = createContext<CartState | null>(null);
@@ -30,6 +34,9 @@ export function CartProvider({ market, children }: { market: string; children: R
   const [calculationId, setCalculationId] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [lastAdded, setLastAdded] = useState<CartState["lastAdded"]>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   useEffect(() => {
     try {
@@ -73,7 +80,7 @@ export function CartProvider({ market, children }: { market: string; children: R
     return () => window.removeEventListener("storage", onStorage);
   }, [market]);
 
-  const add = useCallback((id: string, qty: number, opts?: { calculationId?: string }) => {
+  const add = useCallback((id: string, qty: number, opts?: { calculationId?: string; silent?: boolean }) => {
     const q = Math.max(1, Math.round(qty));
     setLines((prev) => {
       const found = prev.find((l) => l.id === id);
@@ -82,6 +89,7 @@ export function CartProvider({ market, children }: { market: string; children: R
     });
     if (opts?.calculationId) setCalculationId(opts.calculationId);
     setLastAdded({ id, at: Date.now() });
+    if (!opts?.silent) setDrawerOpen(true);
   }, []);
 
   const setQty = useCallback((id: string, qty: number) => {
@@ -109,8 +117,11 @@ export function CartProvider({ market, children }: { market: string; children: R
       clear,
       replace,
       lastAdded,
+      drawerOpen,
+      openDrawer,
+      closeDrawer,
     }),
-    [market, lines, ready, calculationId, add, setQty, remove, clear, replace, lastAdded],
+    [market, lines, ready, calculationId, add, setQty, remove, clear, replace, lastAdded, drawerOpen, openDrawer, closeDrawer],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

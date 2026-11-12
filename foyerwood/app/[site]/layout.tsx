@@ -3,8 +3,10 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { listPublishedArticles } from "@/lib/data/blog";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { CartDrawer } from "@/components/cart/CartDrawer";
+import { listProducts, toPublicProduct } from "@/lib/data/products";
 import { loadSite, type SiteParams } from "@/lib/site-context";
-import { SITES, SITE_IDS, blogPath, categoryPath, routePath, siblingSites } from "@/lib/sites";
+import { SITES, SITE_IDS, blogPath, categoryPath, productPath, routePath, siblingSites } from "@/lib/sites";
 import { MARKETS } from "@/lib/markets";
 import { getDict } from "@/lib/i18n";
 import { loc, money } from "@/lib/format";
@@ -41,6 +43,22 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
       href: s.prefix,
       current: id === site.id,
       sameMarket: siblings.includes(id),
+    };
+  });
+
+  // Compact catalogue for the slide-in cart (name, photo, price, quantities).
+  const drawerProducts = (await listProducts(site.market, site.lang)).map((prod) => {
+    const pub = toPublicProduct(prod, site.lang);
+    return {
+      id: pub.id,
+      name: pub.name,
+      href: productPath(site, pub.slug),
+      image: pub.image,
+      priceCents: pub.priceCents,
+      unitLabel: pub.unitLabel,
+      unitLabelPlural: pub.unitLabelPlural,
+      minQty: pub.minQty,
+      maxQty: pub.maxQty,
     };
   });
 
@@ -98,6 +116,23 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
         {children}
       </main>
       <Footer ctx={ctx} articles={await listPublishedArticles(site.lang, site.market, 3)} />
+      <CartDrawer
+        products={drawerProducts}
+        currency={market.currency}
+        locale={site.locale}
+        preorderHref={routePath(site, "preorder")}
+        shopHref={routePath(site, "shop")}
+        freeThresholdCents={ctx.freeThresholdCents}
+        labels={{
+          ...t.cartDrawer,
+          perUnit: t.common.perUnit,
+          minQty: t.common.minQty,
+          decrease: t.common.decrease,
+          increase: t.common.increase,
+          quantity: t.common.quantity,
+          photoPending: t.common.photoPending,
+        }}
+      />
     </CartProvider>
   );
 }

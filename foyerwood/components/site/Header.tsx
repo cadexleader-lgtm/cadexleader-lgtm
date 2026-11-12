@@ -56,7 +56,7 @@ function rememberSite(id: string) {
 export function Header(p: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { count, ready } = useCart();
+  const { count, ready, openDrawer } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [siteOpen, setSiteOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -128,15 +128,17 @@ export function Header(p: HeaderProps) {
   };
 
   const cartButton = (compact = false) => (
-    <Link
-      href={p.preorderHref}
+    <button
+      type="button"
+      onClick={openDrawer}
+      aria-haspopup="dialog"
       className={`relative flex h-9 items-center gap-2 rounded-[3px] bg-wood pl-3 pr-3 text-[0.78rem] font-semibold text-ink transition hover:bg-ember ${bump ? "scale-105" : ""}`}
       aria-label={p.labels.cartCount.replace("{n}", String(count))}
     >
       <ShoppingBasket className="h-4 w-4" />
       {!compact && <span className="hidden uppercase tracking-wide sm:inline">{p.labels.cart}</span>}
       <span className="flex h-5 min-w-5 items-center justify-center rounded-[2px] bg-ink px-1 text-[0.7rem] font-bold text-cream">{ready ? count : 0}</span>
-    </Link>
+    </button>
   );
 
   return (

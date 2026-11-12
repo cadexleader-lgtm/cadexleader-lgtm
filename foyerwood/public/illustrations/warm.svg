@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 420" role="img" aria-labelledby="t">
+  <title id="t">Avec Foyerwood : bien au chaud, un café à la main</title>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#fdf0dc"/>
+      <stop offset="1" stop-color="#fbe2bf"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#8fa3b4"/>
+      <stop offset="1" stop-color="#cdd9e2"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ff9f2e" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ff9f2e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="stove" x1="0" x2="1">
+      <stop offset="0" stop-color="#2a2828"/>
+      <stop offset=".55" stop-color="#3b3838"/>
+      <stop offset="1" stop-color="#232121"/>
+    </linearGradient>
+    <radialGradient id="fireLight" cx="0.5" cy="0.85" r="0.75">
+      <stop offset="0" stop-color="#ff9a1e" stop-opacity=".9"/>
+      <stop offset=".6" stop-color="#7a2e0c" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#161515" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="chair" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#55786a"/>
+      <stop offset="1" stop-color="#3f5f52"/>
+    </linearGradient>
+    <linearGradient id="sweater" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f7a83a"/>
+      <stop offset="1" stop-color="#e2870f"/>
+    </linearGradient>
+    <clipPath id="win"><rect x="36" y="46" width="98" height="108" rx="3"/></clipPath>
+    <clipPath id="fire"><path d="M276 340 V284 A46 42 0 0 1 368 284 V340 Z"/></clipPath>
+    <clipPath id="panel"><rect width="400" height="420"/></clipPath>
+  </defs>
+  <style>
+    .snow circle { animation: snow 4s linear infinite; }
+    .snow circle:nth-child(2n) { animation-duration: 5.2s; animation-delay: -1.3s; }
+    .snow circle:nth-child(3n) { animation-duration: 6s; animation-delay: -2.6s; }
+    .glow { animation: glow 3.4s ease-in-out infinite; }
+    .f1 { animation: f1 1.1s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+    .f2 { animation: f2 .9s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+    .f3 { animation: f1 .7s ease-in-out infinite reverse; transform-box: fill-box; transform-origin: 50% 100%; }
+    .spark { animation: spark 2.6s ease-out infinite; opacity: 0; }
+    .spark.b { animation-delay: .9s; } .spark.c { animation-delay: 1.7s; }
+    .steam path { animation: steam 3s ease-in-out infinite; opacity: 0; }
+    .steam path:nth-child(2) { animation-delay: 1s; } .steam path:nth-child(3) { animation-delay: 2s; }
+    .breathe { animation: breathe 4.2s ease-in-out infinite; transform-box: view-box; transform-origin: 130px 330px; }
+    @keyframes snow { 0% { transform: translateY(-20px); } 100% { transform: translateY(130px); } }
+    @keyframes glow { 0%, 100% { opacity: .8; } 50% { opacity: 1; } }
+    @keyframes f1 { 0%, 100% { transform: scale(1, 1); } 30% { transform: scale(.94, 1.08); } 60% { transform: scale(1.04, .95); } }
+    @keyframes f2 { 0%, 100% { transform: scale(1, 1) skewX(0deg); } 40% { transform: scale(.92, 1.12) skewX(-4deg); } 70% { transform: scale(1.05, .93) skewX(3deg); } }
+    @keyframes spark { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(5px, -40px); } }
+    @keyframes steam { 0% { opacity: 0; transform: translateY(6px); } 30% { opacity: .85; } 100% { opacity: 0; transform: translateY(-22px); } }
+    @keyframes breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.012); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } .spark, .steam path { opacity: .6; } }
+  </style>
+  <g clip-path="url(#panel)">
+
+  <rect width="400" height="420" fill="url(#bg)"/>
+  <ellipse class="glow" cx="300" cy="300" rx="190" ry="140" fill="url(#glow)"/>
+
+  <!-- window: still snowing outside -->
+  <rect x="30" y="40" width="110" height="120" rx="6" fill="#fff7ea"/>
+  <rect x="36" y="46" width="98" height="108" rx="3" fill="url(#sky)"/>
+  <g clip-path="url(#win)">
+    <path d="M36 140 C60 128 92 132 134 124 V154 H36 Z" fill="#f7fafc"/>
+    <g class="snow" fill="#fff">
+      <circle cx="48" cy="50" r="2.4"/><circle cx="66" cy="70" r="1.8"/><circle cx="84" cy="44" r="2.6"/>
+      <circle cx="102" cy="64" r="2"/><circle cx="120" cy="48" r="2.4"/><circle cx="56" cy="30" r="2"/>
+      <circle cx="94" cy="20" r="1.8"/><circle cx="128" cy="26" r="2.2"/><circle cx="76" cy="8" r="2.4"/>
+    </g>
+  </g>
+  <rect x="83" y="46" width="4" height="108" fill="#fff7ea"/>
+  <rect x="36" y="98" width="98" height="4" fill="#fff7ea"/>
+  <path d="M26 40 h118" stroke="#c98f4c" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- thermometer: warm -->
+  <rect x="160" y="60" width="22" height="104" rx="11" fill="#fff" stroke="#efd2a8" stroke-width="2"/>
+  <rect x="167" y="68" width="8" height="78" rx="4" fill="#fbe9d0"/>
+  <rect x="167" y="84" width="8" height="68" rx="4" fill="#e8582a"/>
+  <circle cx="171" cy="152" r="10" fill="#e8582a"/>
+
+  <!-- floor and rug -->
+  <rect x="0" y="372" width="400" height="48" fill="#ecd1aa"/>
+  <path d="M0 372 H400" stroke="#dcbb8d" stroke-width="2"/>
+  <rect y="392" width="400" height="28" fill="#ecd1aa"/>
+  <ellipse cx="170" cy="384" rx="150" ry="14" fill="#f39a1e" opacity=".35"/>
+
+  <!-- lit stove -->
+  <rect x="312" y="-10" width="22" height="196" fill="#3a3636"/>
+  <rect x="306" y="176" width="34" height="13" rx="4" fill="#2a2828"/>
+  <rect x="268" y="356" width="11" height="20" rx="3" fill="#232121"/>
+  <rect x="366" y="356" width="11" height="20" rx="3" fill="#232121"/>
+  <rect x="258" y="200" width="128" height="160" rx="18" fill="url(#stove)"/>
+  <rect x="248" y="188" width="148" height="16" rx="6" fill="#433f3f"/>
+  <path d="M276 340 V284 A46 42 0 0 1 368 284 V340 Z" fill="#161515"/>
+  <g clip-path="url(#fire)">
+    <rect x="270" y="240" width="104" height="104" fill="url(#fireLight)"/>
+    <rect x="286" y="324" width="74" height="13" rx="6.5" fill="#7a4e30" transform="rotate(-6 322 330)"/>
+    <rect x="288" y="326" width="72" height="12" rx="6" fill="#8f5f3c" transform="rotate(7 322 332)"/>
+    <path class="f1" d="M322 266 C338 286 352 298 350 314 C348 328 337 334 322 334 C307 334 296 328 294 314 C292 298 310 290 314 276 C317 284 319 290 322 293 C324 284 322 276 322 266 Z" fill="#f2711c"/>
+    <path class="f2" d="M324 284 C336 298 342 306 341 316 C340 326 333 330 324 330 C314 330 306 326 306 316 C306 306 316 300 318 292 C320 299 322 302 324 304 C326 297 325 290 324 284 Z" fill="#ffa531"/>
+    <path class="f3" d="M324 302 C330 309 334 314 333 320 C332 326 329 329 324 329 C319 329 315 326 315 320 C315 314 320 311 321 306 C322 309 323 311 324 312 C325 309 325 306 324 302 Z" fill="#ffe2a0"/>
+    <circle class="spark" cx="318" cy="290" r="2" fill="#ffd27a"/>
+    <circle class="spark b" cx="330" cy="296" r="1.6" fill="#ffd27a"/>
+    <circle class="spark c" cx="324" cy="284" r="1.8" fill="#ffd27a"/>
+  </g>
+  <path d="M276 340 V284 A46 42 0 0 1 368 284 V340 Z" fill="none" stroke="#4a4646" stroke-width="4"/>
+  <rect x="292" y="346" width="60" height="5" rx="2.5" fill="#4a4646"/>
+
+  <!-- armchair (back) -->
+  <rect x="48" y="196" width="160" height="150" rx="34" fill="url(#chair)"/>
+
+  <!-- person, relaxed -->
+  <g class="breathe">
+    <!-- sweater body -->
+    <path d="M96 236 C90 262 92 292 98 318 L170 318 C176 292 178 262 172 236 C164 218 104 218 96 236 Z" fill="url(#sweater)"/>
+    <g fill="none" stroke="#fbd193" stroke-width="2.4" opacity=".7">
+      <path d="M100 262 H168"/><path d="M98 284 H170"/>
+    </g>
+    <rect x="125" y="210" width="18" height="16" rx="6" fill="#e9b996"/>
+    <!-- head -->
+    <circle cx="134" cy="186" r="29" fill="#f1c6a3"/>
+    <circle cx="105" cy="190" r="6" fill="#e9b996"/>
+    <path d="M106 180 C104 156 122 146 140 148 C156 150 166 162 162 178 C156 168 146 162 132 164 C120 166 112 172 106 180 Z" fill="#3a2a22"/>
+    <path d="M118 190 Q125 196 132 190" fill="none" stroke="#3a2a22" stroke-width="2.8" stroke-linecap="round"/>
+    <path d="M140 190 Q147 196 154 190" fill="none" stroke="#3a2a22" stroke-width="2.8" stroke-linecap="round"/>
+    <circle cx="116" cy="202" r="6.5" fill="#f2836b" opacity=".45"/>
+    <circle cx="156" cy="202" r="6.5" fill="#f2836b" opacity=".45"/>
+    <path d="M128 206 Q135 212 142 206" fill="none" stroke="#3a2a22" stroke-width="2.6" stroke-linecap="round"/>
+    <!-- coffee -->
+    <g class="steam" fill="none" stroke="#b9a48e" stroke-width="2.6" stroke-linecap="round">
+      <path d="M160 216 C154 208 166 202 160 194"/>
+      <path d="M170 214 C164 206 176 200 170 192"/>
+      <path d="M180 216 C174 208 186 202 180 194"/>
+    </g>
+    <rect x="156" y="222" width="30" height="30" rx="6" fill="#fbf8f2"/>
+    <rect x="160" y="222" width="22" height="5" rx="2.5" fill="#6b3d1f"/>
+    <path d="M186 229 C197 229 197 245 186 245" fill="none" stroke="#e7dccb" stroke-width="5"/>
+    <path d="M104 244 C116 262 140 262 156 244" fill="none" stroke="#e2870f" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="158" cy="242" r="8" fill="#f1c6a3"/>
+    <!-- legs resting forward -->
+    <path d="M110 318 C130 322 176 320 214 316" fill="none" stroke="#5a4a42" stroke-width="22" stroke-linecap="round"/>
+    <path d="M214 316 C218 334 220 348 220 362" fill="none" stroke="#5a4a42" stroke-width="20" stroke-linecap="round"/>
+    <ellipse cx="226" cy="368" rx="15" ry="8" fill="#fbf8f2"/>
+  </g>
+
+  <!-- armchair (front arms and seat) -->
+  <rect x="38" y="262" width="40" height="98" rx="18" fill="#4a6b5d"/>
+  <rect x="64" y="318" width="132" height="34" rx="14" fill="#55786a"/>
+  <rect x="58" y="350" width="10" height="20" rx="3" fill="#2a2828"/>
+  <rect x="186" y="350" width="10" height="20" rx="3" fill="#2a2828"/>
+  </g>
+</svg>

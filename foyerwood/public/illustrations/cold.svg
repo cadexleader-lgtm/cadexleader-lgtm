@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 420" role="img" aria-labelledby="t">
+  <title id="t">Sans bois de chauffage : il a froid chez lui</title>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#e9f0f5"/>
+      <stop offset="1" stop-color="#d9e4ec"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#aebfcd"/>
+      <stop offset="1" stop-color="#dbe5ec"/>
+    </linearGradient>
+    <linearGradient id="stove" x1="0" x2="1">
+      <stop offset="0" stop-color="#3a3f44"/>
+      <stop offset=".55" stop-color="#4a5056"/>
+      <stop offset="1" stop-color="#33383d"/>
+    </linearGradient>
+    <linearGradient id="sweater" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#a7b9c9"/>
+      <stop offset="1" stop-color="#8ea3b6"/>
+    </linearGradient>
+    <clipPath id="win"><rect x="36" y="46" width="98" height="108" rx="3"/></clipPath>
+    <clipPath id="panel"><rect width="400" height="420"/></clipPath>
+  </defs>
+  <style>
+    .snow circle { animation: snow 4s linear infinite; }
+    .snow circle:nth-child(2n) { animation-duration: 5.2s; animation-delay: -1.3s; }
+    .snow circle:nth-child(3n) { animation-duration: 6s; animation-delay: -2.6s; }
+    .shiver { animation: shiver .18s linear infinite; }
+    .breath circle { animation: breath 2.4s ease-out infinite; opacity: 0; }
+    .breath circle:nth-child(2) { animation-delay: .25s; } .breath circle:nth-child(3) { animation-delay: .5s; }
+    .teeth { animation: chatter .2s steps(2) infinite; }
+    @keyframes snow { 0% { transform: translateY(-20px); } 100% { transform: translateY(130px); } }
+    @keyframes shiver { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-1.6px); } 75% { transform: translateX(1.6px); } }
+    @keyframes breath { 0% { opacity: 0; transform: translate(0, 0) scale(.6); } 20% { opacity: .9; } 100% { opacity: 0; transform: translate(26px, -14px) scale(1.4); } }
+    @keyframes chatter { 0% { transform: translateY(0); } 100% { transform: translateY(1px); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } .breath circle { opacity: .6; } }
+  </style>
+  <g clip-path="url(#panel)">
+
+  <rect width="400" height="420" fill="url(#bg)"/>
+  <!-- frost in the corners -->
+  <g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8">
+    <path d="M10 70 C30 60 40 40 46 12"/><path d="M10 44 C20 40 26 30 28 14"/>
+    <path d="M390 70 C370 60 360 40 354 12"/><path d="M390 44 C380 40 374 30 372 14"/>
+  </g>
+
+  <!-- window with snow outside -->
+  <rect x="30" y="40" width="110" height="120" rx="6" fill="#f5f8fa"/>
+  <rect x="36" y="46" width="98" height="108" rx="3" fill="url(#sky)"/>
+  <g clip-path="url(#win)">
+    <path d="M36 140 C60 128 92 132 134 124 V154 H36 Z" fill="#f7fafc"/>
+    <g class="snow" fill="#fff">
+      <circle cx="48" cy="50" r="2.4"/><circle cx="66" cy="70" r="1.8"/><circle cx="84" cy="44" r="2.6"/>
+      <circle cx="102" cy="64" r="2"/><circle cx="120" cy="48" r="2.4"/><circle cx="56" cy="30" r="2"/>
+      <circle cx="94" cy="20" r="1.8"/><circle cx="128" cy="26" r="2.2"/><circle cx="76" cy="8" r="2.4"/>
+    </g>
+  </g>
+  <rect x="83" y="46" width="4" height="108" fill="#f5f8fa"/>
+  <rect x="36" y="98" width="98" height="4" fill="#f5f8fa"/>
+
+  <!-- thermometer: low -->
+  <rect x="46" y="214" width="22" height="104" rx="11" fill="#fff" stroke="#c9d6e0" stroke-width="2"/>
+  <rect x="53" y="222" width="8" height="78" rx="4" fill="#e3ebf1"/>
+  <rect x="53" y="282" width="8" height="24" rx="4" fill="#5b93c7"/>
+  <circle cx="57" cy="306" r="10" fill="#5b93c7"/>
+
+  <!-- floor -->
+  <rect x="0" y="372" width="400" height="48" rx="0" fill="#cfdbe4"/>
+  <path d="M0 372 H400" stroke="#bccbd6" stroke-width="2"/>
+  <rect y="392" width="400" height="28" rx="0" fill="#cfdbe4"/>
+
+  <!-- unlit stove -->
+  <rect x="312" y="-10" width="22" height="196" fill="#4a5056"/>
+  <rect x="306" y="176" width="34" height="13" rx="4" fill="#3a3f44"/>
+  <rect x="268" y="356" width="11" height="20" rx="3" fill="#33383d"/>
+  <rect x="366" y="356" width="11" height="20" rx="3" fill="#33383d"/>
+  <rect x="258" y="200" width="128" height="160" rx="18" fill="url(#stove)"/>
+  <rect x="248" y="188" width="148" height="16" rx="6" fill="#565c62"/>
+  <path d="M276 340 V284 A46 42 0 0 1 368 284 V340 Z" fill="#23272b" stroke="#5c6268" stroke-width="4"/>
+  <rect x="292" y="326" width="60" height="9" rx="4.5" fill="#3f454b"/>
+  <path d="M290 300 C298 290 312 284 326 282" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".12"/>
+
+  <!-- shivering person -->
+  <g class="shiver">
+    <!-- legs -->
+    <rect x="152" y="290" width="16" height="80" rx="7" fill="#3b4a5a"/>
+    <rect x="172" y="290" width="16" height="80" rx="7" fill="#34424f"/>
+    <ellipse cx="158" cy="372" rx="14" ry="7" fill="#2a2828"/>
+    <ellipse cx="184" cy="372" rx="14" ry="7" fill="#2a2828"/>
+    <!-- thin sweater -->
+    <path d="M136 198 C132 232 138 264 146 296 L194 296 C202 264 208 232 204 198 C198 182 142 182 136 198 Z" fill="url(#sweater)"/>
+    <!-- neck -->
+    <rect x="161" y="176" width="18" height="14" rx="6" fill="#e9b996"/>
+    <!-- head -->
+    <circle cx="170" cy="152" r="30" fill="#f1c6a3"/>
+    <circle cx="140" cy="156" r="6" fill="#e9b996"/>
+    <circle cx="200" cy="156" r="6" fill="#e9b996"/>
+    <!-- beanie -->
+    <path d="M139 144 C139 106 201 106 201 144 Z" fill="#5d7488"/>
+    <rect x="136" y="134" width="68" height="14" rx="7" fill="#4c6275"/>
+    <circle cx="170" cy="108" r="9" fill="#e9eef2"/>
+    <!-- face: cold and unhappy -->
+    <path d="M152 156 L164 152" stroke="#3a2a22" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M176 152 L188 156" stroke="#3a2a22" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="160" cy="161" r="3.4" fill="#2a2828"/>
+    <circle cx="180" cy="161" r="3.4" fill="#2a2828"/>
+    <circle cx="150" cy="170" r="6" fill="#9cc3e0" opacity=".7"/>
+    <circle cx="190" cy="170" r="6" fill="#9cc3e0" opacity=".7"/>
+    <circle cx="170" cy="168" r="4.2" fill="#e88a86"/>
+    <g class="teeth">
+      <rect x="161" y="174" width="18" height="8" rx="2" fill="#fff" stroke="#3a2a22" stroke-width="1.6"/>
+      <path d="M162 178 l3 -2.4 l3 3.2 l3 -3.2 l3 3.2 l3 -3.2 l2 2.4" fill="none" stroke="#3a2a22" stroke-width="1.2"/>
+    </g>
+    <!-- arms crossed, hugging himself -->
+    <path d="M142 204 C146 224 166 236 196 234" fill="none" stroke="#97abbe" stroke-width="17" stroke-linecap="round"/>
+    <path d="M198 204 C194 226 176 238 146 236" fill="none" stroke="#869bae" stroke-width="17" stroke-linecap="round"/>
+    <circle cx="198" cy="232" r="8" fill="#f1c6a3"/>
+    <circle cx="143" cy="236" r="8" fill="#f1c6a3"/>
+    <!-- breath -->
+    <g class="breath" fill="#fff">
+      <circle cx="186" cy="176" r="5"/><circle cx="190" cy="174" r="4"/><circle cx="194" cy="172" r="3"/>
+    </g>
+  </g>
+  </g>
+</svg>

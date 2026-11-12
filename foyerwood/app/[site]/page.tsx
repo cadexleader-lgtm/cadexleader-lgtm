@@ -284,6 +284,33 @@ export default async function HomePage({ params }: SiteParams) {
         ))}
       </section>
 
+      {/* ------------------------------------------------------------ Before / after */}
+      <section className="container-page pt-24">
+        <Reveal>
+          <SectionHeading kicker={t.home.seasons.kicker} title={emphasize(t.home.seasons.title)} />
+        </Reveal>
+        <div className="grid gap-6 md:grid-cols-2">
+          {[
+            { src: "/illustrations/cold.svg", label: t.home.seasons.before, text: t.home.seasons.beforeText, alt: t.home.seasons.beforeAlt, tone: "bg-[#e9f0f5] text-[#41586b]" },
+            { src: "/illustrations/warm.svg", label: t.home.seasons.after, text: t.home.seasons.afterText, alt: t.home.seasons.afterAlt, tone: "bg-wood-100 text-wood-600" },
+          ].map((s, i) => (
+            <Reveal as="figure" key={s.src} delay={i * 120} className="overflow-hidden rounded-[var(--radius-card)] bg-white ring-1 ring-line">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={s.src} alt={s.alt} loading="lazy" className="block w-full" />
+              <figcaption className="flex items-start gap-4 p-6">
+                <span className={`shrink-0 rounded-[2px] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] ${s.tone}`}>{s.label}</span>
+                <span className="text-[0.95rem] leading-relaxed text-charcoal">{s.text}</span>
+              </figcaption>
+            </Reveal>
+          ))}
+        </div>
+        <div className="mt-8 flex justify-center">
+          <ButtonLink href={routePath(site, "calculator")} variant="wood" size="lg">
+            {t.home.seasons.cta} <ArrowRight className="h-4 w-4" />
+          </ButtonLink>
+        </div>
+      </section>
+
       {/* ------------------------------------------------------------ Calculator */}
       <section className="mt-20 bg-forest-950 text-cream">
         <div className="container-page grid gap-12 py-20 lg:grid-cols-12 lg:gap-16 lg:py-24">
@@ -359,7 +386,8 @@ export default async function HomePage({ params }: SiteParams) {
           <Reveal>
             <SectionHeading kicker={t.home.how.kicker} title={t.home.how.title} subtitle={t.common.noPayment} />
           </Reveal>
-          <ol className="grid gap-10 md:grid-cols-4 md:gap-6">
+          <div className="grid items-center gap-12 lg:grid-cols-12">
+          <ol className="grid gap-10 sm:grid-cols-2 sm:gap-x-8 lg:col-span-7">
             {t.home.how.steps.map((st, i) => (
               <Reveal as="li" key={st.title} delay={i * 90} className="relative">
                 <div className="flex items-center gap-4">
@@ -371,6 +399,11 @@ export default async function HomePage({ params }: SiteParams) {
               </Reveal>
             ))}
           </ol>
+          <Reveal className="lg:col-span-5" delay={200}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/illustrations/cosy-stove.svg" alt={t.home.cosyAlt} loading="lazy" className="mx-auto block w-full max-w-[560px]" />
+          </Reveal>
+          </div>
         </div>
       </section>
 

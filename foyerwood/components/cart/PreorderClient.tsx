@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, CheckCircle2, Landmark, Loader2, MapPin, MessageCircle, ShieldCheck, ShoppingBasket, Trash2, Truck } from "lucide-react";
+import { AlertCircle, CheckCircle2, Landmark, Loader2, MapPin, MessageCircle, ShieldCheck, Trash2, Truck } from "lucide-react";
 import { useCart } from "./CartProvider";
 import { QuantityInput } from "./AddToCart";
 import { ProductVisual } from "@/components/site/ProductVisual";
@@ -104,9 +104,8 @@ export function PreorderClient(p: Props) {
   if (lines.length === 0) {
     return (
       <div className="card mx-auto flex max-w-2xl flex-col items-center px-6 py-16 text-center">
-        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-wood-100 text-wood-600">
-          <ShoppingBasket className="h-8 w-8" />
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/illustrations/foyo.svg" alt="" className="mx-auto h-40 w-auto" />
         <p className="mt-6 font-display text-3xl text-forest">{t.empty}</p>
         <p className="mt-2 text-stone">{t.emptyText}</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
