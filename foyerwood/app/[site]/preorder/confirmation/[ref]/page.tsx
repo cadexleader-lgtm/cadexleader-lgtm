@@ -9,6 +9,8 @@ import { routePath } from "@/lib/sites";
 import { fmt, money } from "@/lib/format";
 import { buildPreorderMessage, whatsappLink } from "@/lib/whatsapp";
 import { isSaleUnit, unitLabel } from "@/lib/energy";
+import { HeroBackdrop } from "@/components/site/HeroBackdrop";
+import { AMBIANCE } from "@/lib/illustrations";
 
 type Props = { params: Promise<{ site: string; ref: string }>; searchParams: Promise<{ t?: string }> };
 
@@ -46,8 +48,8 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
   return (
     <>
       <ClearCartOnMount reference={order.reference} />
-      <section className="relative overflow-hidden bg-forest text-cream">
-        <div className="grain absolute inset-0" aria-hidden />
+      <section className="relative isolate overflow-hidden bg-forest-950 text-cream">
+        <HeroBackdrop src={AMBIANCE.livingRoom} />
         <div className="container-page relative py-14 sm:py-20">
           <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-wood text-ink">
             <CheckCircle2 className="h-7 w-7" />

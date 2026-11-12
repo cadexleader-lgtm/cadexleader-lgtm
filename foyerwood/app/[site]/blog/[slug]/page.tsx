@@ -5,11 +5,11 @@ import { Calculator } from "lucide-react";
 import { Breadcrumbs, ButtonLink } from "@/components/ui";
 import { Markdown } from "@/components/Markdown";
 import { articleCover } from "@/lib/illustrations";
-import { ProductVisual } from "@/components/site/ProductVisual";
 import { loadSite } from "@/lib/site-context";
 import { getPublishedArticle, listPublishedArticles } from "@/lib/data/blog";
 import { blogPath, routePath } from "@/lib/sites";
 import { fmt, formatDate } from "@/lib/format";
+import { HeroBackdrop } from "@/components/site/HeroBackdrop";
 
 type Props = { params: Promise<{ site: string; slug: string }> };
 
@@ -45,8 +45,9 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <header className="bg-forest text-cream">
-        <div className="container-page max-w-4xl py-12 sm:py-16">
+      <header className="relative isolate overflow-hidden bg-forest-950 text-cream">
+        <HeroBackdrop src={articleCover(a)} />
+        <div className="container-page relative max-w-4xl py-16 sm:py-24">
           <div className="[&_a]:text-cream/70 [&_a:hover]:text-cream [&_span]:text-cream/80 [&_li>span]:text-cream/40">
             <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.blog, href: blogPath(site) }, { label: a.title }]} tone="light" />
           </div>
@@ -58,9 +59,6 @@ export default async function ArticlePage({ params }: Props) {
         </div>
       </header>
       <div className="container-page max-w-4xl">
-        <div className="-mt-px overflow-hidden rounded-b-[var(--radius-card)]">
-          <ProductVisual image={articleCover(a)} alt={a.title} sizes="(min-width: 896px) 896px, 100vw" className="aspect-[21/9] w-full" priority />
-        </div>
         <div className="py-10">
           <Markdown>{a.content}</Markdown>
         </div>

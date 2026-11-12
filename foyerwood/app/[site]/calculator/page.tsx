@@ -5,6 +5,8 @@ import { Breadcrumbs } from "@/components/ui";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { routePath, SITES, productPath } from "@/lib/sites";
 import { MARKETS } from "@/lib/markets";
+import { HeroBackdrop } from "@/components/site/HeroBackdrop";
+import { AMBIANCE } from "@/lib/illustrations";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t, site } = await loadSite((await params).site);
@@ -24,9 +26,9 @@ export default async function CalculatorPage({ params }: SiteParams) {
   const icons = [Gauge, ShieldCheck, BookOpen];
   return (
     <>
-      <section className="relative overflow-hidden bg-forest text-cream">
-        <div className="grain absolute inset-0" aria-hidden />
-        <div className="container-page relative py-12 sm:py-16">
+      <section className="relative isolate overflow-hidden bg-forest-950 text-cream">
+        <HeroBackdrop src={AMBIANCE.livingRoom} />
+        <div className="container-page relative py-14 sm:py-20">
           <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.nav.calculator }]} tone="light" />
           <p className="kicker mt-6 text-wood-100">{t.home.calculator.kicker}</p>
           <h1 className="mt-4 max-w-3xl text-4xl leading-[1.08] sm:text-[3.4rem]">{t.calculator.title}</h1>

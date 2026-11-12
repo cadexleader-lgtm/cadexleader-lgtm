@@ -13,6 +13,7 @@ export const AMBIANCE = {
   stack: "/images/ambiance/texture-stack.webp",
   cracked: "/images/ambiance/texture-cracked.webp",
   crates: "/images/photos/kiln-dried-crates.webp",
+  yard: "/images/photos/firewood-crates-yard.webp",
   trailer: "/images/photos/delivery-trailer.webp",
 } as const;
 

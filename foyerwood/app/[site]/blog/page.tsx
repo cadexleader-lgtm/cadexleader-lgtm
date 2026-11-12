@@ -7,6 +7,7 @@ import { loadSite, type SiteParams } from "@/lib/site-context";
 import { listPublishedArticles } from "@/lib/data/blog";
 import { blogPath } from "@/lib/sites";
 import { fmt, formatDate } from "@/lib/format";
+import { AMBIANCE } from "@/lib/illustrations";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t, site } = await loadSite((await params).site);
@@ -19,7 +20,7 @@ export default async function BlogPage({ params }: SiteParams) {
   const [first, ...rest] = articles;
   return (
     <>
-      <PageHero kicker={t.blog.kicker} title={t.blog.title} intro={t.blog.subtitle} />
+      <PageHero kicker={t.blog.kicker} title={t.blog.title} intro={t.blog.subtitle} image={AMBIANCE.stack} />
       <div className="container-page py-14">
         {!first ? (
           <p className="card p-8 text-stone">{t.blog.empty}</p>

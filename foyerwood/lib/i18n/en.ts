@@ -71,6 +71,8 @@ export const en: Dict = {
     previous: "Previous",
     next: "Next",
     slide: "Slide {n} of {total}",
+    pause: "Pause the slideshow",
+    play: "Play the slideshow",
   },
   availability: {
     available: "In stock",

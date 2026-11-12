@@ -71,6 +71,8 @@ export const fr = {
     previous: "Précédent",
     next: "Suivant",
     slide: "Diapositive {n} sur {total}",
+    pause: "Mettre le diaporama en pause",
+    play: "Relancer le diaporama",
   },
   availability: {
     available: "Disponible",

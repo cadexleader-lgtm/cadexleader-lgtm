@@ -6,6 +6,7 @@ import { loadSite, type SiteParams } from "@/lib/site-context";
 import { routePath } from "@/lib/sites";
 import { loc } from "@/lib/format";
 import { whatsappLink } from "@/lib/whatsapp";
+import { AMBIANCE } from "@/lib/illustrations";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t, site } = await loadSite((await params).site);
@@ -18,7 +19,7 @@ export default async function ContactPage({ params }: SiteParams) {
   const hours = loc(settings.businessHours, site.lang);
   return (
     <>
-      <PageHero kicker={t.contact.kicker} title={t.contact.title} intro={t.contact.intro} />
+      <PageHero kicker={t.contact.kicker} title={t.contact.title} intro={t.contact.intro} image={AMBIANCE.cabinStove} />
       <div className="container-page grid gap-8 py-14 lg:grid-cols-[380px_1fr]">
         <aside className="space-y-4">
           {wa && (

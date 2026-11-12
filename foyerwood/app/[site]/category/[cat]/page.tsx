@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Check, Calculator } from "lucide-react";
@@ -8,6 +7,7 @@ import { loadSite } from "@/lib/site-context";
 import { categoryPath, isCategoryKey, routePath, SITES, type CategoryKey } from "@/lib/sites";
 import { loc } from "@/lib/format";
 import { CATEGORY_BANNERS } from "@/lib/illustrations";
+import { HeroBackdrop } from "@/components/site/HeroBackdrop";
 
 type Props = { params: Promise<{ site: string; cat: string }>; searchParams: Promise<CatalogSearch> };
 
@@ -36,16 +36,13 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-forest text-cream">
-        <div className="grain absolute inset-0" aria-hidden />
-        <div className="container-page relative grid items-center gap-8 py-10 md:grid-cols-[1.4fr_1fr] md:py-14">
-          <div>
+      <section className="relative isolate overflow-hidden bg-forest-950 text-cream">
+        <HeroBackdrop src={banner} />
+        <div className="container-page relative py-16 sm:py-24">
+          <div className="max-w-3xl">
             <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.shop.title, href: routePath(site, "shop") }, { label: loc(c.name, site.lang) }]} tone="light" />
             <h1 className="mt-5 text-4xl sm:text-5xl">{loc(c.name, site.lang)}</h1>
             <p className="mt-4 max-w-xl text-lg text-cream/75">{loc(c.description, site.lang)}</p>
-          </div>
-          <div className="relative hidden aspect-[5/3] overflow-hidden rounded-[var(--radius-card)] ring-1 ring-cream/10 md:block">
-            <Image src={banner} alt="" fill priority sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" />
           </div>
         </div>
       </section>

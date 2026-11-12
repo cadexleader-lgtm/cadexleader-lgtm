@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Pause, Play } from "lucide-react";
 import { emphasize } from "@/lib/emphasize";
 
 export interface Slide {
@@ -19,8 +19,10 @@ export interface Slide {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function HeroSlider({ slides, labels }: { slides: Slide[]; labels: { prev: string; next: string; slide: string } }) {
+export function HeroSlider({ slides, labels }: { slides: Slide[]; labels: { prev: string; next: string; slide: string; pause: string; play: string } }) {
   const [index, setIndex] = useState(0);
+  // The slideshow keeps running under the mouse; it only stops with the pause button
+  // (or for visitors who ask their system to reduce motion).
   const [paused, setPaused] = useState(false);
   const go = useCallback((i: number) => setIndex((i + slides.length) % slides.length), [slides.length]);
 
@@ -34,10 +36,6 @@ export function HeroSlider({ slides, labels }: { slides: Slide[]; labels: { prev
     <section
       className="relative isolate h-[620px] overflow-hidden bg-forest-950 text-cream lg:h-[min(82vh,760px)]"
       aria-roledescription="carousel"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
     >
       {slides.map((s, i) => (
         <div
@@ -109,7 +107,15 @@ export function HeroSlider({ slides, labels }: { slides: Slide[]; labels: { prev
               </button>
             ))}
           </div>
-          <div className="flex gap-6 text-[0.8rem] font-semibold uppercase tracking-[0.14em]">
+          <div className="flex items-center gap-6 text-[0.8rem] font-semibold uppercase tracking-[0.14em]">
+            <button
+              type="button"
+              onClick={() => setPaused((v) => !v)}
+              aria-label={paused ? labels.play : labels.pause}
+              className="flex h-8 w-8 items-center justify-center text-cream/60 transition hover:text-cream"
+            >
+              {paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
+            </button>
             <button type="button" onClick={() => go(index - 1)} className="text-cream/60 transition hover:text-cream">
               {labels.prev}
             </button>

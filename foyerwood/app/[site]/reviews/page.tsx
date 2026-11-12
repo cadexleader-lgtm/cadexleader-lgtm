@@ -6,6 +6,7 @@ import { loadSite, type SiteParams } from "@/lib/site-context";
 import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
 import { fmt, formatDate, formatNumber } from "@/lib/format";
 import { routePath } from "@/lib/sites";
+import { AMBIANCE } from "@/lib/illustrations";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t, site } = await loadSite((await params).site);
@@ -18,6 +19,7 @@ export default async function ReviewsPage({ params }: SiteParams) {
   return (
     <>
       <PageHero
+        image={AMBIANCE.livingRoom}
         kicker={t.home.reviews.kicker}
         title={t.home.reviews.title}
         intro={stats.count && stats.average ? fmt(t.home.reviews.average, { avg: formatNumber(stats.average, site.locale), n: stats.count }) : t.home.reviews.subtitle}

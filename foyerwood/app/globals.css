@@ -230,10 +230,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1 !important; transform: none !important; }
-  .marquee-track, .ember, .glow-pulse, .slide-progress { animation: slide-progress 7s linear forwards; }
-@keyframes slide-progress { from { width: 0; } to { width: 100%; } }
-
-.spin-slow { animation: none !important; }
+  .marquee-track, .ember, .glow-pulse, .slide-progress, .spin-slow { animation: none !important; }
   .word-reveal > span { opacity: 1; transform: none; animation: none; }
   .bar-fill { transform: scaleX(1); }
 }

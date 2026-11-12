@@ -111,7 +111,7 @@ export default async function HomePage({ params }: SiteParams) {
 
   return (
     <>
-      <HeroSlider slides={slides} labels={{ prev: t.common.previous, next: t.common.next, slide: t.common.slide }} />
+      <HeroSlider slides={slides} labels={{ prev: t.common.previous, next: t.common.next, slide: t.common.slide, pause: t.common.pause, play: t.common.play }} />
 
       {/* ------------------------------------------------------------ Commitments */}
       <section className="border-b border-line bg-white">

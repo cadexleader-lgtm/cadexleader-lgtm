@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { HeroBackdrop } from "@/components/site/HeroBackdrop";
+import { AMBIANCE } from "@/lib/illustrations";
 
 type Variant = "primary" | "secondary" | "ghost" | "light" | "wood" | "outline-light";
 type Size = "sm" | "md" | "lg";
@@ -113,11 +115,29 @@ export function Breadcrumbs({ items, tone = "dark" }: { items: Array<{ label: st
   );
 }
 
-export function PageHero({ kicker, title, intro, children }: { kicker?: string; title: string; intro?: string; children?: ReactNode }) {
+export function PageHero({
+  kicker,
+  title,
+  intro,
+  image = AMBIANCE.livingRoom,
+  imagePosition,
+  breadcrumbs,
+  children,
+}: {
+  kicker?: string;
+  title: string;
+  intro?: string;
+  /** Real photo behind the header: a page header is never left empty. */
+  image?: string;
+  imagePosition?: string;
+  breadcrumbs?: ReactNode;
+  children?: ReactNode;
+}) {
   return (
-    <section className="relative overflow-hidden bg-forest text-cream">
-      <div className="grain absolute inset-0" aria-hidden />
-      <div className="container-page relative py-14 sm:py-20">
+    <section className="relative isolate overflow-hidden bg-forest-950 text-cream">
+      <HeroBackdrop src={image} position={imagePosition} />
+      <div className="container-page relative py-16 sm:py-24">
+        {breadcrumbs && <div className="mb-6">{breadcrumbs}</div>}
         {kicker && <p className="mb-5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-cream/55">{kicker}</p>}
         <h1 className="max-w-4xl text-[2.8rem] leading-[1] sm:text-[4.2rem]">{title}</h1>
         {intro && <p className="mt-5 max-w-2xl text-lg leading-relaxed text-cream/75">{intro}</p>}

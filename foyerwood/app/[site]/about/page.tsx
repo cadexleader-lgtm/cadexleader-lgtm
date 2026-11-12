@@ -5,6 +5,7 @@ import Image from "next/image";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { routePath } from "@/lib/sites";
 import { MARKETS, MARKET_IDS } from "@/lib/markets";
+import { AMBIANCE } from "@/lib/illustrations";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t, site } = await loadSite((await params).site);
@@ -17,7 +18,7 @@ export default async function AboutPage({ params }: SiteParams) {
   const valueIcons = [Scale, Compass, ShieldCheck, Sprout];
   return (
     <>
-      <PageHero kicker={t.about.kicker} title={t.about.title} intro={t.about.intro} />
+      <PageHero kicker={t.about.kicker} title={t.about.title} intro={t.about.intro} image={AMBIANCE.splitLogs} />
       <section className="container-page py-16 sm:py-20">
         <div className="grid gap-5 md:grid-cols-3">
           {t.about.blocks.map((b, i) => {
