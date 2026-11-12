@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://christophermasireedibba.com/sitemap.xml
