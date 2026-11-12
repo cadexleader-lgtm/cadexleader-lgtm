@@ -26,7 +26,9 @@ export default async function TrackPage({ params }: SiteParams) {
             submit: t.track.submit,
             status: t.track.status,
             cancelled: t.track.cancelled,
+            writeUs: t.track.writeUs,
           }}
+          contactHref={routePath(site, "contact")}
         />
         <p className="mt-10 text-stone">
           {t.track.help}{" "}

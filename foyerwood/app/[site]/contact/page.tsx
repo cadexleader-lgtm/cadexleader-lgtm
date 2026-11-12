@@ -7,14 +7,28 @@ import { routePath } from "@/lib/sites";
 import { loc } from "@/lib/format";
 import { whatsappLink } from "@/lib/whatsapp";
 import { AMBIANCE } from "@/lib/illustrations";
+import { getOrderForCustomer } from "@/lib/data/orders";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t, site } = await loadSite((await params).site);
   return { title: t.contact.kicker, description: t.contact.intro, alternates: { canonical: routePath(site, "contact") } };
 }
 
-export default async function ContactPage({ params }: SiteParams) {
+export default async function ContactPage({ params, searchParams }: SiteParams & { searchParams: Promise<{ ref?: string; t?: string }> }) {
   const { site, t, settings } = await loadSite((await params).site);
+  // Coming from an order confirmation: pre-fill the form. Personal details are
+  // only filled in when the private order link (reference + token) is valid.
+  const sp = await searchParams;
+  const ref = typeof sp.ref === "string" ? sp.ref.trim().toUpperCase().slice(0, 40) : "";
+  const fromOrder = ref && sp.t ? await getOrderForCustomer(ref, sp.t) : null;
+  const order = fromOrder && fromOrder.order.marketId === site.market ? fromOrder.order : null;
+  const defaults = ref
+    ? {
+        subject: t.contact.subjects.order,
+        order: /^FW-[A-Z]{2}-\d{4}-\d{6}$/.test(ref) ? ref : undefined,
+        ...(order ? { name: order.customerName, email: order.customerEmail, phone: order.customerPhone ?? undefined } : {}),
+      }
+    : undefined;
   const wa = whatsappLink(settings.whatsappNumber);
   const hours = loc(settings.businessHours, site.lang);
   return (
@@ -69,6 +83,7 @@ export default async function ContactPage({ params }: SiteParams) {
             sendLabel={t.common.send}
             sendingLabel={t.common.sending}
             optional={t.common.optional}
+            defaults={defaults}
           />
         </section>
       </div>

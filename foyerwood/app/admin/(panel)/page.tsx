@@ -31,7 +31,7 @@ export default async function DashboardPage({ searchParams }: SearchProps) {
   }
   if (!company.legalName || !company.address || !company.registration) alerts.push({ text: "Informations légales de l'entreprise incomplètes (mentions légales, CGV).", href: "/admin/settings#company" });
   const noPhoto = products.filter((p) => p.active && p.images.length === 0).length;
-  if (noPhoto) alerts.push({ text: `${noPhoto} produit(s) actif(s) sans photo réelle (illustration affichée).`, href: "/admin/products" });
+  if (noPhoto) alerts.push({ text: `${noPhoto} produit(s) actif(s) sans photo réelle (« Photo à venir » affiché).`, href: "/admin/photos" });
   const noCost = products.filter((p) => p.active && p.costCents == null).length;
   if (noCost) alerts.push({ text: `${noCost} produit(s) sans tarif d'achat : la marge estimée sera incomplète.`, href: "/admin/products" });
   if (stats.pendingReviews) alerts.push({ text: `${stats.pendingReviews} avis en attente de modération.`, href: "/admin/reviews" });

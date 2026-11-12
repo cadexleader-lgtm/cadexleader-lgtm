@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { AlertCircle, CheckCircle2, Loader2, Star } from "lucide-react";
+import Link from "next/link";
+import { AlertCircle, CheckCircle2, Loader2, MessageCircle, Star } from "lucide-react";
 import { contactAction, reviewAction, trackAction, type FormState, type TrackState } from "@/app/[site]/actions";
 import { btn } from "@/components/ui";
 
@@ -24,8 +25,11 @@ export function ContactForm({
   sendLabel,
   sendingLabel,
   optional,
+  defaults = {},
 }: {
   site: string;
+  /** Pre-filled values, e.g. when the customer comes from their order confirmation. */
+  defaults?: Partial<Record<"name" | "email" | "phone" | "subject" | "order" | "message", string>>;
   labels: Record<"name" | "email" | "phone" | "subject" | "order" | "message", string>;
   subjects: string[];
   sendLabel: string;
@@ -40,19 +44,19 @@ export function ContactForm({
       <Honeypot />
       <div>
         <label className="field-label" htmlFor="c-name">{labels.name}</label>
-        <input id="c-name" name="name" required minLength={2} className="field" autoComplete="name" />
+        <input id="c-name" name="name" required minLength={2} className="field" autoComplete="name" defaultValue={defaults.name} />
       </div>
       <div>
         <label className="field-label" htmlFor="c-email">{labels.email}</label>
-        <input id="c-email" name="email" type="email" required className="field" autoComplete="email" />
+        <input id="c-email" name="email" type="email" required className="field" autoComplete="email" defaultValue={defaults.email} />
       </div>
       <div>
         <label className="field-label" htmlFor="c-phone">{labels.phone} <span className="font-normal text-stone">({optional})</span></label>
-        <input id="c-phone" name="phone" type="tel" className="field" autoComplete="tel" />
+        <input id="c-phone" name="phone" type="tel" className="field" autoComplete="tel" defaultValue={defaults.phone} />
       </div>
       <div>
         <label className="field-label" htmlFor="c-subject">{labels.subject}</label>
-        <select id="c-subject" name="subject" className="field" defaultValue={subjects[0]}>
+        <select id="c-subject" name="subject" className="field" defaultValue={defaults.subject && subjects.includes(defaults.subject) ? defaults.subject : subjects[0]}>
           {subjects.map((s) => (
             <option key={s}>{s}</option>
           ))}
@@ -60,11 +64,11 @@ export function ContactForm({
       </div>
       <div className="sm:col-span-2">
         <label className="field-label" htmlFor="c-order">{labels.order} <span className="font-normal text-stone">({optional})</span></label>
-        <input id="c-order" name="order" className="field uppercase" placeholder="FW-…" />
+        <input id="c-order" name="order" className="field uppercase" placeholder="FW-…" defaultValue={defaults.order} />
       </div>
       <div className="sm:col-span-2">
         <label className="field-label" htmlFor="c-message">{labels.message}</label>
-        <textarea id="c-message" name="message" required minLength={10} rows={5} className="field" />
+        <textarea id="c-message" name="message" required minLength={10} rows={5} className="field" defaultValue={defaults.message} autoFocus={Boolean(defaults.order)} />
       </div>
       <div className="space-y-3 sm:col-span-2">
         <Status state={state} />
@@ -79,9 +83,12 @@ export function ContactForm({
 export function TrackForm({
   site,
   labels,
+  contactHref,
 }: {
   site: string;
-  labels: { reference: string; referencePlaceholder: string; email: string; submit: string; status: string; cancelled: string };
+  labels: { reference: string; referencePlaceholder: string; email: string; submit: string; status: string; cancelled: string; writeUs: string };
+  /** Contact page, opened with the order reference pre-filled. */
+  contactHref: string;
 }) {
   const [state, action, pending] = useActionState<TrackState, FormData>(trackAction, { status: "idle" });
   return (
@@ -127,6 +134,12 @@ export function TrackForm({
               })}
             </ol>
           )}
+          <Link
+            href={`${contactHref}?ref=${encodeURIComponent(state.order.reference)}`}
+            className={btn("wood", "md", "mt-8")}
+          >
+            <MessageCircle className="h-4 w-4" /> {labels.writeUs}
+          </Link>
         </div>
       )}
     </div>

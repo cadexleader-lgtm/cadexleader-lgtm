@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, MapPin, ShieldCheck } from "lucide-react";
-import { ClearCartOnMount, WhatsAppActions } from "@/components/cart/ConfirmationClient";
+import { ClearCartOnMount, ContactActions } from "@/components/cart/ConfirmationClient";
 import { ButtonLink } from "@/components/ui";
 import { loadSite } from "@/lib/site-context";
 import { getOrderForCustomer } from "@/lib/data/orders";
@@ -44,6 +44,11 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
     name: order.customerName,
   });
   const wa = whatsappLink(settings.whatsappNumber, message);
+  const contactHref = `${routePath(site, "contact")}?ref=${encodeURIComponent(order.reference)}&t=${encodeURIComponent(token ?? "")}`;
+  const emailHref = settings.contactEmail
+    ? `mailto:${settings.contactEmail}?subject=${encodeURIComponent(fmt(t.confirmation.emailSubject, { ref: order.reference }))}&body=${encodeURIComponent(message)}`
+    : null;
+  const phoneHref = settings.contactPhone ? `tel:${settings.contactPhone.replace(/[^\d+]/g, "")}` : null;
 
   return (
     <>
@@ -61,12 +66,26 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
             <span className="mt-1 font-mono text-2xl font-semibold tracking-wide text-wood-100 sm:text-3xl">{order.reference}</span>
           </div>
           <div className="mt-10 max-w-2xl rounded-2xl bg-cream/[0.06] p-6 ring-1 ring-cream/15">
-            <p className="font-display text-2xl">{t.confirmation.whatsappTitle}</p>
-            <p className="mt-2 text-cream/75">{wa ? t.confirmation.whatsappText : fmt(t.confirmation.noWhatsapp, { phone: order.customerPhone })}</p>
-            <pre className="mt-4 max-h-56 overflow-auto whitespace-pre-wrap rounded-xl bg-forest-950/60 p-4 font-sans text-sm text-cream/85">{message}</pre>
+            <p className="font-display text-2xl">{wa ? t.confirmation.whatsappTitle : t.confirmation.writeFirstTitle}</p>
+            <p className="mt-2 text-cream/75">{wa ? t.confirmation.whatsappText : t.confirmation.writeFirstText}</p>
             <div className="mt-5">
-              <WhatsAppActions href={wa} message={message} labels={{ cta: t.confirmation.whatsappCta, copy: t.confirmation.copy, copied: t.confirmation.copied }} />
+              <ContactActions
+                whatsappHref={wa}
+                siteHref={contactHref}
+                emailHref={emailHref}
+                phoneHref={phoneHref}
+                message={message}
+                labels={{
+                  whatsapp: t.confirmation.whatsappCta,
+                  site: t.confirmation.writeSite,
+                  email: t.confirmation.writeEmail,
+                  call: t.confirmation.call,
+                  copy: t.confirmation.copy,
+                  copied: t.confirmation.copied,
+                }}
+              />
             </div>
+            <pre className="mt-5 max-h-56 overflow-auto whitespace-pre-wrap rounded-xl bg-forest-950/60 p-4 font-sans text-sm text-cream/85">{message}</pre>
           </div>
         </div>
       </section>
