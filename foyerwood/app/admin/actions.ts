@@ -8,6 +8,7 @@ import { createSessionToken, hashPassword, SESSION_COOKIE, verifyPassword } from
 import { createUser, findUserByEmail, setContactStatus, setSubscriberStatus, setUserActive, touchLogin, updateUserPassword, updateUserProfile } from "@/lib/data/misc";
 import { saveProduct, setProductActive, slugExists, adminGetProduct, applyPriceDrop, clearPriceDrop, type ProductInput } from "@/lib/data/products";
 import { saveMarketPromotions } from "@/lib/data/promotions";
+import { getProformaById, getProformaOrderMarket } from "@/lib/data/orders";
 import { saveSupplier } from "@/lib/data/suppliers";
 import { deleteZone, saveZone } from "@/lib/data/zones";
 import {
@@ -24,7 +25,7 @@ import {
 } from "@/lib/data/orders";
 import { createManualReview, deliveredOrderByReference, isReviewSource, moderateReview } from "@/lib/data/reviews";
 import { articleSlugExists, deleteArticle, saveArticle } from "@/lib/data/blog";
-import { setSetting, updateCategory, updateMarketSettings } from "@/lib/data/settings";
+import { getSetting, setSetting, updateCategory, updateMarketSettings } from "@/lib/data/settings";
 import { isMarketId, MARKETS, type MarketId } from "@/lib/markets";
 import { isCategoryKey, type CategoryKey } from "@/lib/sites";
 import { isSaleUnit, isSpeciesKey, MARKET_UNITS } from "@/lib/energy";
@@ -271,7 +272,7 @@ export async function deleteZoneAction(fd: FormData) {
 
 // ---------------------------------------------------------------- orders
 
-async function orderAction(fd: FormData, fn: (orderId: string, userId: string) => Promise<void>, okMsg: string) {
+async function orderAction(fd: FormData, fn: (orderId: string, userId: string) => Promise<void>, okMsg: string, then?: () => string | null) {
   const user = await requireAdmin();
   const orderId = s(fd, "orderId");
   if (!isUuid(orderId)) redirect("/admin/orders");
@@ -282,6 +283,8 @@ async function orderAction(fd: FormData, fn: (orderId: string, userId: string) =
     if (e instanceof OrderRuleError) redirect(back(path, { error: e.message }));
     throw e;
   }
+  const next = then?.();
+  if (next) redirect(next);
   redirect(back(path, { ok: okMsg }));
 }
 
@@ -314,25 +317,49 @@ export async function saveInternalNotesAction(fd: FormData) {
 }
 
 export async function createQuotationAction(fd: FormData) {
+  let createdQuotation: string | null = null;
   await orderAction(
     fd,
     async (id, uid) => {
       const amount = centsOrNull(fd, "amount");
       if (amount == null || amount <= 0) throw new OrderRuleError("Montant du devis invalide.");
-      await createQuotation(
+      let validUntil = /^\d{4}-\d{2}-\d{2}$/.test(s(fd, "validUntil")) ? s(fd, "validUntil") : null;
+      if (!validUntil) {
+        const detail = await getProformaOrderMarket(id);
+        const days = detail ? ((await getSetting("billing"))[detail]?.validityDays ?? 14) : 14;
+        validUntil = new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
+      }
+      createdQuotation = await createQuotation(
         id,
         {
           amountCents: amount,
           deliveryCents: centsOrNull(fd, "delivery") ?? 0,
           taxCents: centsOrNull(fd, "tax") ?? 0,
-          validUntil: /^\d{4}-\d{2}-\d{2}$/.test(s(fd, "validUntil")) ? s(fd, "validUntil") : null,
+          validUntil,
           notes: s(fd, "notes") || null,
         },
         uid,
       );
     },
     "Facture pro forma créée.",
+    () => (createdQuotation ? `/admin/proforma/${createdQuotation}` : null),
   );
+}
+
+/** Marks a pro forma as sent and moves the order to "quote sent" if it was earlier in the flow. */
+export async function markProformaSentAction(quotationId: string) {
+  const user = await requireAdmin();
+  const data = await getProformaById(quotationId);
+  if (!data) redirect("/admin/orders");
+  await setQuotationStatus(quotationId, "sent");
+  if (["new", "verifying", "quote_to_prepare"].includes(data!.order.status)) {
+    try {
+      await changeOrderStatus(data!.order.id, "quote_sent", user.id, `Facture pro forma ${data!.quotation.number} envoyée au client.`);
+    } catch (e) {
+      if (!(e instanceof OrderRuleError)) throw e;
+    }
+  }
+  redirect(`/admin/proforma/${quotationId}`);
 }
 
 export async function quotationStatusAction(fd: FormData) {
@@ -580,6 +607,16 @@ export async function saveMarketSettingsAction(fd: FormData) {
     taxNote: lt(fd, "tax"),
     freeDeliveryNote: lt(fd, "freeNote"),
     active: true,
+  });
+  const billing = await getSetting("billing");
+  await setSetting("billing", {
+    ...billing,
+    [id]: {
+      beneficiary: s(fd, "beneficiary"),
+      bankDetails: String(fd.get("bankDetails") ?? "").trim(),
+      taxMention: String(fd.get("taxMention") ?? "").trim(),
+      validityDays: Math.min(90, Math.max(1, intOr(fd, "validityDays", 14))),
+    },
   });
   redirect(`/admin/settings?ok=${encodeURIComponent(`Réglages ${MARKETS[id as MarketId].names.fr} enregistrés.`)}#market-${id}`);
 }

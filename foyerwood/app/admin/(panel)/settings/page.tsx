@@ -12,13 +12,14 @@ import {
 
 export default async function SettingsPage({ searchParams }: SearchProps) {
   const sp = await searchParams;
-  const [markets, company, social, categories, users, me] = await Promise.all([
+  const [markets, company, social, categories, users, me, billing] = await Promise.all([
     listMarketSettings(),
     getSetting("company"),
     getSetting("social"),
     listCategories(),
     listUsers(),
     getCurrentUser(),
+    getSetting("billing"),
   ]);
   return (
     <>
@@ -47,6 +48,25 @@ export default async function SettingsPage({ searchParams }: SearchProps) {
                   {m.languages.includes("en") && <TextArea label="Mention taxes (EN)" name="tax_en" rows={2} defaultValue={m.taxNote.en ?? ""} />}
                   <input type="hidden" name="freeNote_fr" value={m.freeDeliveryNote.fr ?? ""} />
                   <input type="hidden" name="freeNote_en" value={m.freeDeliveryNote.en ?? ""} />
+                  <div className="space-y-4 rounded-xl bg-cream/60 p-4 ring-1 ring-line">
+                    <p className="text-sm font-semibold text-forest">Facture pro forma</p>
+                    <Field label="Titulaire du compte (bénéficiaire)" name="beneficiary" defaultValue={billing[m.id]?.beneficiary ?? ""} />
+                    <TextArea
+                      label="Coordonnées bancaires (une par ligne)"
+                      name="bankDetails"
+                      rows={3}
+                      defaultValue={billing[m.id]?.bankDetails ?? ""}
+                      placeholder={m.id === "fr" ? "IBAN : FR76 …\nBIC : …\nBanque : …" : m.id === "ca" ? "Institution : 815\nTransit : …\nCompte : …" : "Bank: …\nRouting (ABA): …\nAccount: …"}
+                    />
+                    <TextArea
+                      label="Mention taxes sur la pro forma"
+                      name="taxMention"
+                      rows={2}
+                      defaultValue={billing[m.id]?.taxMention ?? ""}
+                      placeholder={m.id === "fr" ? "Ex. : TVA non applicable, art. 293 B du CGI — ou — N° TVA intracommunautaire FR…" : m.id === "ca" ? "Ex. : TPS/TVH n° … — TVQ n° …" : "Ex. : Sales tax ID …"}
+                    />
+                    <Field label="Validité par défaut (jours)" name="validityDays" type="number" min={1} max={90} defaultValue={String(billing[m.id]?.validityDays ?? 14)} />
+                  </div>
                   <p className="text-xs text-stone">Conditions de livraison gratuite : voir « Zones de livraison ».</p>
                   <SubmitButton>Enregistrer</SubmitButton>
                 </div>
