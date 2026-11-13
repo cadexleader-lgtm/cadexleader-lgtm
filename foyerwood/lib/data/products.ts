@@ -291,6 +291,67 @@ export async function setProductActive(id: string, active: boolean) {
   await query(`update products set active = $2, updated_at = now() where id = $1`, [id, active]);
 }
 
+// ---------------------------------------------------------------- price promotions
+
+export interface PriceDropScope {
+  market: MarketId;
+  categoryId?: string;
+  species?: string;
+  packaging?: string;
+}
+
+function scopeFilter(s: PriceDropScope): { sql: string; params: unknown[] } {
+  const parts: string[] = ["market_id = $1"];
+  const params: unknown[] = [s.market];
+  const add = (col: string, v: string | undefined) => {
+    if (!v) return;
+    params.push(v);
+    parts.push(`${col} = $${params.length}`);
+  };
+  add("category_id", s.categoryId);
+  add("species", s.species);
+  add("packaging", s.packaging);
+  return { sql: parts.join(" and "), params };
+}
+
+/** Rounds a reduced price down: whole units from 50, tenths below. */
+export function roundPromoPrice(cents: number): number {
+  return cents >= 5000 ? Math.floor(cents / 100) * 100 : Math.floor(cents / 10) * 10;
+}
+
+/**
+ * Puts products on sale: the price charged until now becomes the crossed-out
+ * price and the new price is that price minus `percent`. Products already on
+ * sale are recomputed from their crossed-out price (no stacking).
+ */
+export async function applyPriceDrop(scope: PriceDropScope, percent: number): Promise<number> {
+  const f = scopeFilter(scope);
+  const rows = await query<{ id: string; price_cents: number; compare_at_cents: number | null }>(
+    `select id, price_cents, compare_at_cents from products where ${f.sql}`,
+    f.params,
+  );
+  let n = 0;
+  for (const r of rows) {
+    const base = r.compare_at_cents && r.compare_at_cents > r.price_cents ? r.compare_at_cents : r.price_cents;
+    const next = roundPromoPrice(Math.round(base * (1 - percent / 100)));
+    if (next <= 0 || next >= base) continue;
+    await query(`update products set compare_at_cents = $2, price_cents = $3, updated_at = now() where id = $1`, [r.id, base, next]);
+    n++;
+  }
+  return n;
+}
+
+/** Ends a sale: the crossed-out price becomes the price again. */
+export async function clearPriceDrop(scope: PriceDropScope): Promise<number> {
+  const f = scopeFilter(scope);
+  const rows = await query<{ id: string }>(
+    `update products set price_cents = compare_at_cents, compare_at_cents = null, updated_at = now()
+     where ${f.sql} and compare_at_cents is not null and compare_at_cents > price_cents returning id`,
+    f.params,
+  );
+  return rows.length;
+}
+
 export async function slugExists(market: MarketId, slug: string, exceptId?: string): Promise<boolean> {
   const row = await queryOne(
     `select 1 from products where market_id = $1 and slug = $2 and ($3::uuid is null or id <> $3::uuid)`,

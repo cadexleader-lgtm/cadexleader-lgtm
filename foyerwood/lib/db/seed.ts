@@ -3,6 +3,7 @@ import { json } from "./client";
 import { MARKETS, MARKET_IDS } from "../markets";
 import { hashPassword, verifyPassword } from "../auth";
 import { ensureBootstrapAdmin } from "./bootstrap-admin";
+import { ensureImportedReviews } from "./imported-reviews";
 import { SEED_CATEGORIES, SEED_PRODUCTS, SEED_SUPPLIERS, SEED_ZONES } from "./seed-catalog";
 import { SEED_ARTICLES } from "./seed-articles";
 
@@ -257,6 +258,7 @@ const ADMIN_SYNC_KEY = "admin_env_sync";
 export async function ensureAdmin(db: Queryable & { kind?: string }, log: (m: string) => void = () => {}) {
   await syncAdmins(db, log);
   await ensureBootstrapAdmin(db, log);
+  await ensureImportedReviews(db);
 }
 
 async function syncAdmins(db: Queryable & { kind?: string }, log: (m: string) => void) {

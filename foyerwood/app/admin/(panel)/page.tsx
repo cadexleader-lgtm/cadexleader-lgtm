@@ -121,7 +121,7 @@ export default async function DashboardPage({ searchParams }: SearchProps) {
                       <tr key={o.id} className="hover:bg-cream/60">
                         <td className="px-5 py-3"><Link href={`/admin/orders/${o.id}`} className="font-mono font-medium text-forest hover:underline">{o.reference}</Link></td>
                         <td className="px-5 py-3">{o.customerName}<span className="block text-xs text-stone">{o.city}</span></td>
-                        <td className="px-5 py-3 tabular-nums">{money(o.subtotalCents, o.currency)}</td>
+                        <td className="px-5 py-3 tabular-nums">{money(o.subtotalCents - (o.discountCents ?? 0), o.currency)}</td>
                         <td className="px-5 py-3"><StatusBadge status={o.status} /></td>
                         <td className="px-5 py-3 text-stone">{formatDateTime(o.createdAt, "fr-FR", MARKETS[o.marketId].timeZone)}</td>
                       </tr>

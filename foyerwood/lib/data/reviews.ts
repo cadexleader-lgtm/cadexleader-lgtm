@@ -2,7 +2,7 @@ import { query, queryOne } from "../db/client";
 import type { Lang, MarketId } from "../markets";
 import { camelizeAll } from "./util";
 
-export const REVIEW_SOURCES = ["site", "whatsapp", "email", "google", "facebook", "phone", "in_person", "other"] as const;
+export const REVIEW_SOURCES = ["site", "whatsapp", "email", "google", "facebook", "phone", "in_person", "previous_shop", "other"] as const;
 export type ReviewSource = (typeof REVIEW_SOURCES)[number];
 export const isReviewSource = (v: string): v is ReviewSource => (REVIEW_SOURCES as readonly string[]).includes(v);
 

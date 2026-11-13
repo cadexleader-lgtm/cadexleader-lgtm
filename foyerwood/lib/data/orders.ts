@@ -22,6 +22,10 @@ export interface Order {
   deliveryInstructions: string | null;
   status: OrderStatus;
   subtotalCents: number;
+  /** Volume discount granted at pre-order time (subtracted from subtotalCents). */
+  discountCents: number;
+  /** Stored as numeric: may come back as a string, use Number(). */
+  discountPercent: number | string;
   estimatedCostCents: number | null;
   deliveryZoneId: string | null;
   calculationId: string | null;
@@ -43,6 +47,13 @@ export interface OrderItem {
   unitPriceCents: number;
   unitCostCents: number | null;
   lineTotalCents: number;
+  /** Free accessory offered by a promotion (price 0). */
+  isGift: boolean;
+}
+
+/** Amount the customer is expected to pay for the products (before delivery and taxes). */
+export function orderProductsTotal(o: Pick<Order, "subtotalCents" | "discountCents">): number {
+  return o.subtotalCents - (o.discountCents ?? 0);
 }
 
 export interface OrderEvent {
@@ -139,16 +150,21 @@ export interface NewPreorder {
     quantity: number;
     unitPriceCents: number;
     unitCostCents: number | null;
+    isGift?: boolean;
   }>;
   deliveryZoneId: string | null;
   calculationId: string | null;
+  discountCents?: number;
+  discountPercent?: number;
 }
 
 export async function createPreorder(input: NewPreorder): Promise<{ id: string; reference: string; accessToken: string }> {
   const currency = MARKETS[input.market].currency;
   const subtotal = input.items.reduce((s, i) => s + i.unitPriceCents * i.quantity, 0);
+  // Gifts cost us their purchase price too: they are part of the estimated cost.
   const costKnown = input.items.every((i) => i.unitCostCents != null);
   const cost = costKnown ? input.items.reduce((s, i) => s + (i.unitCostCents ?? 0) * i.quantity, 0) : null;
+  const discount = Math.max(0, Math.min(subtotal, Math.round(input.discountCents ?? 0)));
   const c = input.customer;
   const email = c.email.trim().toLowerCase();
 
@@ -167,8 +183,8 @@ export async function createPreorder(input: NewPreorder): Promise<{ id: string; 
     const [order] = await q.query<{ id: string }>(
       `insert into orders (reference, access_token, market_id, language, currency, customer_id, customer_name,
          customer_email, customer_phone, address_line, postal_code, city, region, delivery_instructions,
-         subtotal_cents, estimated_cost_cents, delivery_zone_id, calculation_id, consent_at)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,now())
+         subtotal_cents, estimated_cost_cents, delivery_zone_id, calculation_id, consent_at, discount_cents, discount_percent)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,now(),$19,$20)
        returning id`,
       [
         reference,
@@ -189,15 +205,17 @@ export async function createPreorder(input: NewPreorder): Promise<{ id: string; 
         cost,
         input.deliveryZoneId,
         input.calculationId,
+        discount,
+        input.discountPercent ?? 0,
       ],
     );
     let pos = 0;
     for (const i of input.items) {
       await q.query(
         `insert into order_items (order_id, product_id, supplier_id, product_name, unit, quantity, unit_price_cents,
-           unit_cost_cents, line_total_cents, position)
-         values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
-        [order.id, i.productId, i.supplierId, i.name, i.unit, i.quantity, i.unitPriceCents, i.unitCostCents, i.unitPriceCents * i.quantity, pos++],
+           unit_cost_cents, line_total_cents, position, is_gift)
+         values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        [order.id, i.productId, i.supplierId, i.name, i.unit, i.quantity, i.unitPriceCents, i.unitCostCents, i.unitPriceCents * i.quantity, pos++, i.isGift === true],
       );
     }
     await q.query(`insert into order_events (order_id, from_status, to_status, note) values ($1, null, 'new', $2)`, [

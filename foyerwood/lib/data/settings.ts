@@ -3,6 +3,7 @@ import type { Currency, Lang, MarketId } from "../markets";
 import type { LText } from "../format";
 import type { CategoryKey } from "../sites";
 import { camelize, camelizeAll } from "./util";
+import type { MarketPromotions } from "../promotions";
 
 export interface MarketSettings {
   id: MarketId;
@@ -78,6 +79,24 @@ const DEFAULTS = {
     email: "",
   } as CompanySettings,
   social: { instagram: "", facebook: "", linkedin: "", youtube: "", tiktok: "" } as SocialSettings,
+  // Starting values, all editable in Administration → Promotions.
+  promotions: {
+    fr: {
+      enabled: true,
+      tiers: [{ minCents: 50000, percent: 5 }, { minCents: 100000, percent: 8 }],
+      gifts: [{ minCents: 25000, productSlug: "allume-feu-laine-de-bois-100" }, { minCents: 60000, productSlug: "humidimetre-bois-de-chauffage" }],
+    },
+    ca: {
+      enabled: true,
+      tiers: [{ minCents: 60000, percent: 5 }, { minCents: 120000, percent: 8 }],
+      gifts: [{ minCents: 30000, productSlug: "allume-feu-laine-de-bois-50" }, { minCents: 70000, productSlug: "humidimetre-bois" }],
+    },
+    us: {
+      enabled: true,
+      tiers: [{ minCents: 60000, percent: 5 }, { minCents: 120000, percent: 8 }],
+      gifts: [{ minCents: 30000, productSlug: "natural-fire-starters-48" }, { minCents: 70000, productSlug: "firewood-moisture-meter" }],
+    },
+  } as Record<MarketId, MarketPromotions>,
 };
 
 type SettingKey = keyof typeof DEFAULTS;

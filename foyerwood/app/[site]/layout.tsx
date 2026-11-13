@@ -8,6 +8,7 @@ import { FloatingCart } from "@/components/cart/FloatingCart";
 import { ExitIntent } from "@/components/cart/ExitIntent";
 import { listProducts, toPublicProduct } from "@/lib/data/products";
 import { reviewStats } from "@/lib/data/reviews";
+import { resolvePromotions } from "@/lib/data/promotions";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { SITES, SITE_IDS, blogPath, categoryPath, productPath, routePath, siblingSites } from "@/lib/sites";
 import { MARKETS } from "@/lib/markets";
@@ -75,8 +76,19 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
       unitLabelPlural: pub.unitLabelPlural,
       minQty: pub.minQty,
       maxQty: pub.maxQty,
+      categoryId: pub.categoryId,
+      compareAtCents: pub.compareAtCents,
     };
   });
+  const promotions = await resolvePromotions(site.market, site.lang);
+  // Announcement bar: the first volume discount and the first gift, if any.
+  const fm = (c: number) => money(site, c, market.currency);
+  const firstTier = promotions.enabled ? promotions.tiers[0] : undefined;
+  const firstGift = promotions.enabled ? promotions.gifts[0] : undefined;
+  const promoBar = [
+    ...(firstGift ? [t.promo.barGift.replace("{amount}", fm(firstGift.minCents)).replace("{gift}", firstGift.name)] : []),
+    ...(firstTier ? [t.promo.bar.replace("{amount}", fm(firstTier.minCents)).replace("{pct}", String(firstTier.percent))] : []),
+  ];
 
   return (
     <CartProvider market={site.market}>
@@ -97,6 +109,7 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
         sites={sites}
         promos={[
           seasonMessage(t.marketing.season),
+          ...promoBar,
           t.marketing.zeroPay.replace("{zero}", formatMoney(0, market.currency, site.locale)),
           ctx.freeThresholdCents
             ? t.topbar.freeDeliveryFrom.replace("{amount}", money(site, ctx.freeThresholdCents, market.currency))
@@ -152,6 +165,8 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
         shopHref={routePath(site, "shop")}
         freeThresholdCents={ctx.freeThresholdCents}
         rating={rating}
+        promotions={promotions}
+        promoLabels={t.promo}
         labels={{
           ...t.cartDrawer,
           perUnit: t.common.perUnit,

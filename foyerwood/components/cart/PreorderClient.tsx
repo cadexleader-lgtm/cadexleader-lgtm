@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, Landmark, Loader2, MapPin, MessageCircle, ShieldCheck, Trash2, Truck } from "lucide-react";
 import { useCart } from "./CartProvider";
+import { evaluatePromotions, type ResolvedPromotions } from "@/lib/promotions";
+import { PromoNudges } from "./PromoNudges";
 import { QuantityInput } from "./AddToCart";
 import { ProductVisual } from "@/components/site/ProductVisual";
 import { btn } from "@/components/ui";
@@ -35,6 +37,8 @@ interface Props {
   calculatorLabel: string;
   /** Real customer reviews, shown next to the submit button (server-rendered). */
   proof?: React.ReactNode;
+  promotions: ResolvedPromotions | null;
+  promoLabels: Dict["promo"];
 }
 
 export function PreorderClient(p: Props) {
@@ -64,6 +68,10 @@ export function PreorderClient(p: Props) {
     .map((l) => ({ ...l, product: byId.get(l.id)! }))
     .filter((l) => l.product);
   const subtotal = lines.reduce((s, l) => s + l.product.priceCents * l.qty, 0);
+  const promo = evaluatePromotions(
+    p.promotions,
+    lines.map((l) => ({ priceCents: l.product.priceCents, qty: l.qty, categoryId: l.product.categoryId })),
+  );
   const lineError = (l: (typeof lines)[number]) => {
     const pr = l.product;
     if (pr.availability === "unavailable" || pr.availability === "out_of_stock") return t.unavailable;
@@ -84,14 +92,14 @@ export function PreorderClient(p: Props) {
     setChecking(true);
     const timer = setTimeout(async () => {
       try {
-        const res = await checkDeliveryAction(p.siteId, postal, idsKey ? idsKey.split(",") : [], subtotal);
+        const res = await checkDeliveryAction(p.siteId, postal, idsKey ? idsKey.split(",") : [], promo.totalCents);
         if (seq === checkSeq.current) setDelivery(res);
       } finally {
         if (seq === checkSeq.current) setChecking(false);
       }
     }, 350);
     return () => clearTimeout(timer);
-  }, [postal, idsKey, subtotal, p.market, p.siteId]);
+  }, [postal, idsKey, promo.totalCents, p.market, p.siteId]);
 
   const fe = state.status === "error" ? state.fieldErrors ?? {} : {};
 
@@ -275,7 +283,22 @@ export function PreorderClient(p: Props) {
                   <span className="shrink-0 tabular-nums">{money(l.product.priceCents * l.qty)}</span>
                 </li>
               ))}
+              {promo.gifts.map((g) => (
+                <li key={g.productId} className="flex justify-between gap-3">
+                  <span className="text-stone">1 × {g.name}</span>
+                  <span className="shrink-0 font-semibold uppercase text-wood-600">{p.promoLabels.free}</span>
+                </li>
+              ))}
             </ul>
+            {promo.discountCents > 0 && (
+              <div className="flex justify-between border-t border-line pt-3 font-semibold text-success">
+                <span>{p.promoLabels.discountLine.replace("{pct}", String(promo.discountPercent))}</span>
+                <span className="tabular-nums">−{money(promo.discountCents)}</span>
+              </div>
+            )}
+            {(promo.nextGift || promo.nextTier) && (
+              <PromoNudges result={promo} labels={p.promoLabels} money={money} className="rounded-xl bg-wood-100/60 p-3" />
+            )}
             <div className="flex justify-between border-t border-line pt-3">
               <span className="text-stone">{t.deliveryLine}</span>
               <span className="font-medium text-success">{delivery?.ok && delivery.free ? t.deliveryFree : delivery?.ok ? t.deliveryQuoted : "—"}</span>
@@ -286,7 +309,7 @@ export function PreorderClient(p: Props) {
             </div>
             <div className="flex items-baseline justify-between border-t border-line pt-3">
               <span className="font-medium text-charcoal">{t.total}</span>
-              <span className="text-2xl font-semibold tabular-nums text-forest">{money(subtotal)}</span>
+              <span className="text-2xl font-semibold tabular-nums text-forest">{money(promo.totalCents)}</span>
             </div>
 
             <label className="mt-2 flex cursor-pointer items-start gap-3 rounded-xl bg-cream p-3 text-sm leading-relaxed text-charcoal/85">

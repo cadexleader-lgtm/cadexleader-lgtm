@@ -8,6 +8,7 @@ import { productPath } from "@/lib/sites";
 import type { Dict } from "@/lib/i18n";
 import { fmt, money } from "@/lib/format";
 import type { Currency } from "@/lib/markets";
+import { savingPercent } from "@/lib/promotions";
 
 const DOT = { available: "bg-success", limited: "bg-warning", out_of_stock: "bg-danger", unavailable: "bg-stone" } as const;
 
@@ -43,6 +44,11 @@ export function ProductCard({
           <span className={`h-1.5 w-1.5 rounded-full ${DOT[p.availability]}`} />
           {t.availability[p.availability]}
         </span>
+        {savingPercent(p.priceCents, p.compareAtCents) > 0 && (
+          <span className="absolute right-3 top-3 rounded-full bg-wood px-2.5 py-1 text-[0.78rem] font-bold text-ink shadow-[0_6px_14px_-6px_rgb(0_0_0/0.5)]">
+            −{savingPercent(p.priceCents, p.compareAtCents)} %
+          </span>
+        )}
       </Link>
       <div className="flex flex-1 flex-col p-5">
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-stone">{formatLabel}</p>
@@ -55,7 +61,7 @@ export function ProductCard({
         <div className="mt-auto pt-5">
           <div className="flex items-end justify-between gap-3 border-t border-line pt-4">
             <p className="leading-none">
-              <span className="text-[1.35rem] font-semibold tracking-tight text-forest tabular-nums">{money(site, p.priceCents, currency)}</span>
+              <span className={`text-[1.35rem] font-semibold tracking-tight tabular-nums ${savingPercent(p.priceCents, p.compareAtCents) > 0 ? "text-wood-600" : "text-forest"}`}>{money(site, p.priceCents, currency)}</span>
               {p.compareAtCents && p.compareAtCents > p.priceCents && (
                 <span className="ml-2 text-sm text-stone line-through">{money(site, p.compareAtCents, currency)}</span>
               )}
