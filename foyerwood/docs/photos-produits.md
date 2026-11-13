@@ -64,7 +64,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
-| Hêtre en vrac | Beech Bulk Firewood | `beech firewood pile loose bulk` | `bois de chauffage hêtre en vrac tas` | `beech-bulk.webp` | à trouver |
+| Hêtre en vrac | Beech Bulk Firewood | `beech firewood pile loose bulk` | `bois de chauffage hêtre en vrac tas` | `beech-bulk.webp` | ✅ fournie |
 | Hêtre sur palette | Beech Firewood Pallet | `beech firewood pallet crate` | `palette bois de chauffage hêtre` | `beech-pallet.webp` | ✅ fournie |
 | Hêtre en big bag | Beech Firewood Big Bag | `beech firewood bulk bag` | `big bag bois de chauffage hêtre` | `beech-big_bag.webp` | à trouver |
 | Hêtre en filet | Beech Firewood Net Bag | `beech firewood net bag mesh` | `filet de bûches hêtre` | `beech-net_bag.webp` | à trouver |
@@ -108,7 +108,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
-| Pin en vrac | Pine Bulk Firewood | `pine firewood pile loose bulk` | `bois de chauffage pin en vrac tas` | `pine-bulk.webp` | à trouver |
+| Pin en vrac | Pine Bulk Firewood | `pine firewood pile loose bulk` | `bois de chauffage pin en vrac tas` | `pine-bulk.webp` | ✅ fournie |
 | Pin sur palette | Pine Firewood Pallet | `pine firewood pallet crate` | `palette bois de chauffage pin` | `pine-pallet.webp` | à trouver |
 | Pin en big bag | Pine Firewood Big Bag | `pine firewood bulk bag` | `big bag bois de chauffage pin` | `pine-big_bag.webp` | à trouver |
 | Pin en filet | Pine Firewood Net Bag | `pine firewood net bag mesh` | `filet de bûches pin` | `pine-net_bag.webp` | à trouver |
@@ -120,6 +120,8 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 Les photos suivantes viennent du site de notre partenaire **firewood.co.uk**, qui nous a autorisés à les utiliser (conservez cette autorisation par écrit) : chêne, frêne, bouleau et hêtre sur palette ; chêne, frêne et bouleau en filet ; chêne et bouleau en vrac ; granulés (sac et palette) ; bûches compressées (boîte et pack) ; et les photos d'ambiance « tas de bûches », « bûches devant le feu », « caisse devant la maison », « poêle au salon », « briquettes » et « granulés ».
 
 Nous n'avons pas repris les photos où figurent d'autres marques (Ecoblaze, Platinum Plus, Fire Power, Timber) ni le badge britannique « Ready to Burn », qui appartient à leur certification.
+
+Photos libres de **Wikimedia Commons** (licence CC BY-SA, auteurs cités dans les mentions légales du site) : hêtre en vrac et pin en vrac. Les banques libres n'ont pas de photos fiables des autres combinaisons (sacs, cartons, big bags et filets par essence ; érable et frêne en vrac) : ces photos restent à obtenir auprès d'un fournisseur.
 
 ## Pour plus tard : autres essences
 

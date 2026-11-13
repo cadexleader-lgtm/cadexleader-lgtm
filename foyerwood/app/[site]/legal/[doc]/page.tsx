@@ -6,6 +6,7 @@ import { legalLabel } from "@/components/site/Footer";
 import { loadSite } from "@/lib/site-context";
 import { LEGAL_DOCS, isLegalDoc, legalPath } from "@/lib/sites";
 import { legalDoc, LEGAL_UPDATED } from "@/lib/content/legal";
+import { PARTNER_CREDIT, PHOTO_CREDITS } from "@/lib/photo-credits";
 import { fmt, formatDate, money } from "@/lib/format";
 
 type Props = { params: Promise<{ site: string; doc: string }> };
@@ -56,6 +57,28 @@ export default async function LegalPage({ params }: Props) {
         <div className="mt-6">
           <Markdown>{content.body}</Markdown>
         </div>
+        {doc === "notice" && (
+          <section className="mt-10 border-t border-line pt-8">
+            <h2 className="font-display text-2xl text-forest">{site.lang === "fr" ? "Crédits photos" : "Photo credits"}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-stone">
+              {site.lang === "fr"
+                ? `Photos de produits et d'ambiance fournies par notre partenaire ${PARTNER_CREDIT}, utilisées avec son autorisation. Illustrations et mascotte : Foyerwood. Les photos suivantes viennent de Wikimedia Commons, sous licence libre ; elles ont été redimensionnées pour le site et restent sous la même licence :`
+                : `Product and ambiance photos supplied by our partner ${PARTNER_CREDIT}, used with their permission. Illustrations and mascot: Foyerwood. The following photos come from Wikimedia Commons under free licences; they were resized for the site and remain under the same licence:`}
+            </p>
+            {PHOTO_CREDITS.length > 0 && (
+              <ul className="mt-4 space-y-2 text-sm text-charcoal">
+                {PHOTO_CREDITS.map((c) => (
+                  <li key={c.source}>
+                    <span className="font-medium">{c.usedFor[site.lang]}</span> — « {c.title} », {c.author},{" "}
+                    <a href={c.source} target="_blank" rel="noopener noreferrer" className="underline">
+                      {c.license}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
       </article>
     </div>
   );
