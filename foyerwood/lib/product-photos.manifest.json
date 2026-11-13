@@ -1,6 +1,7 @@
 {
   "ash-net_bag": "/images/products/ash-net_bag.webp",
   "ash-pallet": "/images/products/ash-pallet.webp",
+  "beech-bulk": "/images/products/beech-bulk.webp",
   "beech-pallet": "/images/products/beech-pallet.webp",
   "birch-big_bag": "/images/products/birch-big_bag.webp",
   "birch-bulk": "/images/products/birch-bulk.webp",
@@ -12,5 +13,6 @@
   "oak-net_bag": "/images/products/oak-net_bag.webp",
   "oak-pallet": "/images/products/oak-pallet.webp",
   "pellets-bag": "/images/products/pellets-bag.webp",
-  "pellets-pallet": "/images/products/pellets-pallet.webp"
+  "pellets-pallet": "/images/products/pellets-pallet.webp",
+  "pine-bulk": "/images/products/pine-bulk.webp"
 }

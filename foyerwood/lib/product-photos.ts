@@ -15,11 +15,20 @@ export function productPhotoName(species: string, packaging: string): string {
   return `${species}-${packaging}`;
 }
 
+// Products sold without a species whose photo is chosen individually
+// (product slug → photo file name in public/images/products/).
+// Example: { "humidimetre-bois": "accessory-moisture-meter" } for a file
+// public/images/products/accessory-moisture-meter.webp.
+const SLUG_PHOTOS: Record<string, string> = {};
+
 export function autoProductPhoto(
   species: string | null | undefined,
   packaging: string | null | undefined,
   category?: string | null,
+  slug?: string | null,
 ): string | null {
+  const bySlug = slug ? SLUG_PHOTOS[slug] : undefined;
+  if (bySlug && PHOTOS[bySlug]) return PHOTOS[bySlug];
   if (!packaging) return null;
   // "<species>-<packaging>" (e.g. oak-pallet), then "<category>-<packaging>"
   // for products sold without a species (e.g. pellets-bag, briquettes-box).
