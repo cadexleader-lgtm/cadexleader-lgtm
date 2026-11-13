@@ -8,8 +8,10 @@
 
   const canvas = document.querySelector("[data-silk]");
   if (!canvas) return;
+  // Sur téléphone (ou mouvements réduits) : simple dégradé CSS, zéro calcul.
+  if (window.matchMedia("(max-width: 760px), (prefers-reduced-motion: reduce)").matches) return;
 
-  const gl = canvas.getContext("webgl", { antialias: false, alpha: false, powerPreference: "high-performance", preserveDrawingBuffer: false });
+  const gl = canvas.getContext("webgl", { antialias: false, alpha: false, powerPreference: "low-power", preserveDrawingBuffer: false });
   if (!gl) return; // le dégradé CSS du canvas sert de repli
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -20,7 +22,7 @@
   `;
 
   const frag = `
-    precision highp float;
+    precision mediump float;
     uniform vec2 uRes;
     uniform float uTime;
     uniform vec2 uMouse;
@@ -38,7 +40,7 @@
     float fbm(vec2 p) {
       float v = 0.0, a = 0.5;
       mat2 r = mat2(0.8, 0.6, -0.6, 0.8);
-      for (int i = 0; i < 4; i++) { v += a * noise(p); p = r * p * 2.02; a *= 0.5; }
+      for (int i = 0; i < 3; i++) { v += a * noise(p); p = r * p * 2.02; a *= 0.5; }
       return v;
     }
     // hauteur du tissu : ondulations longues + déformation organique
@@ -125,7 +127,7 @@
   const uMouse = gl.getUniformLocation(prog, "uMouse");
 
   // Rendu en résolution réduite : la soie est douce, le flou est invisible et le GPU respire.
-  const QUALITY = window.innerWidth < 760 ? 0.45 : 0.6;
+  const QUALITY = 0.4;
   function resize() {
     const w = Math.max(1, Math.floor(canvas.clientWidth * QUALITY));
     const h = Math.max(1, Math.floor(canvas.clientHeight * QUALITY));
@@ -147,8 +149,11 @@
   let raf = 0;
   const start = performance.now() - 20000; // démarre "en mouvement"
 
+  let last = 0;
   function frame(now) {
     raf = 0;
+    if (now - last < 33) { if (visible && !document.hidden) raf = requestAnimationFrame(frame); return; } // ~30 i/s suffisent
+    last = now;
     resize();
     mouse.x += (mouse.tx - mouse.x) * 0.04;
     mouse.y += (mouse.ty - mouse.y) * 0.04;

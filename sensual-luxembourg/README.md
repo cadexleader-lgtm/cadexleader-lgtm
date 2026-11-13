@@ -7,12 +7,11 @@ Version de présentation à montrer au client avant validation.
 - Palette **bleu nuit · bleu royal · blanc · rouge carmin**, cartes très arrondies, effet verre dépoli.
 - **Parcours de réservation complet** : massage + durée + lieu → jour + heure → coordonnées + paiement
   → message pré-rempli envoyé sur WhatsApp → paiement en ligne (acompte ou totalité), ajout à l'agenda, référence.
-- **Animations « vidéo » au défilement** :
-  - *Le Rituel*, un **film interactif** en WebGL : le scroll fait avancer le film (zooms, transitions liquides
-    bordées de lumière rouge, étalonnage cinéma, bandes noires, timecode « Lecture / Pause ») ;
-  - une **galerie en vol 3D** où l'on traverse les photos en profondeur ;
-  - fond « soie » animé, titre lettre par lettre, visuel 3D, cartes qui basculent en 3D, rideaux d'images,
-    étapes en carrousel 3D, tarifs en éventail, vidéo d'ambiance plein écran, compteurs…
+- **Design sobre et aéré** : peu d'éléments par écran, une seule animation forte, chargement léger
+  (environ 1,2 Mo au total, contre 6,3 Mo pour la première maquette).
+- ***Le Rituel*, un film interactif** en WebGL : le défilement fait avancer 4 chapitres (zoom lent,
+  transition liquide). Sur téléphone, **un geste = un chapitre** (accroche automatique).
+- Fond « soie » animé sur ordinateur uniquement ; sur téléphone, photo fixe (zéro calcul).
 
 ## Structure
 
@@ -24,15 +23,13 @@ sensual-luxembourg/
 └── assets/
     ├── css/style.css       ← design (couleurs en haut du fichier, variables :root)
     ├── js/config.js        ← ⚙️ CONFIGURATION : WhatsApp, e-mail, paiement, créneaux, suppléments
-    ├── js/main.js          ← animations générales, navigation, curseur
+    ├── js/main.js          ← âge 18+, navigation, filtres, tarifs, FAQ, apparitions
     ├── js/booking.js       ← parcours de réservation (tiroir en 3 étapes)
     ├── js/reel.js          ← film interactif « Le Rituel » (WebGL)
-    ├── js/tunnel.js        ← galerie en vol 3D
-    ├── js/silk.js          ← fond animé WebGL du hero
-    ├── img/                ← logo (SVG), favicon, photos WebP, image de partage
-    ├── video/              ← film d'ambiance (MP4 + WebM) et son affiche
+    ├── js/silk.js          ← fond animé WebGL du hero (ordinateur seulement)
+    ├── img/                ← logo (SVG), favicon, photos WebP (+ versions -800, -1200, -thumb allégées), image de partage
     ├── fonts/              ← Cormorant Garamond + Manrope (hébergées localement)
-    └── vendor/             ← GSAP, ScrollTrigger, Lenis
+    └── vendor/             ← GSAP, ScrollTrigger
 ```
 
 ## Voir le site en local
@@ -69,7 +66,7 @@ il n'y a qu'un seul endroit à modifier.
 
 ### Ce qui se passe quand un client réserve
 
-1. Il clique sur « Réserver » (menu, hero, carte de massage, tarifs, film, barre mobile…).
+1. Il clique sur « Réserver » (menu, accueil, carte de massage, tarifs, fin du film, barre mobile…).
 2. Il choisit massage, durée, lieu (supplément hôtel/domicile ajouté), puis le jour et l'heure.
 3. Il indique son prénom, choisit **payer sur place**, **acompte en ligne** ou **totalité en ligne**.
 4. **WhatsApp s'ouvre avec le message déjà rédigé** (massage, date, lieu, prix, paiement, référence `SL-XXXX`).
@@ -112,20 +109,21 @@ Ensuite, chaque `git push` redéploie automatiquement. Le domaine (ex. `sensual-
 | Moyens de paiement, horaires, zones | FAQ, Contact, bento | Valider avec le client |
 | Mentions légales / confidentialité | pied de page | Créer les pages (obligatoire) |
 
-## Photos, vidéo et licences
+## Photos et licences
 
 - Photos : [Unsplash](https://unsplash.com/license) (usage commercial gratuit, sans attribution obligatoire).
   Aucune photo ne montre le visage d'une personne identifiable : les vraies photos de l'équipe devront être
   fournies par le client, **avec l'accord écrit des personnes photographiées**.
-- Vidéo d'ambiance : montage réalisé à partir de ces photos (zooms lents + fondus), MP4 H.264 et WebM VP9.
-- Film interactif et galerie 3D : calculés en direct dans le navigateur à partir des mêmes photos (aucun fichier vidéo lourd).
+- Film interactif : calculé en direct dans le navigateur à partir des photos (aucun fichier vidéo lourd).
 - Polices : Cormorant Garamond et Manrope (SIL Open Font License), servies localement.
-- GSAP + ScrollTrigger (licence GSAP standard, gratuite y compris en commercial) et Lenis (MIT).
+- GSAP + ScrollTrigger (licence GSAP standard, gratuite y compris en commercial).
 
 ## Accessibilité & performance
 
 - Respect de `prefers-reduced-motion` : animations lourdes coupées pour les personnes sensibles au mouvement.
-- Fonds WebGL (soie, film) mis en pause hors écran ; repli automatique (dégradé CSS / Canvas 2D) sans WebGL.
+- Le film ne calcule une image que lorsque l'on fait défiler ; le fond « soie » tourne à 30 i/s, en basse résolution,
+  s'arrête hors écran et n'existe pas sur téléphone. Repli automatique (dégradé CSS / Canvas 2D) sans WebGL.
 - Tiroir de réservation accessible au clavier (Échap pour fermer, focus maintenu dans le tiroir).
-- Images WebP en chargement différé, polices préchargées, curseur personnalisé uniquement sur souris.
+- Défilement natif (pas de bibliothèque de « smooth scroll »), apparitions en CSS pur, images WebP en tailles adaptées,
+  chargement différé, polices préchargées.
 - Balises `rating=adult` / RTA pour les filtres parentaux.

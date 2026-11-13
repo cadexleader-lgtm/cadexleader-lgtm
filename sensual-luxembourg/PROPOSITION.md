@@ -13,21 +13,18 @@ Un site **haut de gamme, sombre et élégant**, aux couleurs **bleu, blanc et ro
 | Section | Ce qu'elle apporte |
 |---|---|
 | Écran 18+ | Vérification d'âge à l'entrée, obligatoire pour ce type d'activité |
-| Accueil animé | Fond en soie animé qui réagit à la souris, titre qui apparaît lettre par lettre, visuel en relief 3D, disponibilité du jour |
-| **Film interactif « Le Rituel »** | Un film plein écran qui avance au rythme du défilement : 6 chapitres, transitions liquides, ambiance cinéma |
-| Manifeste | Le texte s'illumine mot par mot au défilement |
-| Nos massages | 6 cartes arrondies filtrables **Bien-être / Sensuel** qui basculent en 3D ; un clic ouvre directement la réservation |
-| Réserver, c'est simple | Les 4 étapes (choisir, réserver, confirmer, profiter) en carrousel 3D horizontal |
-| Chiffres clés | Compteurs animés (expérience, séances, note, confidentialité) |
-| Nos engagements | Discrétion, hygiène, praticiennes professionnelles, horaires, déplacement à l'hôtel |
-| Film d'ambiance | Vidéo qui s'ouvre en plein écran au défilement |
-| **Galerie en vol 3D** | On traverse les photos en profondeur en défilant ; chaque photo s'agrandit d'un clic |
-| Tarifs | 3 formules, bascule **salon privé / hôtel** avec mise à jour animée des prix |
-| Avis clients | Bandeaux d'avis qui défilent en continu |
-| FAQ | Réponses aux questions fréquentes (paiement, discrétion, règles) |
+| Accueil | Titre élégant, une phrase, un bouton « Réserver » — rien de superflu |
+| **Film interactif « Le Rituel »** | 4 chapitres plein écran qui avancent au rythme du défilement ; sur téléphone, un geste = un chapitre |
+| Massages | 6 massages filtrables **Bien-être / Sensuel** ; un clic ouvre directement la réservation |
+| Engagements | Discrétion, professionnalisme, hygiène |
+| Ambiance | 6 photos du cadre, agrandissables (défilement au doigt sur téléphone) |
+| Tarifs | 3 formules, bascule **salon / hôtel** |
+| Avis & FAQ | 3 avis, 4 questions essentielles |
 | **Réservation en 3 étapes** | Massage + durée + lieu → jour + heure → coordonnées + paiement. **WhatsApp s'ouvre avec la demande déjà rédigée** (référence incluse) |
 | **Paiement** | Sur place, acompte ou totalité en ligne ; bouton « Payer maintenant » après la demande ; ajout à l'agenda avec un intitulé discret |
-| Barre mobile + bouton WhatsApp | « Réserver · dès 90 € » toujours à portée de pouce sur téléphone |
+| Barre mobile | « Réserver · dès 90 € » + WhatsApp toujours à portée de pouce |
+
+Un site **léger et rapide** : environ 1,2 Mo au total, sans animation qui tourne en continu.
 
 Logo « SL » créé sur mesure (fichiers vectoriels : utilisable sur le site, les réseaux, une carte de visite).
 
