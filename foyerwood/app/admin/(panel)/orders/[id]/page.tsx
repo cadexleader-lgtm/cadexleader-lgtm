@@ -162,6 +162,11 @@ export default async function OrderDetailPage({ params, searchParams }: Props) {
                     {q.validUntil && <p className="text-xs text-stone">Valable jusqu'au {formatDate(q.validUntil, "fr-FR")}</p>}
                     {q.notes && <p className="mt-1 text-xs text-stone">{q.notes}</p>}
                     {q.status !== "cancelled" && (
+                      <Link href={`/admin/proforma/${q.id}`} className="mt-2 inline-flex h-9 items-center gap-2 rounded-full bg-forest px-4 text-xs font-semibold text-cream hover:bg-pine">
+                        Voir, télécharger et envoyer la pro forma →
+                      </Link>
+                    )}
+                    {q.status !== "cancelled" && (
                       <div className="mt-2 flex flex-wrap gap-2">
                         {(["sent", "accepted", "expired"] as const).filter((st) => st !== q.status).map((st) => (
                           <form key={st} action={quotationStatusAction}>

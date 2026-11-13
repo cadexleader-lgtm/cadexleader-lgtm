@@ -436,16 +436,16 @@ export async function createQuotation(
   orderId: string,
   data: { amountCents: number; deliveryCents: number; taxCents: number; validUntil: string | null; notes: string | null },
   userId: string | null,
-) {
-  await tx(async (q) => {
+): Promise<string> {
+  return tx(async (q) => {
     const [o] = await q.query<{ reference: string; currency: string }>(`select reference, currency from orders where id = $1`, [orderId]);
     if (!o) throw new OrderRuleError("Commande introuvable.");
     const [{ n }] = await q.query<{ n: number }>(`select count(*)::int as n from quotations where order_id = $1`, [orderId]);
     const number = `PF-${o.reference.replace(/^FW-/, "")}-${n + 1}`;
     await q.query(`update quotations set status = 'cancelled', updated_at = now() where order_id = $1 and status in ('draft','sent')`, [orderId]);
-    await q.query(
+    const [created] = await q.query<{ id: string }>(
       `insert into quotations (order_id, number, amount_cents, delivery_cents, tax_cents, currency, valid_until, notes, created_by)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning id`,
       [orderId, number, data.amountCents, data.deliveryCents, data.taxCents, o.currency, data.validUntil, data.notes, userId],
     );
     await q.query(`insert into order_events (order_id, note, user_id) values ($1, $2, $3)`, [
@@ -453,6 +453,7 @@ export async function createQuotation(
       `Facture pro forma ${number} créée (${((data.amountCents + data.deliveryCents + data.taxCents) / 100).toFixed(2)} ${o.currency}).`,
       userId,
     ]);
+    return created.id;
   });
 }
 
@@ -549,4 +550,36 @@ export async function saveDelivery(
        updated_at = now()`,
     [orderId, supplierId, d.status, d.scheduledDate, d.carrier, d.trackingInfo, d.notes],
   );
+}
+
+// ---------------------------------------------------------------- pro forma
+
+export interface ProformaData {
+  order: Order;
+  items: OrderItem[];
+  quotation: Quotation;
+}
+
+export async function getProformaById(quotationId: string): Promise<ProformaData | null> {
+  if (!/^[0-9a-f-]{36}$/i.test(quotationId)) return null;
+  const qrow = await queryOne(`select * from quotations where id = $1`, [quotationId]);
+  if (!qrow) return null;
+  const quotation = fixDate(camelize<Quotation>(qrow));
+  const orow = await queryOne(`select * from orders where id = $1`, [quotation.orderId]);
+  if (!orow) return null;
+  return { order: camelize<Order>(orow), items: await orderItems(quotation.orderId), quotation };
+}
+
+/** Customer access: the pro forma number plus the order's private token. */
+export async function getProformaForCustomer(number: string, token: string): Promise<ProformaData | null> {
+  const qrow = await queryOne(`select id from quotations where number = $1 and status <> 'cancelled'`, [number]);
+  if (!qrow) return null;
+  const data = await getProformaById(String((qrow as { id: string }).id));
+  if (!data || !token || !safeEqual(data.order.accessToken, token)) return null;
+  return data;
+}
+
+export async function getProformaOrderMarket(orderId: string): Promise<MarketId | null> {
+  const row = await queryOne<{ market_id: MarketId }>(`select market_id from orders where id = $1`, [orderId]);
+  return row?.market_id ?? null;
 }

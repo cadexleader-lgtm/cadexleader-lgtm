@@ -58,6 +58,18 @@ export interface CompanySettings {
   email: string;
 }
 
+/** Pro forma invoice details, per market. */
+export interface BillingSettings {
+  /** Account holder shown for the bank transfer. */
+  beneficiary: string;
+  /** Bank details, one per line (IBAN / BIC, or institution / transit / account, or routing / account). */
+  bankDetails: string;
+  /** Tax mention printed on the pro forma (VAT exemption, GST/QST numbers…). */
+  taxMention: string;
+  /** Default validity of a pro forma, in days. */
+  validityDays: number;
+}
+
 export interface SocialSettings {
   instagram: string;
   facebook: string;
@@ -79,6 +91,11 @@ const DEFAULTS = {
     email: "",
   } as CompanySettings,
   social: { instagram: "", facebook: "", linkedin: "", youtube: "", tiktok: "" } as SocialSettings,
+  billing: {
+    fr: { beneficiary: "", bankDetails: "", taxMention: "", validityDays: 14 },
+    ca: { beneficiary: "", bankDetails: "", taxMention: "", validityDays: 14 },
+    us: { beneficiary: "", bankDetails: "", taxMention: "", validityDays: 14 },
+  } as Record<MarketId, BillingSettings>,
   // Starting values, all editable in Administration → Promotions.
   promotions: {
     fr: {

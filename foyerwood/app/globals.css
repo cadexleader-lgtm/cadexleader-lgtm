@@ -272,3 +272,11 @@
 .floating-cart { transition: bottom 0.3s ease, opacity 0.2s ease; }
 html[data-sticky-bar="true"] .floating-cart { bottom: 5.75rem; }
 
+/* Pro forma: clean A4 print / PDF. */
+@media print {
+  @page { size: A4; margin: 10mm; }
+  html, body { background: #fff !important; }
+  .no-print { display: none !important; }
+  .proforma { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
