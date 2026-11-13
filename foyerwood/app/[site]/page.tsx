@@ -11,6 +11,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { listProducts, toPublicProduct, type Product } from "@/lib/data/products";
 import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
+import { reviewSourceLabel } from "@/components/site/ReviewsProof";
 import { blogPath, categoryPath, routePath, SITES } from "@/lib/sites";
 import { fmt, formatMoney, formatNumber } from "@/lib/format";
 import { formatLabel } from "@/lib/product-format";
@@ -464,7 +465,7 @@ export default async function HomePage({ params }: SiteParams) {
                 <blockquote className="mt-5 flex-1 font-display text-[1.45rem] leading-snug text-forest">“{r.body}”</blockquote>
                 <figcaption className="mt-6 text-sm text-stone">
                   <span className="font-semibold text-charcoal">{r.authorName}</span>
-                  {r.city ? ` · ${r.city}` : ""} · {t.home.reviews.verified}
+                  {r.city ? ` · ${r.city}` : ""} · {reviewSourceLabel(r, t)}
                 </figcaption>
               </figure>
             ))}

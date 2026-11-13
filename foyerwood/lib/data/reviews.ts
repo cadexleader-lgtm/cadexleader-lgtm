@@ -2,6 +2,10 @@ import { query, queryOne } from "../db/client";
 import type { Lang, MarketId } from "../markets";
 import { camelizeAll } from "./util";
 
+export const REVIEW_SOURCES = ["site", "whatsapp", "email", "google", "facebook", "phone", "in_person", "other"] as const;
+export type ReviewSource = (typeof REVIEW_SOURCES)[number];
+export const isReviewSource = (v: string): v is ReviewSource => (REVIEW_SOURCES as readonly string[]).includes(v);
+
 export interface Review {
   id: string;
   marketId: MarketId;
@@ -14,6 +18,7 @@ export interface Review {
   body: string;
   language: Lang;
   verified: boolean;
+  source: ReviewSource;
   status: "pending" | "approved" | "rejected";
   createdAt: Date;
   orderReference?: string | null;
@@ -63,6 +68,33 @@ export async function createReview(r: {
     `insert into reviews (market_id, order_id, author_name, city, rating, title, body, language, verified)
      values ($1,$2,$3,$4,$5,$6,$7,$8,true)`,
     [r.market, r.orderId, r.authorName, r.city, r.rating, r.title, r.body, r.language],
+  );
+}
+
+/** A review from a real customer received outside the site, entered by the administrator. */
+export async function createManualReview(r: {
+  market: MarketId;
+  orderId: string | null;
+  authorName: string;
+  city: string | null;
+  rating: number;
+  title: string | null;
+  body: string;
+  language: Lang;
+  source: ReviewSource;
+  createdAt: Date | null;
+}) {
+  await query(
+    `insert into reviews (market_id, order_id, author_name, city, rating, title, body, language, verified, source, status, moderated_at, created_at)
+     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'approved',now(),coalesce($11::timestamptz, now()))`,
+    [r.market, r.orderId, r.authorName, r.city, r.rating, r.title, r.body, r.language, r.orderId != null, r.source, r.createdAt ? r.createdAt.toISOString() : null],
+  );
+}
+
+export async function deliveredOrderByReference(reference: string, market: MarketId) {
+  return queryOne<{ id: string }>(
+    `select id from orders where upper(reference) = upper($1) and market_id = $2 and status = 'delivered'`,
+    [reference.trim(), market],
   );
 }
 

@@ -259,12 +259,12 @@ export const fr = {
     reviews: {
       kicker: "Avis clients",
       title: "Ce que disent nos clients",
-      subtitle: "Uniquement des avis vérifiés, laissés après une commande livrée.",
+      subtitle: "Uniquement des avis de vrais clients, relus avant publication.",
       emptyTitle: "Les premiers avis arrivent avec les premières livraisons",
       emptyText:
-        "Nous ne publions que des avis authentiques : chaque avis est lié à une commande livrée et vérifié avant publication. Vous avez été livré ? Partagez votre expérience.",
+        "Nous ne publions que des avis de vrais clients, relus avant publication, avec leur provenance. Vous avez été livré ? Partagez votre expérience.",
       cta: "Laisser un avis",
-      average: "{avg}/5 sur {n} avis vérifiés",
+      average: "{avg}/5 sur {n} avis clients",
       verified: "Avis vérifié",
     },
     newsletter: {
@@ -338,8 +338,8 @@ export const fr = {
     payAfter: "Vous payez seulement après confirmation et facture",
     stockLeft: "Plus que {n} {unit} en stock",
     perKwh: "soit ≈ {price} par kWh de chaleur",
-    reviews: "{avg}/5 · {n} avis clients vérifiés",
-    reviewsOne: "{avg}/5 · 1 avis client vérifié",
+    reviews: "{avg}/5 · {n} avis clients",
+    reviewsOne: "{avg}/5 · 1 avis client",
     notReserved: "Votre bois n'est réservé qu'une fois la précommande envoyée.",
     exit: {
       title: "Attendez ! Votre bois n'est pas encore réservé.",
@@ -348,6 +348,21 @@ export const fr = {
       stay: "Continuer mes achats",
     },
     sticky: "Ajouter",
+  },
+  reviewsProof: {
+    title: "Ils nous ont fait confiance",
+    seeAll: "Voir tous les avis",
+    sources: {
+      verified: "Commande livrée vérifiée",
+      site: "Avis client",
+      whatsapp: "Reçu par WhatsApp",
+      email: "Reçu par e-mail",
+      google: "Avis Google",
+      facebook: "Avis Facebook",
+      phone: "Recueilli par téléphone",
+      in_person: "Recueilli en personne",
+      other: "Avis client",
+    },
   },
   cartDrawer: {
     title: "Ma précommande",

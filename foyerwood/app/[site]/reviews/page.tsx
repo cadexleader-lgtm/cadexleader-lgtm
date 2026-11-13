@@ -4,6 +4,7 @@ import { ReviewForm } from "@/components/forms/SiteForms";
 import { PageHero } from "@/components/ui";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
+import { reviewSourceLabel } from "@/components/site/ReviewsProof";
 import { fmt, formatDate, formatNumber } from "@/lib/format";
 import { routePath } from "@/lib/sites";
 import { AMBIANCE } from "@/lib/illustrations";
@@ -48,7 +49,7 @@ export default async function ReviewsPage({ params }: SiteParams) {
                   <blockquote className="mt-2 leading-relaxed text-charcoal/85">{r.body}</blockquote>
                   <figcaption className="mt-4 flex items-center justify-between text-sm">
                     <span className="font-medium">{r.authorName}{r.city ? <span className="font-normal text-stone"> · {r.city}</span> : null}</span>
-                    <span className="flex items-center gap-1 text-xs text-success"><ShieldCheck className="h-3.5 w-3.5" /> {t.home.reviews.verified}</span>
+                    <span className="flex items-center gap-1 text-xs text-success"><ShieldCheck className="h-3.5 w-3.5" /> {reviewSourceLabel(r, t)}</span>
                   </figcaption>
                 </figure>
               ))}

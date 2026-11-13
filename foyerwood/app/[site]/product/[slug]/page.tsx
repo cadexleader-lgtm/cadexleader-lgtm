@@ -13,7 +13,8 @@ import { categoryPath, productPath, routePath, SITES } from "@/lib/sites";
 import { fmt, formatMoney, formatNumber, loc, money } from "@/lib/format";
 import { SPECIES, unitContentSummary, unitDefinition, unitLabel } from "@/lib/energy";
 import { formatLabel } from "@/lib/product-format";
-import { reviewStats } from "@/lib/data/reviews";
+import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
+import { ReviewsProof } from "@/components/site/ReviewsProof";
 import { seasonMessage } from "@/lib/season";
 import { StickyBuyBar } from "@/components/cart/StickyBuyBar";
 
@@ -76,7 +77,7 @@ export default async function ProductPage({ params }: Props) {
       : null;
 
   // Conversion cues, all from real data: verified reviews, real stock, real season, price per kWh.
-  const stats = await reviewStats(site.market);
+  const [stats, latestReviews] = await Promise.all([reviewStats(site.market), listApprovedReviews(site.market, 3)]);
   const proof =
     stats.count > 0 && stats.average != null
       ? fmt(stats.count === 1 ? t.marketing.reviewsOne : t.marketing.reviews, { avg: formatNumber(stats.average, site.locale, 1), n: stats.count })
@@ -297,6 +298,8 @@ export default async function ProductPage({ params }: Props) {
             </li>
           ))}
         </ul>
+
+        <ReviewsProof reviews={latestReviews} stats={stats} t={t} locale={site.locale} href={routePath(site, "reviews")} className="mt-16" />
 
         {sameSpecies.length > 0 && (
           <section className="mt-20">

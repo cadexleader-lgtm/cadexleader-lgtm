@@ -7,6 +7,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { FloatingCart } from "@/components/cart/FloatingCart";
 import { ExitIntent } from "@/components/cart/ExitIntent";
 import { listProducts, toPublicProduct } from "@/lib/data/products";
+import { reviewStats } from "@/lib/data/reviews";
 import { loadSite, type SiteParams } from "@/lib/site-context";
 import { SITES, SITE_IDS, blogPath, categoryPath, productPath, routePath, siblingSites } from "@/lib/sites";
 import { MARKETS } from "@/lib/markets";
@@ -50,6 +51,17 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
     };
   });
 
+  const stats = await reviewStats(site.market);
+  const rating =
+    stats.count > 0 && stats.average != null
+      ? {
+          average: stats.average,
+          href: routePath(site, "reviews"),
+          text: (stats.count === 1 ? t.marketing.reviewsOne : t.marketing.reviews)
+            .replace("{avg}", new Intl.NumberFormat(site.locale, { maximumFractionDigits: 1 }).format(stats.average))
+            .replace("{n}", String(stats.count)),
+        }
+      : null;
   // Compact catalogue for the slide-in cart (name, photo, price, quantities).
   const drawerProducts = (await listProducts(site.market, site.lang)).map((prod) => {
     const pub = toPublicProduct(prod, site.lang);
@@ -139,6 +151,7 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
         preorderHref={routePath(site, "preorder")}
         shopHref={routePath(site, "shop")}
         freeThresholdCents={ctx.freeThresholdCents}
+        rating={rating}
         labels={{
           ...t.cartDrawer,
           perUnit: t.common.perUnit,
