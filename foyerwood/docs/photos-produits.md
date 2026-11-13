@@ -58,7 +58,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Chêne en big bag | Oak Firewood Big Bag | `oak firewood bulk bag` | `big bag bois de chauffage chêne` | `oak-big_bag.webp` | à trouver |
 | Chêne en filet | Oak Firewood Net Bag | `oak firewood net bag mesh` | `filet de bûches chêne` | `oak-net_bag.webp` | ✅ fournie |
 | Chêne en sac | Bagged Oak Firewood | `bagged oak firewood` | `sac de bûches chêne bois sec` | `oak-bag.webp` | à trouver |
-| Chêne en carton | Boxed Oak Firewood | `boxed kiln dried oak firewood` | `carton de bûches chêne séché au four` | `oak-box.webp` | à trouver |
+| Chêne en carton | Boxed Oak Firewood | `boxed kiln dried oak firewood` | `carton de bûches chêne séché au four` | `oak-box.webp` | ✅ fournie |
 
 ### Hêtre (Beech)
 
@@ -69,7 +69,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Hêtre en big bag | Beech Firewood Big Bag | `beech firewood bulk bag` | `big bag bois de chauffage hêtre` | `beech-big_bag.webp` | à trouver |
 | Hêtre en filet | Beech Firewood Net Bag | `beech firewood net bag mesh` | `filet de bûches hêtre` | `beech-net_bag.webp` | à trouver |
 | Hêtre en sac | Bagged Beech Firewood | `bagged beech firewood` | `sac de bûches hêtre bois sec` | `beech-bag.webp` | à trouver |
-| Hêtre en carton | Boxed Beech Firewood | `boxed kiln dried beech firewood` | `carton de bûches hêtre séché au four` | `beech-box.webp` | à trouver |
+| Hêtre en carton | Boxed Beech Firewood | `boxed kiln dried beech firewood` | `carton de bûches hêtre séché au four` | `beech-box.webp` | ✅ fournie |
 
 ### Bouleau (Birch)
 
@@ -80,18 +80,18 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Bouleau en big bag | Birch Firewood Big Bag | `birch firewood bulk bag` | `big bag bois de chauffage bouleau` | `birch-big_bag.webp` | ✅ fournie |
 | Bouleau en filet | Birch Firewood Net Bag | `birch firewood net bag mesh` | `filet de bûches bouleau` | `birch-net_bag.webp` | ✅ fournie |
 | Bouleau en sac | Bagged Birch Firewood | `bagged birch firewood` | `sac de bûches bouleau bois sec` | `birch-bag.webp` | à trouver |
-| Bouleau en carton | Boxed Birch Firewood | `boxed kiln dried birch firewood` | `carton de bûches bouleau séché au four` | `birch-box.webp` | à trouver |
+| Bouleau en carton | Boxed Birch Firewood | `boxed kiln dried birch firewood` | `carton de bûches bouleau séché au four` | `birch-box.webp` | ✅ fournie |
 
 ### Érable (Maple)
 
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
 | Érable en vrac | Maple Bulk Firewood | `maple firewood pile loose bulk` | `bois de chauffage érable en vrac tas` | `maple-bulk.webp` | à trouver |
-| Érable sur palette | Maple Firewood Pallet | `maple firewood pallet crate` | `palette bois de chauffage érable` | `maple-pallet.webp` | à trouver |
+| Érable sur palette | Maple Firewood Pallet | `maple firewood pallet crate` | `palette bois de chauffage érable` | `maple-pallet.webp` | ✅ fournie |
 | Érable en big bag | Maple Firewood Big Bag | `maple firewood bulk bag` | `big bag bois de chauffage érable` | `maple-big_bag.webp` | à trouver |
 | Érable en filet | Maple Firewood Net Bag | `maple firewood net bag mesh` | `filet de bûches érable` | `maple-net_bag.webp` | à trouver |
 | Érable en sac | Bagged Maple Firewood | `bagged maple firewood` | `sac de bûches érable bois sec` | `maple-bag.webp` | à trouver |
-| Érable en carton | Boxed Maple Firewood | `boxed kiln dried maple firewood` | `carton de bûches érable séché au four` | `maple-box.webp` | à trouver |
+| Érable en carton | Boxed Maple Firewood | `boxed kiln dried maple firewood` | `carton de bûches érable séché au four` | `maple-box.webp` | ✅ fournie |
 
 ### Frêne (Ash)
 
@@ -102,14 +102,14 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Frêne en big bag | Ash Firewood Big Bag | `ash firewood bulk bag` | `big bag bois de chauffage frêne` | `ash-big_bag.webp` | à trouver |
 | Frêne en filet | Ash Firewood Net Bag | `ash firewood net bag mesh` | `filet de bûches frêne` | `ash-net_bag.webp` | ✅ fournie |
 | Frêne en sac | Bagged Ash Firewood | `bagged ash firewood` | `sac de bûches frêne bois sec` | `ash-bag.webp` | à trouver |
-| Frêne en carton | Boxed Ash Firewood | `boxed kiln dried ash firewood` | `carton de bûches frêne séché au four` | `ash-box.webp` | à trouver |
+| Frêne en carton | Boxed Ash Firewood | `boxed kiln dried ash firewood` | `carton de bûches frêne séché au four` | `ash-box.webp` | ✅ fournie |
 
 ### Pin (Pine)
 
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
 | Pin en vrac | Pine Bulk Firewood | `pine firewood pile loose bulk` | `bois de chauffage pin en vrac tas` | `pine-bulk.webp` | ✅ fournie |
-| Pin sur palette | Pine Firewood Pallet | `pine firewood pallet crate` | `palette bois de chauffage pin` | `pine-pallet.webp` | à trouver |
+| Pin sur palette | Pine Firewood Pallet | `pine firewood pallet crate` | `palette bois de chauffage pin` | `pine-pallet.webp` | ✅ fournie |
 | Pin en big bag | Pine Firewood Big Bag | `pine firewood bulk bag` | `big bag bois de chauffage pin` | `pine-big_bag.webp` | à trouver |
 | Pin en filet | Pine Firewood Net Bag | `pine firewood net bag mesh` | `filet de bûches pin` | `pine-net_bag.webp` | à trouver |
 | Pin en sac | Bagged Pine Firewood | `bagged pine firewood` | `sac de bûches pin bois sec` | `pine-bag.webp` | à trouver |
