@@ -19,6 +19,7 @@ const SOURCE_LABEL = {
   facebook: "Avis Facebook",
   phone: "Par téléphone",
   in_person: "En personne",
+  previous_shop: "Précédente boutique",
   other: "Autre provenance",
 } as const;
 
@@ -48,6 +49,7 @@ export default async function ReviewsAdminPage({ searchParams }: SearchProps) {
               { value: "facebook", label: "Avis Facebook" },
               { value: "phone", label: "Recueilli par téléphone" },
               { value: "in_person", label: "Recueilli en personne" },
+              { value: "previous_shop", label: "Ma précédente boutique en ligne" },
               { value: "other", label: "Autre" },
             ]}
           />

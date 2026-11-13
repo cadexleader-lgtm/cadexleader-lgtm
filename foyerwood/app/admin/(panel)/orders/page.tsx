@@ -60,7 +60,7 @@ export default async function OrdersPage({ searchParams }: SearchProps) {
                 <td className="px-5 py-3">{MARKETS[o.marketId].flag} {o.language.toUpperCase()}</td>
                 <td className="px-5 py-3">{o.customerName}<span className="block text-xs text-stone">{o.postalCode} {o.city}</span></td>
                 <td className="px-5 py-3 text-stone">{o.customerPhone}</td>
-                <td className="px-5 py-3 text-right tabular-nums">{formatMoney(o.subtotalCents, o.currency, "fr-FR")}</td>
+                <td className="px-5 py-3 text-right tabular-nums">{formatMoney(o.subtotalCents - (o.discountCents ?? 0), o.currency, "fr-FR")}</td>
                 <td className="px-5 py-3"><StatusBadge status={o.status} /></td>
                 <td className="px-5 py-3 text-stone">{formatDateTime(o.createdAt, "fr-FR", MARKETS[o.marketId].timeZone)}</td>
               </tr>

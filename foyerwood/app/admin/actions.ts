@@ -6,7 +6,8 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createSessionToken, hashPassword, SESSION_COOKIE, verifyPassword } from "@/lib/auth";
 import { createUser, findUserByEmail, setContactStatus, setSubscriberStatus, setUserActive, touchLogin, updateUserPassword, updateUserProfile } from "@/lib/data/misc";
-import { saveProduct, setProductActive, slugExists, adminGetProduct, type ProductInput } from "@/lib/data/products";
+import { saveProduct, setProductActive, slugExists, adminGetProduct, applyPriceDrop, clearPriceDrop, type ProductInput } from "@/lib/data/products";
+import { saveMarketPromotions } from "@/lib/data/promotions";
 import { saveSupplier } from "@/lib/data/suppliers";
 import { deleteZone, saveZone } from "@/lib/data/zones";
 import {
@@ -416,6 +417,44 @@ export async function moderateReviewAction(fd: FormData) {
   const st = s(fd, "status") as "pending" | "approved" | "rejected";
   if (isUuid(id) && ["pending", "approved", "rejected"].includes(st)) await moderateReview(id, st);
   redirect(`/admin/reviews?ok=${encodeURIComponent("Avis mis à jour.")}`);
+}
+
+// ---------------------------------------------------------------- promotions
+
+export async function savePromotionsAction(fd: FormData) {
+  await requireAdmin();
+  const market = s(fd, "marketId");
+  if (!isMarketId(market)) redirect(`/admin/promotions?error=${encodeURIComponent("Pays inconnu.")}`);
+  const tiers = [0, 1, 2]
+    .map((i) => ({ minCents: centsOrNull(fd, `tierMin${i}`) ?? 0, percent: nOrNull(fd, `tierPct${i}`) ?? 0 }))
+    .filter((t) => t.minCents > 0 && t.percent > 0);
+  const gifts = [0, 1, 2, 3]
+    .map((i) => ({ minCents: centsOrNull(fd, `giftMin${i}`) ?? 0, productSlug: s(fd, `giftSlug${i}`) }))
+    .filter((g) => g.minCents > 0 && g.productSlug);
+  if (tiers.some((t) => t.percent > 50)) redirect(`/admin/promotions?m=${market}&error=${encodeURIComponent("Une remise ne peut pas dépasser 50 %.")}`);
+  await saveMarketPromotions(market as MarketId, { enabled: on(fd, "enabled"), tiers, gifts });
+  redirect(`/admin/promotions?m=${market}&ok=${encodeURIComponent("Remises et cadeaux enregistrés. Ils s'appliquent tout de suite sur le site.")}`);
+}
+
+export async function priceDropAction(fd: FormData) {
+  await requireAdmin();
+  const market = s(fd, "marketId");
+  if (!isMarketId(market)) redirect(`/admin/promotions?error=${encodeURIComponent("Pays inconnu.")}`);
+  const done = (k: "ok" | "error", m: string) => redirect(`/admin/promotions?m=${market}&${k}=${encodeURIComponent(m)}#prix`);
+  const scope = {
+    market: market as MarketId,
+    categoryId: s(fd, "categoryId") || undefined,
+    species: s(fd, "species") || undefined,
+    packaging: s(fd, "packaging") || undefined,
+  };
+  if (s(fd, "mode") === "clear") {
+    const n = await clearPriceDrop(scope);
+    done("ok", `${n} produit(s) remis à leur prix habituel.`);
+  }
+  const pct = nOrNull(fd, "percent") ?? 0;
+  if (pct <= 0 || pct > 50) done("error", "Indiquez une réduction entre 1 et 50 %.");
+  const n = await applyPriceDrop(scope, pct);
+  done("ok", `Réduction de ${pct} % appliquée à ${n} produit(s). L'ancien prix est affiché barré.`);
 }
 
 /** Adds a review received from a real customer outside the site (WhatsApp, e-mail, Google…). */

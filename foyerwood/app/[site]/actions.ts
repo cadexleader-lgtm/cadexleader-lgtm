@@ -16,6 +16,8 @@ import { createReview, findDeliveredOrder, hasReviewForOrder } from "@/lib/data/
 import { rateLimit } from "@/lib/rate-limit";
 import { fmt, formatDate, loc } from "@/lib/format";
 import { CUSTOMER_STEPS, STATUS_LABELS, customerStepIndex } from "@/lib/order-status";
+import { evaluatePromotions } from "@/lib/promotions";
+import { resolvePromotions } from "@/lib/data/promotions";
 
 export interface FormState {
   status: "idle" | "success" | "error";
@@ -246,7 +248,30 @@ export async function submitPreorderAction(_: FormState, fd: FormData): Promise<
     });
   }
 
-  const subtotal = items.reduce((s, i) => s + i.unitPriceCents * i.quantity, 0);
+  // Volume discount and free accessories, recomputed on the server.
+  const promo = evaluatePromotions(
+    await resolvePromotions(site.market, site.lang),
+    lines.map((l) => {
+      const p = byId.get(l.id)!;
+      return { priceCents: p.priceCents, qty: l.qty, categoryId: p.categoryId };
+    }),
+  );
+  for (const g of promo.gifts) {
+    const gp = (await getProductsByIds(site.market, [g.productId]))[0];
+    if (!gp || !gp.active || !canOrder(availabilityOf(gp))) continue;
+    items.push({
+      productId: gp.id,
+      supplierId: gp.supplierId,
+      name: `${loc(gp.name, site.lang)} (${t.promo.giftTag})`,
+      unit: gp.unit,
+      quantity: 1,
+      unitPriceCents: 0,
+      unitCostCents: gp.costCents,
+      isGift: true,
+    });
+  }
+
+  const subtotal = items.reduce((s, i) => s + i.unitPriceCents * i.quantity, 0) - promo.discountCents;
   const delivery = evaluateDelivery(
     site.market,
     postalCode,
@@ -279,6 +304,8 @@ export async function submitPreorderAction(_: FormState, fd: FormData): Promise<
     items,
     deliveryZoneId: delivery.zones[0]?.id ?? null,
     calculationId: calcId && (await calculationExists(calcId)) ? calcId : null,
+    discountCents: promo.discountCents,
+    discountPercent: promo.discountPercent,
   });
 
   redirect(`${routePath(site, "preorder", "confirmation", order.reference)}?t=${order.accessToken}`);

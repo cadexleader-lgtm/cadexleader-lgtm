@@ -7,6 +7,7 @@ import { legalPath, productPath, routePath } from "@/lib/sites";
 import { loc } from "@/lib/format";
 import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
 import { ReviewsProof } from "@/components/site/ReviewsProof";
+import { resolvePromotions } from "@/lib/data/promotions";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t } = await loadSite((await params).site);
@@ -20,6 +21,7 @@ export default async function PreorderPage({ params }: SiteParams) {
   const { site, t, market, settings } = await loadSite((await params).site);
   const [all, reviews, stats] = await Promise.all([listProducts(site.market, site.lang), listApprovedReviews(site.market, 2), reviewStats(site.market)]);
   const products = all.map((p) => toPublicProduct(p, site.lang));
+  const promotions = await resolvePromotions(site.market, site.lang);
   return (
     <div className="container-page py-10 sm:py-14">
       <Breadcrumbs items={[{ label: t.common.home, href: site.prefix }, { label: t.preorder.title }]} />
@@ -46,6 +48,8 @@ export default async function PreorderPage({ params }: SiteParams) {
         taxNote={loc(settings.taxNote, site.lang)}
         postalPlaceholder={POSTAL[site.market]}
         phonePlaceholder={PHONE[site.market]}
+        promotions={promotions}
+        promoLabels={t.promo}
         proof={<ReviewsProof reviews={reviews} stats={stats} t={t} locale={site.locale} href={routePath(site, "reviews")} variant="aside" className="mt-4" />}
         calculatorLabel={t.nav.calculator}
       />

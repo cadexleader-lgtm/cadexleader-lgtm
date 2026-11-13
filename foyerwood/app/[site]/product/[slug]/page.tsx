@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AlertTriangle, Calculator, Droplet, Flame, Info, Landmark, Ruler, ShieldCheck, Snowflake, Star, Truck, Handshake, type LucideIcon } from "lucide-react";
+import { Calculator, Droplet, Flame, Info, Landmark, Ruler, ShieldCheck, Snowflake, Star, Truck, Handshake, type LucideIcon } from "lucide-react";
 import { Breadcrumbs, Badge } from "@/components/ui";
 import { Gallery } from "@/components/site/Gallery";
 import { PhotoPending } from "@/components/site/ProductVisual";
@@ -17,6 +17,9 @@ import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
 import { ReviewsProof } from "@/components/site/ReviewsProof";
 import { seasonMessage } from "@/lib/season";
 import { StickyBuyBar } from "@/components/cart/StickyBuyBar";
+import { savingPercent } from "@/lib/promotions";
+import { resolvePromotions } from "@/lib/data/promotions";
+import { PromoBox } from "@/components/site/PromoBox";
 
 type Props = { params: Promise<{ site: string; slug: string }> };
 
@@ -88,10 +91,8 @@ export default async function ProductPage({ params }: Props) {
           price: new Intl.NumberFormat(site.locale, { style: "currency", currency: market.currency, minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(p.priceCents / 100 / energy),
         })
       : null;
-  const stockLeft =
-    p.trackStock && availability === "limited" && p.stockQuantity > 0
-      ? fmt(t.marketing.stockLeft, { n: p.stockQuantity, unit: p.stockQuantity > 1 ? unitMany : unitOne })
-      : null;
+  const saving = savingPercent(p.priceCents, p.compareAtCents);
+  const promos = p.categoryId !== "accessories" ? await resolvePromotions(site.market, lang) : null;
   const zeroToday = t.marketing.zeroToday.replace("{zero}", formatMoney(0, market.currency, site.locale));
 
   // Benefits strip: only facts we can state for this product.
@@ -173,23 +174,27 @@ export default async function ProductPage({ params }: Props) {
             <p className="mt-3 text-lg text-stone">{loc(p.shortDescription, lang)}</p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <p className="text-3xl font-semibold tracking-tight text-charcoal tabular-nums">
+              <p className={`text-3xl font-semibold tracking-tight tabular-nums ${saving > 0 ? "text-wood-600" : "text-charcoal"}`}>
                 {money(site, p.priceCents, market.currency)}
                 <span className="ml-1.5 text-base font-normal text-stone">{fmt(t.common.perUnit, { unit: unitOne })}</span>
               </p>
+              {saving > 0 && p.compareAtCents && (
+                <>
+                  <span className="text-lg text-stone line-through tabular-nums">{money(site, p.compareAtCents, market.currency)}</span>
+                  <span className="rounded-full bg-wood px-2.5 py-1 text-sm font-bold text-ink">−{saving} %</span>
+                </>
+              )}
               <Badge tone={AVAIL_TONE[availability]}>{t.availability[availability]}</Badge>
             </div>
+            {saving > 0 && p.compareAtCents && (
+              <p className="mt-1 text-sm font-semibold text-success">{fmt(t.promo.save, { amount: money(site, p.compareAtCents - p.priceCents, market.currency) })} {fmt(t.common.perUnit, { unit: unitOne })}</p>
+            )}
             {perKwh && <p className="mt-1 text-sm font-medium text-wood-600">{perKwh}</p>}
             <p className="mt-2 text-sm text-stone">
               {loc(settings.taxNote, lang)} {t.product.priceNote}
             </p>
 
             <div id="buy-box" className="mt-7 rounded-[var(--radius-card)] bg-white p-5 ring-1 ring-line/80">
-              {stockLeft && (
-                <p className="mb-4 flex items-center gap-2 rounded-[3px] bg-wood-100 px-3 py-2 text-sm font-semibold text-wood-600">
-                  <AlertTriangle className="h-4 w-4 shrink-0" /> {stockLeft}
-                </p>
-              )}
               {orderable ? (
                 <AddToCart
                   productId={p.id}
@@ -219,6 +224,8 @@ export default async function ProductPage({ params }: Props) {
                 <Landmark className="h-4 w-4 text-wood" /> {t.common.noPayment}
               </p>
             </div>
+
+            <PromoBox promos={promos} t={t} currency={market.currency} locale={site.locale} className="mt-6" />
 
             <div className="mt-6 rounded-[var(--radius-card)] bg-wood-100/60 p-5 ring-1 ring-wood/20">
               <p className="flex items-center gap-2 font-semibold text-wood-600">

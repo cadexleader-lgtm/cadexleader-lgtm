@@ -4,6 +4,7 @@ import { MessageCircle, Mail, Phone, MapPin, ShieldAlert } from "lucide-react";
 import { Flash, Panel, StatusBadge, Field, TextArea, Select, SubmitButton } from "@/components/admin/AdminUi";
 import { Badge } from "@/components/ui";
 import { getOrderDetail, quotationTotal } from "@/lib/data/orders";
+import { orderProductsTotal } from "@/lib/data/orders";
 import { MARKETS } from "@/lib/markets";
 import { ORDER_STATUSES, STATUS_LABELS, PAID_STATUSES } from "@/lib/order-status";
 import { formatDate, formatDateTime, formatMoney } from "@/lib/format";
@@ -35,6 +36,7 @@ export default async function OrderDetailPage({ params, searchParams }: Props) {
   const due = activeQuote ? quotationTotal(activeQuote) : null;
   const verified = payments.filter((p) => p.status === "verified").reduce((s, p) => s + p.receivedCents, 0);
   const cost = items.reduce((s, i) => s + (i.unitCostCents ?? 0) * i.quantity, 0);
+  const productsTotal = orderProductsTotal(o);
   const costKnown = items.every((i) => i.unitCostCents != null);
   const greet =
     o.language === "fr"
@@ -71,13 +73,17 @@ export default async function OrderDetailPage({ params, searchParams }: Props) {
                       <td className="px-5 py-3 text-right tabular-nums">{i.quantity} <span className="text-stone">{unit(i.unit, i.quantity)}</span></td>
                       <td className="px-5 py-3 text-right tabular-nums">{money(i.unitPriceCents)}</td>
                       <td className="px-5 py-3 text-right tabular-nums text-stone">{i.unitCostCents != null ? money(i.unitCostCents) : "—"}</td>
-                      <td className="px-5 py-3 text-right font-medium tabular-nums">{money(i.lineTotalCents)}</td>
+                      <td className="px-5 py-3 text-right font-medium tabular-nums">{i.isGift ? <span className="rounded-[2px] bg-wood-100 px-1.5 py-0.5 text-xs font-semibold uppercase text-wood-600">Offert</span> : money(i.lineTotalCents)}</td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot className="border-t border-line text-sm">
-                  <tr><td colSpan={4} className="px-5 py-2.5 text-right text-stone">Sous-total estimé (prix catalogue)</td><td className="px-5 py-2.5 text-right font-semibold tabular-nums">{money(o.subtotalCents)}</td></tr>
-                  <tr><td colSpan={4} className="px-5 py-2.5 text-right text-stone">Marge estimée</td><td className="px-5 py-2.5 text-right tabular-nums">{costKnown ? `${money(o.subtotalCents - cost)} (${o.subtotalCents ? Math.round(((o.subtotalCents - cost) / o.subtotalCents) * 100) : 0} %)` : "Tarifs d'achat incomplets"}</td></tr>
+                  <tr><td colSpan={4} className="px-5 py-2.5 text-right text-stone">Sous-total (prix catalogue)</td><td className="px-5 py-2.5 text-right tabular-nums">{money(o.subtotalCents)}</td></tr>
+                  {o.discountCents > 0 && (
+                    <tr><td colSpan={4} className="px-5 py-2.5 text-right text-stone">Remise volume (−{Number(o.discountPercent)} % sur le bois)</td><td className="px-5 py-2.5 text-right tabular-nums text-success">−{money(o.discountCents)}</td></tr>
+                  )}
+                  <tr><td colSpan={4} className="px-5 py-2.5 text-right text-stone">Total produits estimé</td><td className="px-5 py-2.5 text-right font-semibold tabular-nums">{money(productsTotal)}</td></tr>
+                  <tr><td colSpan={4} className="px-5 py-2.5 text-right text-stone">Marge estimée (cadeaux inclus)</td><td className="px-5 py-2.5 text-right tabular-nums">{costKnown ? `${money(productsTotal - cost)} (${productsTotal ? Math.round(((productsTotal - cost) / productsTotal) * 100) : 0} %)` : "Tarifs d'achat incomplets"}</td></tr>
                 </tfoot>
               </table>
             </div>
@@ -173,7 +179,7 @@ export default async function OrderDetailPage({ params, searchParams }: Props) {
             )}
             <form action={createQuotationAction} className="grid gap-3 sm:grid-cols-2">
               <input type="hidden" name="orderId" value={o.id} />
-              <Field label={`Montant produits (${o.currency})`} name="amount" inputMode="decimal" defaultValue={(o.subtotalCents / 100).toFixed(2)} required />
+              <Field label={`Montant produits (${o.currency})`} name="amount" inputMode="decimal" defaultValue={(productsTotal / 100).toFixed(2)} hint={o.discountCents > 0 ? "Remise volume déjà déduite." : undefined} required />
               <Field label="Livraison" name="delivery" inputMode="decimal" defaultValue="0" />
               <Field label={o.marketId === "fr" ? "Taxes (si non incluses)" : "Taxes"} name="tax" inputMode="decimal" defaultValue="0" hint={o.marketId === "fr" ? "Prix catalogue TTC en France." : "TPS/TVH/TVQ ou sales tax selon l'adresse."} />
               <Field label="Valable jusqu'au" name="validUntil" type="date" min={today} />

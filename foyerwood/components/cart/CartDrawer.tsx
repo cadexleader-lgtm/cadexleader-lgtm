@@ -8,6 +8,9 @@ import { useCart } from "./CartProvider";
 import { QuantityInput } from "./AddToCart";
 import { ProductVisual } from "@/components/site/ProductVisual";
 import { formatMoney } from "@/lib/format";
+import { evaluatePromotions, type ResolvedPromotions } from "@/lib/promotions";
+import type { Dict } from "@/lib/i18n/fr";
+import { GiftLines, PromoNudges } from "./PromoNudges";
 
 export interface DrawerProduct {
   id: string;
@@ -19,6 +22,8 @@ export interface DrawerProduct {
   unitLabelPlural: string;
   minQty: number;
   maxQty: number | null;
+  categoryId: string;
+  compareAtCents: number | null;
 }
 
 export interface CartDrawerLabels {
@@ -56,8 +61,12 @@ export function CartDrawer({
   shopHref,
   freeThresholdCents,
   rating,
+  promotions,
+  promoLabels,
   labels,
 }: {
+  promotions: ResolvedPromotions | null;
+  promoLabels: Dict["promo"];
   /** Real review summary (only when published reviews exist). */
   rating?: { text: string; average: number; href: string } | null;
   products: DrawerProduct[];
@@ -80,6 +89,10 @@ export function CartDrawer({
     product: DrawerProduct;
   }>;
   const subtotal = rows.reduce((sum, r) => sum + r.product.priceCents * r.line.qty, 0);
+  const promo = evaluatePromotions(
+    promotions,
+    rows.map((r) => ({ priceCents: r.product.priceCents, qty: r.line.qty, categoryId: r.product.categoryId })),
+  );
   const money = (cents: number) => formatMoney(cents, currency, locale);
   const open = drawerOpen && ready;
 
@@ -187,6 +200,10 @@ export function CartDrawer({
               </div>
             )}
 
+            {(promo.nextGift || promo.nextTier) && (
+              <PromoNudges result={promo} labels={promoLabels} money={money} className="border-b border-line bg-wood-100/50 px-5 py-3" />
+            )}
+
             <ul className="flex-1 divide-y divide-line overflow-y-auto px-5">
               {rows.map(({ line, product: p }) => {
                 const tooFew = line.qty < p.minQty;
@@ -233,12 +250,29 @@ export function CartDrawer({
                   </li>
                 );
               })}
+              {promo.gifts.length > 0 && (
+                <li>
+                  <GiftLines result={promo} labels={promoLabels} />
+                </li>
+              )}
             </ul>
 
             <div className="border-t border-line bg-white px-5 pb-5 pt-4">
+              {promo.discountCents > 0 && (
+                <div className="mb-1 space-y-1 text-sm">
+                  <div className="flex justify-between text-stone">
+                    <span>{labels.lineTotal}</span>
+                    <span className="tabular-nums">{money(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between font-semibold text-success">
+                    <span>{promoLabels.discountLine.replace("{pct}", String(promo.discountPercent))}</span>
+                    <span className="tabular-nums">−{money(promo.discountCents)}</span>
+                  </div>
+                </div>
+              )}
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-stone">{labels.subtotal}</span>
-                <span className="font-display text-3xl tabular-nums text-forest">{money(subtotal)}</span>
+                <span className="text-sm text-stone">{promo.discountCents > 0 ? promoLabels.totalAfter : labels.subtotal}</span>
+                <span className="font-display text-3xl tabular-nums text-forest">{money(promo.totalCents)}</span>
               </div>
               <p className="mt-2 flex gap-2 text-xs leading-relaxed text-stone">
                 <Landmark className="mt-0.5 h-3.5 w-3.5 shrink-0 text-wood-600" />

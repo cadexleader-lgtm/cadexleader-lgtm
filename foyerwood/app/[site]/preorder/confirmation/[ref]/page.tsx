@@ -34,7 +34,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
   const lang = site.lang;
   const unit = (u: string, q: number) => (isSaleUnit(u) ? unitLabel(u, lang, q) : u);
   const address = `${order.addressLine}, ${order.postalCode} ${order.city}`;
-  const total = money(site, order.subtotalCents, order.currency);
+  const total = money(site, order.subtotalCents - (order.discountCents ?? 0), order.currency);
   const message = buildPreorderMessage({
     lang,
     reference: order.reference,
@@ -115,10 +115,16 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                 <span>
                   {i.quantity} {unit(i.unit, i.quantity)} — {i.productName}
                 </span>
-                <span className="shrink-0 tabular-nums">{money(site, i.lineTotalCents, order.currency)}</span>
+                <span className={`shrink-0 tabular-nums ${i.isGift ? "font-semibold text-wood-600" : ""}`}>{i.isGift ? t.promo.free : money(site, i.lineTotalCents, order.currency)}</span>
               </li>
             ))}
           </ul>
+          {order.discountCents > 0 && (
+            <div className="mt-3 flex justify-between text-[0.95rem] text-success">
+              <span>{fmt(t.promo.discountLine, { pct: Number(order.discountPercent) })}</span>
+              <span className="tabular-nums">−{money(site, order.discountCents, order.currency)}</span>
+            </div>
+          )}
           <div className="mt-3 flex justify-between border-t border-line pt-3 font-semibold">
             <span>{t.preorder.total}</span>
             <span className="tabular-nums text-forest">{total}</span>
