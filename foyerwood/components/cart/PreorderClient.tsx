@@ -33,6 +33,8 @@ interface Props {
   postalPlaceholder: string;
   phonePlaceholder: string;
   calculatorLabel: string;
+  /** Real customer reviews, shown next to the submit button (server-rendered). */
+  proof?: React.ReactNode;
 }
 
 export function PreorderClient(p: Props) {
@@ -335,6 +337,7 @@ export function PreorderClient(p: Props) {
                 </li>
               ))}
             </ul>
+            {p.proof}
           </div>
         </div>
       </aside>

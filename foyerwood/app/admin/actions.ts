@@ -21,7 +21,7 @@ import {
   setQuotationStatus,
   updateInternalNotes,
 } from "@/lib/data/orders";
-import { moderateReview } from "@/lib/data/reviews";
+import { createManualReview, deliveredOrderByReference, isReviewSource, moderateReview } from "@/lib/data/reviews";
 import { articleSlugExists, deleteArticle, saveArticle } from "@/lib/data/blog";
 import { setSetting, updateCategory, updateMarketSettings } from "@/lib/data/settings";
 import { isMarketId, MARKETS, type MarketId } from "@/lib/markets";
@@ -416,6 +416,46 @@ export async function moderateReviewAction(fd: FormData) {
   const st = s(fd, "status") as "pending" | "approved" | "rejected";
   if (isUuid(id) && ["pending", "approved", "rejected"].includes(st)) await moderateReview(id, st);
   redirect(`/admin/reviews?ok=${encodeURIComponent("Avis mis à jour.")}`);
+}
+
+/** Adds a review received from a real customer outside the site (WhatsApp, e-mail, Google…). */
+export async function addReviewAction(fd: FormData) {
+  await requireAdmin();
+  const fail = (m: string) => redirect(`/admin/reviews?error=${encodeURIComponent(m)}#add`);
+  const market = s(fd, "marketId");
+  const source = s(fd, "source");
+  const rating = Number(s(fd, "rating"));
+  const authorName = s(fd, "authorName");
+  const body = s(fd, "body");
+  const language = s(fd, "language") === "en" ? "en" : "fr";
+  if (!isMarketId(market)) fail("Choisissez le pays du client.");
+  if (!isReviewSource(source)) fail("Choisissez la provenance de l'avis.");
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) fail("La note doit être comprise entre 1 et 5.");
+  if (authorName.length < 2) fail("Indiquez le nom (ou prénom) du client.");
+  if (body.length < 10) fail("L'avis doit contenir au moins 10 caractères.");
+  if (fd.get("authentic") !== "on") fail("Confirmez que cet avis a bien été écrit par un vrai client.");
+  const ref = s(fd, "orderReference");
+  let orderId: string | null = null;
+  if (ref) {
+    const order = await deliveredOrderByReference(ref, market as MarketId);
+    if (!order) fail("Aucune commande livrée ne correspond à cette référence dans ce pays (laissez le champ vide si l'avis n'est pas lié à une commande du site).");
+    orderId = order!.id;
+  }
+  const date = s(fd, "date");
+  const createdAt = date && !Number.isNaN(Date.parse(date)) ? new Date(date) : null;
+  await createManualReview({
+    market: market as MarketId,
+    orderId,
+    authorName: authorName.slice(0, 80),
+    city: s(fd, "city").slice(0, 80) || null,
+    rating,
+    title: s(fd, "title").slice(0, 120) || null,
+    body: body.slice(0, 2000),
+    language,
+    source: source as "whatsapp",
+    createdAt,
+  });
+  redirect(`/admin/reviews?ok=${encodeURIComponent("Avis publié. Il apparaît maintenant sur le site.")}`);
 }
 
 export async function contactStatusAction(fd: FormData) {

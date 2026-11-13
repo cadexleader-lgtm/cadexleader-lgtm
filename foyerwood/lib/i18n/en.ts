@@ -259,12 +259,12 @@ export const en: Dict = {
     reviews: {
       kicker: "Customer reviews",
       title: "What our customers say",
-      subtitle: "Verified reviews only, left after a delivered order.",
+      subtitle: "Reviews from real customers only, checked before publication.",
       emptyTitle: "The first reviews will arrive with the first deliveries",
       emptyText:
-        "We only publish authentic reviews: each one is linked to a delivered order and checked before publication. Already received your order? Share your experience.",
+        "We only publish reviews from real customers, checked before publication and shown with their source. Already received your order? Share your experience.",
       cta: "Leave a review",
-      average: "{avg}/5 from {n} verified reviews",
+      average: "{avg}/5 from {n} customer reviews",
       verified: "Verified review",
     },
     newsletter: {
@@ -338,8 +338,8 @@ export const en: Dict = {
     payAfter: "You only pay after confirmation and invoice",
     stockLeft: "Only {n} {unit} left in stock",
     perKwh: "≈ {price} per kWh of heat",
-    reviews: "{avg}/5 · {n} verified customer reviews",
-    reviewsOne: "{avg}/5 · 1 verified customer review",
+    reviews: "{avg}/5 · {n} customer reviews",
+    reviewsOne: "{avg}/5 · 1 customer review",
     notReserved: "Your firewood is only reserved once the pre-order is sent.",
     exit: {
       title: "Wait! Your firewood isn't reserved yet.",
@@ -348,6 +348,21 @@ export const en: Dict = {
       stay: "Continue shopping",
     },
     sticky: "Add",
+  },
+  reviewsProof: {
+    title: "Customers who trusted us",
+    seeAll: "See all reviews",
+    sources: {
+      verified: "Verified delivered order",
+      site: "Customer review",
+      whatsapp: "Received on WhatsApp",
+      email: "Received by e-mail",
+      google: "Google review",
+      facebook: "Facebook review",
+      phone: "Collected by phone",
+      in_person: "Collected in person",
+      other: "Customer review",
+    },
   },
   cartDrawer: {
     title: "My pre-order",

@@ -16,6 +16,7 @@
   "birch-pallet": "/images/products/birch-pallet.webp",
   "briquettes-bag": "/images/products/briquettes-bag.webp",
   "briquettes-box": "/images/products/briquettes-box.webp",
+  "maple-bag": "/images/products/maple-bag.webp",
   "maple-big_bag": "/images/products/maple-big_bag.webp",
   "maple-box": "/images/products/maple-box.webp",
   "maple-bulk": "/images/products/maple-bulk.webp",
@@ -27,7 +28,9 @@
   "oak-pallet": "/images/products/oak-pallet.webp",
   "pellets-bag": "/images/products/pellets-bag.webp",
   "pellets-pallet": "/images/products/pellets-pallet.webp",
+  "pine-bag": "/images/products/pine-bag.webp",
   "pine-big_bag": "/images/products/pine-big_bag.webp",
   "pine-bulk": "/images/products/pine-bulk.webp",
+  "pine-net_bag": "/images/products/pine-net_bag.webp",
   "pine-pallet": "/images/products/pine-pallet.webp"
 }
