@@ -4,7 +4,7 @@ import type { CategoryKey } from "../sites";
 import { energyPerUnitKwh, unitLabel, type Packing, type SaleUnit, type SpeciesKey } from "../energy";
 import { loc, type LText } from "../format";
 import { camelize } from "./util";
-import { autoProductPhoto } from "../product-photos";
+import { autoProductPhotos } from "../product-photos";
 
 export interface Product {
   id: string;
@@ -141,9 +141,9 @@ function map(row: Record<string, unknown>): Product {
     p.photoSource = "catalog";
   }
   if (p.images.length === 0) {
-    const file = autoProductPhoto(p.species, p.packaging, p.categoryId, p.slug);
-    if (file) {
-      p.images = [file];
+    const files = autoProductPhotos(p.species, p.packaging, p.categoryId, p.slug);
+    if (files.length) {
+      p.images = files;
       p.photoSource = "file";
     }
   }
