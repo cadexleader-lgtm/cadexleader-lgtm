@@ -67,7 +67,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Hêtre en vrac | Beech Bulk Firewood | `beech firewood pile loose bulk` | `bois de chauffage hêtre en vrac tas` | `beech-bulk.webp` | ✅ fournie |
 | Hêtre sur palette | Beech Firewood Pallet | `beech firewood pallet crate` | `palette bois de chauffage hêtre` | `beech-pallet.webp` | ✅ fournie |
 | Hêtre en big bag | Beech Firewood Big Bag | `beech firewood bulk bag` | `big bag bois de chauffage hêtre` | `beech-big_bag.webp` | ✅ fournie |
-| Hêtre en filet | Beech Firewood Net Bag | `beech firewood net bag mesh` | `filet de bûches hêtre` | `beech-net_bag.webp` | à trouver |
+| Hêtre en filet | Beech Firewood Net Bag | `beech firewood net bag mesh` | `filet de bûches hêtre` | `beech-net_bag.webp` | ✅ fournie |
 | Hêtre en sac | Bagged Beech Firewood | `bagged beech firewood` | `sac de bûches hêtre bois sec` | `beech-bag.webp` | à trouver |
 | Hêtre en carton | Boxed Beech Firewood | `boxed kiln dried beech firewood` | `carton de bûches hêtre séché au four` | `beech-box.webp` | ✅ fournie |
 
@@ -97,7 +97,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 
 | Produit | Nom anglais | Recherche en anglais | Recherche en français | Fichier | Statut |
 |---|---|---|---|---|---|
-| Frêne en vrac | Ash Bulk Firewood | `ash firewood pile loose bulk` | `bois de chauffage frêne en vrac tas` | `ash-bulk.webp` | à trouver |
+| Frêne en vrac | Ash Bulk Firewood | `ash firewood pile loose bulk` | `bois de chauffage frêne en vrac tas` | `ash-bulk.webp` | ✅ fournie |
 | Frêne sur palette | Ash Firewood Pallet | `ash firewood pallet crate` | `palette bois de chauffage frêne` | `ash-pallet.webp` | ✅ fournie |
 | Frêne en big bag | Ash Firewood Big Bag | `ash firewood bulk bag` | `big bag bois de chauffage frêne` | `ash-big_bag.webp` | ✅ fournie |
 | Frêne en filet | Ash Firewood Net Bag | `ash firewood net bag mesh` | `filet de bûches frêne` | `ash-net_bag.webp` | ✅ fournie |
@@ -110,7 +110,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 |---|---|---|---|---|---|
 | Pin en vrac | Pine Bulk Firewood | `pine firewood pile loose bulk` | `bois de chauffage pin en vrac tas` | `pine-bulk.webp` | ✅ fournie |
 | Pin sur palette | Pine Firewood Pallet | `pine firewood pallet crate` | `palette bois de chauffage pin` | `pine-pallet.webp` | ✅ fournie |
-| Pin en big bag | Pine Firewood Big Bag | `pine firewood bulk bag` | `big bag bois de chauffage pin` | `pine-big_bag.webp` | à trouver |
+| Pin en big bag | Pine Firewood Big Bag | `pine firewood bulk bag` | `big bag bois de chauffage pin` | `pine-big_bag.webp` | ✅ fournie |
 | Pin en filet | Pine Firewood Net Bag | `pine firewood net bag mesh` | `filet de bûches pin` | `pine-net_bag.webp` | à trouver |
 | Pin en sac | Bagged Pine Firewood | `bagged pine firewood` | `sac de bûches pin bois sec` | `pine-bag.webp` | à trouver |
 | Pin en carton | Boxed Pine Firewood | `boxed kiln dried pine firewood` | `carton de bûches pin séché au four` | `pine-box.webp` | à trouver |

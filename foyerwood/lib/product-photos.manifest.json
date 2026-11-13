@@ -1,11 +1,13 @@
 {
   "ash-big_bag": "/images/products/ash-big_bag.webp",
   "ash-box": "/images/products/ash-box.webp",
+  "ash-bulk": "/images/products/ash-bulk.webp",
   "ash-net_bag": "/images/products/ash-net_bag.webp",
   "ash-pallet": "/images/products/ash-pallet.webp",
   "beech-big_bag": "/images/products/beech-big_bag.webp",
   "beech-box": "/images/products/beech-box.webp",
   "beech-bulk": "/images/products/beech-bulk.webp",
+  "beech-net_bag": "/images/products/beech-net_bag.webp",
   "beech-pallet": "/images/products/beech-pallet.webp",
   "birch-big_bag": "/images/products/birch-big_bag.webp",
   "birch-box": "/images/products/birch-box.webp",
@@ -25,6 +27,7 @@
   "oak-pallet": "/images/products/oak-pallet.webp",
   "pellets-bag": "/images/products/pellets-bag.webp",
   "pellets-pallet": "/images/products/pellets-pallet.webp",
+  "pine-big_bag": "/images/products/pine-big_bag.webp",
   "pine-bulk": "/images/products/pine-bulk.webp",
   "pine-pallet": "/images/products/pine-pallet.webp"
 }
