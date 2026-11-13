@@ -90,7 +90,7 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Érable sur palette | Maple Firewood Pallet | `maple firewood pallet crate` | `palette bois de chauffage érable` | `maple-pallet.webp` | ✅ fournie |
 | Érable en big bag | Maple Firewood Big Bag | `maple firewood bulk bag` | `big bag bois de chauffage érable` | `maple-big_bag.webp` | ✅ fournie |
 | Érable en filet | Maple Firewood Net Bag | `maple firewood net bag mesh` | `filet de bûches érable` | `maple-net_bag.webp` | à trouver |
-| Érable en sac | Bagged Maple Firewood | `bagged maple firewood` | `sac de bûches érable bois sec` | `maple-bag.webp` | à trouver |
+| Érable en sac | Bagged Maple Firewood | `bagged maple firewood` | `sac de bûches érable bois sec` | `maple-bag.webp` | ✅ fournie |
 | Érable en carton | Boxed Maple Firewood | `boxed kiln dried maple firewood` | `carton de bûches érable séché au four` | `maple-box.webp` | ✅ fournie |
 
 ### Frêne (Ash)
@@ -111,8 +111,8 @@ La colonne *Fichier* sert seulement si vous m'envoyez les photos : nommez-les ai
 | Pin en vrac | Pine Bulk Firewood | `pine firewood pile loose bulk` | `bois de chauffage pin en vrac tas` | `pine-bulk.webp` | ✅ fournie |
 | Pin sur palette | Pine Firewood Pallet | `pine firewood pallet crate` | `palette bois de chauffage pin` | `pine-pallet.webp` | ✅ fournie |
 | Pin en big bag | Pine Firewood Big Bag | `pine firewood bulk bag` | `big bag bois de chauffage pin` | `pine-big_bag.webp` | ✅ fournie |
-| Pin en filet | Pine Firewood Net Bag | `pine firewood net bag mesh` | `filet de bûches pin` | `pine-net_bag.webp` | à trouver |
-| Pin en sac | Bagged Pine Firewood | `bagged pine firewood` | `sac de bûches pin bois sec` | `pine-bag.webp` | à trouver |
+| Pin en filet | Pine Firewood Net Bag | `pine firewood net bag mesh` | `filet de bûches pin` | `pine-net_bag.webp` | ✅ fournie |
+| Pin en sac | Bagged Pine Firewood | `bagged pine firewood` | `sac de bûches pin bois sec` | `pine-bag.webp` | ✅ fournie |
 | Pin en carton | Boxed Pine Firewood | `boxed kiln dried pine firewood` | `carton de bûches pin séché au four` | `pine-box.webp` | à trouver |
 
 ## Photos de notre partenaire firewood.co.uk
