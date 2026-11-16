@@ -182,13 +182,13 @@
         <div class="adm-row__txt">
           <strong>${esc(r.prenom)}</strong>
           <small>${esc([r.specialites, r.langues].filter(Boolean).join(" · ") || r.accroche || "—")}</small>
-          <span class="adm-badge ${r.publie ? "is-on" : ""}">${r.publie ? "Publié" : "Brouillon"}</span>
+          <span class="adm-badge ${r.publie ? "is-on" : ""}">${r.publie ? "Publié sur le site" : "Brouillon · invisible sur le site"}</span>
           ${r.photo_path ? "" : `<span class="adm-badge">Sans photo</span>`}
         </div>
         <div class="adm-row__actions">
           <button class="adm-icon" data-act="up" aria-label="Monter"${i === 0 ? " disabled" : ""}>↑</button>
           <button class="adm-icon" data-act="down" aria-label="Descendre"${i === rows.length - 1 ? " disabled" : ""}>↓</button>
-          <button class="btn btn--ghost btn--sm" data-act="toggle">${r.publie ? "Dépublier" : "Publier"}</button>
+          <button class="btn ${r.publie ? "btn--ghost" : "btn--primary"} btn--sm" data-act="toggle">${r.publie ? "Dépublier" : "Publier"}</button>
           <button class="btn btn--ghost btn--sm" data-act="edit">Modifier</button>
           <button class="btn btn--ghost btn--sm adm-danger" data-act="delete">Supprimer</button>
         </div>
@@ -351,7 +351,7 @@
       else await call("/rest/v1/praticiennes", { method: "POST", body: { ...(id ? { id } : {}), ...values, ordre: rows.length }, headers: { Prefer: "return=representation" } });
       if (oldPath && oldPath !== photo_path) await removePhoto(oldPath);
       modal.hidden = true;
-      notify(editing ? "Profil mis à jour." : "Profil ajouté.");
+      notify(values.publie ? `${prenom} est visible sur le site.` : `${prenom} est enregistrée en brouillon : cliquez sur « Publier » pour l'afficher sur le site.`);
       await load();
     } catch (ex) {
       if (uploaded) await removePhoto(uploaded); // pas de photo orpheline si l'enregistrement échoue
