@@ -216,11 +216,12 @@ begin
     now(), now(), now()
   );
   insert into private.admins (user_id) values (v_id);
-  delete from private.setup;
+  delete from private.setup where id;
   return 'ok';
 end;
 $$;
 revoke all on function public.creer_admin(text, text, text) from public;
+revoke all on function public.creer_admin(text, text, text) from authenticated;
 grant execute on function public.creer_admin(text, text, text) to anon;
 
 -- Après avoir appliqué ce fichier, enregistrer le code d'installation (remplacer LE-CODE) :
@@ -237,4 +238,5 @@ as $$
   select private.is_admin();
 $$;
 revoke all on function public.est_admin() from public;
+revoke all on function public.est_admin() from anon;
 grant execute on function public.est_admin() to authenticated;

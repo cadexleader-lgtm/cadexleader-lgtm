@@ -32,7 +32,7 @@ window.SL_CONFIG = {
   // Base de données (Supabase) : profils des praticiennes gérés depuis /admin.
   // La clé « publishable » est publique par nature ; les droits sont gérés côté base (RLS).
   supabase: {
-    url: "",                      // https://xxxxxxxx.supabase.co
-    key: "",                      // sb_publishable_…
+    url: "https://fkhcznryvtvgkufuztxi.supabase.co",
+    key: "sb_publishable_yEc7Vn2kbCVURxUyc-iDPw_PUiriYQj",
   },
 };
