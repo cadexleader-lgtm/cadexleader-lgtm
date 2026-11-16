@@ -154,6 +154,9 @@
   if (CONFIG.whatsappDisplay) qs("[data-whatsapp-label]").textContent = "WhatsApp — " + CONFIG.whatsappDisplay;
   qsa("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
 
+  // iPhone : Safari ignore parfois l'interdiction de zoom du viewport ; on bloque le pincement ici aussi.
+  ["gesturestart", "gesturechange"].forEach((evt) => document.addEventListener(evt, (e) => e.preventDefault()));
+
   // API partagée avec booking.js et reel.js
   Object.assign(SL, {
     lockScroll, showToast, waLink,

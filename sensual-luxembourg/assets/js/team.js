@@ -39,20 +39,47 @@
     .then((r) => (r.ok ? r.json() : []))
     .then((rows) => {
       if (!Array.isArray(rows) || !rows.length) return;
+      const chips = (...texts) => texts.join("·").split(/[·,;/|]+/).map((t) => t.trim()).filter(Boolean).slice(0, 6);
+      list.classList.toggle("team--single", rows.length === 1);
       list.innerHTML = rows.map((p) => {
-        const meta = [p.specialites, p.langues].filter(Boolean).join(" · ");
+        const tags = chips(p.specialites || "", p.langues || "");
         const visual = p.photo_path
           ? `<img src="${esc(photoUrl(p.photo_path))}" alt="${esc(p.prenom)}" loading="lazy" decoding="async">`
           : `<span class="member__mono" aria-hidden="true">${esc(String(p.prenom).trim().charAt(0).toUpperCase())}</span>`;
         return `
           <article class="member">
-            <div class="member__photo">${visual}</div>
-            <h3>${esc(p.prenom)}</h3>
-            <button class="btn btn--primary btn--block" data-book data-with="${esc(p.prenom)}">Réserver</button>
-            ${p.accroche ? `<p class="member__tag">${esc(p.accroche)}</p>` : ""}
-            ${meta ? `<p class="member__meta">${esc(meta)}</p>` : ""}
+            <div class="member__photo">
+              ${visual}
+              <div class="member__info">
+                <h3>${esc(p.prenom)}</h3>
+                ${p.accroche ? `<p>${esc(p.accroche)}</p>` : ""}
+              </div>
+            </div>
+            <div class="member__body">
+              ${tags.length ? `<ul class="member__chips">${tags.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+              <button class="btn btn--primary btn--block" data-book data-with="${esc(p.prenom)}">Réserver</button>
+            </div>
           </article>`;
       }).join("");
+
+      // Téléphone : petits points sous le carrousel, comme dans une application
+      const dots = document.querySelector("[data-team-dots]");
+      if (dots && rows.length > 1) {
+        dots.innerHTML = rows.map((_, k) => `<i${k === 0 ? ' class="is-on"' : ""}></i>`).join("");
+        const cards = [...list.children];
+        let ticking = false;
+        list.addEventListener("scroll", () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            ticking = false;
+            const mid = list.scrollLeft + list.clientWidth / 2;
+            let best = 0, bestDist = Infinity;
+            cards.forEach((c, k) => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bestDist) { bestDist = d; best = k; } });
+            [...dots.children].forEach((d, k) => d.classList.toggle("is-on", k === best));
+          });
+        }, { passive: true });
+      }
       section.hidden = false;
       if (window.ScrollTrigger) window.ScrollTrigger.refresh();
     })
