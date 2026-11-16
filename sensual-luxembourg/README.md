@@ -25,6 +25,8 @@ sensual-luxembourg/
     ├── js/config.js        ← ⚙️ CONFIGURATION : WhatsApp, e-mail, paiement, créneaux, suppléments
     ├── js/main.js          ← âge 18+, navigation, filtres, tarifs, FAQ, apparitions
     ├── js/booking.js       ← parcours de réservation (tiroir en 3 étapes)
+    ├── js/team.js          ← section « Nos praticiennes » (lit la base)
+    ├── js/admin.js         ← espace administrateur (/admin)
     ├── js/reel.js          ← film interactif « Le Rituel » (WebGL)
     ├── js/silk.js          ← fond animé WebGL du hero (ordinateur seulement)
     ├── img/                ← logo (SVG), favicon, photos WebP (+ versions -800, -1200, -thumb allégées), image de partage
@@ -83,6 +85,32 @@ le client saisit le montant et la référence. Attention : la plupart des presta
 (Stripe, PayPal, SumUp…) **interdisent les services pour adultes** dans leurs conditions d'utilisation et peuvent
 bloquer le compte. Il faut donc un prestataire qui accepte explicitement ce secteur (à vérifier avec lui),
 ou se limiter au **virement instantané / Payconiq** (`payment.iban`) et au paiement sur place.
+
+## Espace administrateur : praticiennes et photos
+
+La section **« Nos praticiennes »** du site est alimentée par une base Supabase et gérée depuis **`/admin`**.
+Tant qu'aucun profil n'est publié, la section reste masquée.
+
+**Mise en route (une seule fois)**
+1. Créer un projet Supabase (gratuit), région Europe.
+2. Dans *SQL Editor*, exécuter le contenu de `supabase/schema.sql` (table `praticiennes`, stockage des photos, droits).
+3. Enregistrer un code d'installation de votre choix (dernière ligne commentée de ce même fichier).
+4. Copier l'adresse du projet et la clé *publishable* dans `assets/js/config.js`, bloc `supabase`.
+5. Ouvrir `/admin`, saisir le code d'installation, votre e-mail et un mot de passe : le compte administrateur est créé
+   et le code devient inutilisable.
+
+**Au quotidien, depuis `/admin`**
+- Ajouter une praticienne : prénom, phrase d'accroche, spécialités, langues, photo.
+- La photo est redimensionnée et allégée dans le navigateur (WebP, 1 200 px max) et ses métadonnées (lieu, appareil)
+  sont supprimées avant l'envoi.
+- **Une photo ne peut être enregistrée que si la case « accord écrit de la personne » est cochée** — la base refuse
+  l'enregistrement sinon. Conservez ces accords.
+- Publier / dépublier, changer l'ordre, modifier, supprimer (la photo est supprimée avec le profil).
+- Sur le site, chaque profil a un bouton **Réserver** : la réservation s'ouvre avec la praticienne déjà indiquée,
+  et son prénom figure dans le message WhatsApp.
+
+Sécurité : seul le compte administrateur peut écrire (règles RLS côté base) ; la clé présente dans `config.js`
+est publique par nature et ne donne accès qu'à la lecture des profils publiés.
 
 ## Déployer sur Vercel
 

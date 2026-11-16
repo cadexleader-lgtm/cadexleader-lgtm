@@ -28,4 +28,11 @@ window.SL_CONFIG = {
     beneficiary: "",              // facultatif : titulaire du compte
     depositPercent: 30,           // acompte proposé en %
   },
+
+  // Base de données (Supabase) : profils des praticiennes gérés depuis /admin.
+  // La clé « publishable » est publique par nature ; les droits sont gérés côté base (RLS).
+  supabase: {
+    url: "",                      // https://xxxxxxxx.supabase.co
+    key: "",                      // sb_publishable_…
+  },
 };

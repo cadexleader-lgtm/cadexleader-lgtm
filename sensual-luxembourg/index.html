@@ -207,6 +207,17 @@
       </div>
     </section>
 
+    <!-- ===== Praticiennes (remplie depuis l'espace administrateur ; masquée tant qu'aucun profil n'est publié) ===== -->
+    <section class="section section--tight" id="praticiennes" data-team hidden>
+      <div class="container">
+        <header class="head head--center">
+          <p class="eyebrow">L'équipe</p>
+          <h2 class="title">Nos <em>praticiennes</em></h2>
+        </header>
+        <div class="team" data-team-list></div>
+      </div>
+    </section>
+
     <!-- ===== Engagements ===== -->
     <section class="section section--tight values">
       <div class="container values__grid">
@@ -233,8 +244,8 @@
       <div class="container">
         <header class="head">
           <div>
-            <p class="eyebrow" data-reveal>Ambiance</p>
-            <h2 class="title" data-reveal>Un cadre <em>feutré</em></h2>
+            <p class="eyebrow" data-reveal>Le cadre</p>
+            <h2 class="title" data-reveal><em>Ambiance</em></h2>
           </div>
         </header>
       </div>
@@ -407,7 +418,7 @@
       <header class="drawer__head">
         <div class="drawer__brand">
           <img src="assets/img/logo-mark.svg" alt="" width="36" height="36">
-          <div><h2 id="bd-title">Réserver</h2><small>Réponse en ~10 min · discret</small></div>
+          <div><h2 id="bd-title">Réserver</h2><small data-bd-with>Réponse en ~10 min · discret</small></div>
           <button class="drawer__close" data-drawer-close aria-label="Fermer la réservation"><svg><use href="#i-close"/></svg></button>
         </div>
         <ol class="drawer__steps" data-bd-tabs>
@@ -505,5 +516,6 @@
   <script src="assets/js/main.js" defer></script>
   <script src="assets/js/booking.js" defer></script>
   <script src="assets/js/reel.js" defer></script>
+  <script src="assets/js/team.js" defer></script>
 </body>
 </html>

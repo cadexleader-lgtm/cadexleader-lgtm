@@ -49,7 +49,7 @@
   const pct = (C.payment && C.payment.depositPercent) || 30;
   const SLOTS = C.slots || ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "00:00"];
 
-  const state = { step: 1, service: null, duration: null, place: "salon", address: "", day: null, slot: null, pay: "onsite", ref: "", message: "" };
+  const state = { step: 1, service: null, duration: null, place: "salon", address: "", day: null, slot: null, pay: "onsite", ref: "", message: "", with: "" };
 
   /* ---------- Calculs ---------- */
   const current = () => byId[state.service];
@@ -225,6 +225,7 @@
     const place = PLACES.find((p) => p.id === state.place);
     const rows = [
       ["Massage", s ? `${s.name} · ${state.duration} min` : "—"],
+      ...(state.with ? [["Praticienne", state.with]] : []),
       ["Date", cap(fmtWhen()) || "—"],
       ["Lieu", place.label + (state.address ? ` — ${state.address}` : "")],
     ];
@@ -307,6 +308,7 @@
       "Bonjour Sensual Luxembourg,",
       "je souhaite réserver :",
       `• Massage : ${s.name} (${state.duration} min)`,
+      ...(state.with ? [`• Praticienne souhaitée : ${state.with}`] : []),
       `• Date : ${fmtWhen()}`,
       `• Lieu : ${place.label}${state.address ? " (" + state.address + ")" : ""}`,
       `• Prix : ${euro(total())}`,
@@ -399,6 +401,10 @@
       state.step = 1;
     }
     if (opts.place) state.place = opts.place;
+    // praticienne choisie depuis la section « Nos praticiennes » (sinon aucune préférence)
+    state.with = (opts.with || "").slice(0, 40);
+    const withEl = qs("[data-bd-with]", drawer);
+    if (withEl) withEl.textContent = state.with ? `Avec ${state.with} · réponse en ~10 min` : "Réponse en ~10 min · discret";
     if (serviceId && byId[serviceId]) selectService(serviceId, true);
     renderPlaces();
     renderDurations();
@@ -452,7 +458,10 @@
     if (btn && !drawer.contains(btn)) {
       e.preventDefault();
       const fromPricing = btn.closest(".price");
-      open(btn.dataset.book || null, fromPricing && SL.pricePlace ? { place: SL.pricePlace } : {});
+      open(btn.dataset.book || null, {
+        ...(fromPricing && SL.pricePlace ? { place: SL.pricePlace } : {}),
+        ...(btn.dataset.with ? { with: btn.dataset.with } : {}),
+      });
       return;
     }
     const card = e.target.closest(".service[data-service]");

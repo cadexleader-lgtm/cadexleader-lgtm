@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administration — Sensual Luxembourg</title>
+  <meta name="theme-color" content="#050816">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin">
+
+  <header class="adm-top">
+    <a class="adm-top__brand" href="./" aria-label="Retour au site">
+      <img src="assets/img/logo-mark.svg" alt="" width="36" height="36">
+      <span>Administration</span>
+    </a>
+    <div class="adm-top__actions" data-top-actions hidden>
+      <button class="btn btn--ghost btn--sm" data-open-password>Mot de passe</button>
+      <button class="btn btn--ghost btn--sm" data-logout>Déconnexion</button>
+    </div>
+  </header>
+
+  <main class="adm-main">
+
+    <!-- Chargement -->
+    <section class="adm-card adm-center" data-view="loading">
+      <p class="adm-muted">Chargement…</p>
+    </section>
+
+    <!-- Base non reliée -->
+    <section class="adm-card adm-center" data-view="noconfig" hidden>
+      <h1>Base de données non reliée</h1>
+      <p class="adm-muted">Renseignez l'adresse et la clé Supabase dans <code>assets/js/config.js</code> (bloc <code>supabase</code>), puis rechargez cette page.</p>
+    </section>
+
+    <!-- Première installation -->
+    <section class="adm-card adm-narrow" data-view="setup" hidden>
+      <h1>Créer le compte administrateur</h1>
+      <p class="adm-muted">Cette étape n'a lieu qu'une seule fois. Le code d'installation vous a été remis avec le site.</p>
+      <form data-setup-form novalidate>
+        <div class="field"><input id="s-code" type="text" placeholder=" " autocomplete="off" required><label for="s-code">Code d'installation</label></div>
+        <div class="field"><input id="s-email" type="email" placeholder=" " autocomplete="username" required><label for="s-email">Votre e-mail</label></div>
+        <div class="field"><input id="s-pass" type="password" placeholder=" " autocomplete="new-password" minlength="10" required><label for="s-pass">Mot de passe (10 caractères minimum)</label></div>
+        <div class="field"><input id="s-pass2" type="password" placeholder=" " autocomplete="new-password" required><label for="s-pass2">Confirmer le mot de passe</label></div>
+        <p class="adm-error" data-setup-error hidden></p>
+        <button class="btn btn--primary btn--block" type="submit">Créer mon compte</button>
+      </form>
+    </section>
+
+    <!-- Connexion -->
+    <section class="adm-card adm-narrow" data-view="login" hidden>
+      <h1>Connexion</h1>
+      <form data-login-form novalidate>
+        <div class="field"><input id="l-email" type="email" placeholder=" " autocomplete="username" required><label for="l-email">E-mail</label></div>
+        <div class="field"><input id="l-pass" type="password" placeholder=" " autocomplete="current-password" required><label for="l-pass">Mot de passe</label></div>
+        <p class="adm-error" data-login-error hidden></p>
+        <button class="btn btn--primary btn--block" type="submit">Se connecter</button>
+      </form>
+    </section>
+
+    <!-- Gestion des praticiennes -->
+    <section data-view="app" hidden>
+      <div class="adm-head">
+        <div>
+          <h1>Praticiennes</h1>
+          <p class="adm-muted" data-count></p>
+        </div>
+        <button class="btn btn--primary" data-new>Ajouter une praticienne</button>
+      </div>
+      <p class="adm-empty" data-empty hidden>Aucun profil pour l'instant. Ajoutez la première praticienne : la section « Nos praticiennes » apparaîtra sur le site dès qu'un profil sera publié.</p>
+      <ul class="adm-list" data-list></ul>
+    </section>
+  </main>
+
+  <!-- Fiche praticienne -->
+  <div class="adm-modal" data-modal="profile" hidden>
+    <div class="adm-modal__overlay" data-close-modal></div>
+    <form class="adm-modal__panel" data-profile-form novalidate>
+      <header class="adm-modal__head">
+        <h2 data-profile-title>Nouvelle praticienne</h2>
+        <button type="button" class="drawer__close" data-close-modal aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </header>
+      <div class="adm-modal__body">
+        <div class="adm-photo">
+          <div class="adm-photo__preview" data-photo-preview><span>Aucune photo</span></div>
+          <div class="adm-photo__actions">
+            <label class="btn btn--ghost btn--sm">Choisir une photo<input type="file" accept="image/jpeg,image/png,image/webp" data-photo-input hidden></label>
+            <button type="button" class="btn btn--ghost btn--sm" data-photo-remove hidden>Retirer la photo</button>
+            <p class="adm-hint">Portrait de préférence. La photo est redimensionnée et allégée automatiquement, et ses données cachées (lieu, appareil) sont supprimées.</p>
+          </div>
+        </div>
+        <div class="field"><input id="p-prenom" type="text" placeholder=" " maxlength="40" required><label for="p-prenom">Prénom affiché *</label></div>
+        <div class="field"><input id="p-accroche" type="text" placeholder=" " maxlength="160"><label for="p-accroche">Phrase d'accroche (facultatif)</label></div>
+        <div class="field"><input id="p-specialites" type="text" placeholder=" " maxlength="120"><label for="p-specialites">Spécialités, ex. « Relaxant · Tantrique »</label></div>
+        <div class="field"><input id="p-langues" type="text" placeholder=" " maxlength="80"><label for="p-langues">Langues, ex. « FR · EN »</label></div>
+        <label class="consent"><input type="checkbox" id="p-accord"><span>Cette personne m'a donné son <strong>accord écrit</strong> pour publier sa photo sur le site.</span></label>
+        <label class="consent"><input type="checkbox" id="p-publie"><span>Publier ce profil sur le site</span></label>
+        <p class="adm-error" data-profile-error hidden></p>
+      </div>
+      <footer class="adm-modal__foot">
+        <button type="button" class="btn btn--ghost" data-close-modal>Annuler</button>
+        <button type="submit" class="btn btn--primary" data-profile-save>Enregistrer</button>
+      </footer>
+    </form>
+  </div>
+
+  <!-- Changer le mot de passe -->
+  <div class="adm-modal" data-modal="password" hidden>
+    <div class="adm-modal__overlay" data-close-modal></div>
+    <form class="adm-modal__panel adm-modal__panel--sm" data-password-form novalidate>
+      <header class="adm-modal__head"><h2>Changer le mot de passe</h2></header>
+      <div class="adm-modal__body">
+        <div class="field"><input id="n-pass" type="password" placeholder=" " autocomplete="new-password" minlength="10" required><label for="n-pass">Nouveau mot de passe (10 caractères min.)</label></div>
+        <div class="field"><input id="n-pass2" type="password" placeholder=" " autocomplete="new-password" required><label for="n-pass2">Confirmer</label></div>
+        <p class="adm-error" data-password-error hidden></p>
+      </div>
+      <footer class="adm-modal__foot">
+        <button type="button" class="btn btn--ghost" data-close-modal>Annuler</button>
+        <button type="submit" class="btn btn--primary">Enregistrer</button>
+      </footer>
+    </form>
+  </div>
+
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

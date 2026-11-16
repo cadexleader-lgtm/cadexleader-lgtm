@@ -457,3 +457,21 @@ body.drawer-open .fab, body.drawer-open .mbar { opacity: 0; pointer-events: none
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
   .js [data-reveal], .js .hero__in { opacity: 1; transform: none; }
 }
+
+/* =========================================================
+   Nos praticiennes (profils gérés depuis /admin)
+   ========================================================= */
+.team { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px 28px; }
+.member { width: calc((100% - 84px) / 4); min-width: 220px; display: flex; flex-direction: column; text-align: center; }
+.member__photo { aspect-ratio: 3 / 4; border-radius: var(--r); overflow: hidden; margin-bottom: 18px; background: linear-gradient(160deg, var(--surface-2), var(--surface)); border: 1px solid var(--line); display: grid; place-items: center; }
+.member__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s var(--ease); }
+.member:hover .member__photo img { transform: scale(1.04); }
+.member__mono { font-family: var(--serif); font-weight: 300; font-size: 5rem; line-height: 1; color: var(--blue-2); opacity: 0.7; }
+.member h3 { font-family: var(--serif); font-weight: 400; font-size: 1.8rem; line-height: 1.1; margin-bottom: 14px; }
+.member__tag { margin-top: 14px; color: #cfd5ee; font-size: 0.94rem; }
+.member__meta { margin-top: 6px; color: var(--muted); font-size: 0.82rem; }
+@media (max-width: 760px) {
+  .team { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; margin-inline: calc(var(--pad) * -1); padding: 0 var(--pad) 6px; scrollbar-width: none; }
+  .team::-webkit-scrollbar { display: none; }
+  .member { flex: none; width: 72vw; min-width: 0; scroll-snap-align: center; }
+}
