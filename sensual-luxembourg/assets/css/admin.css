@@ -50,6 +50,19 @@
 .adm-photo__actions { display: grid; gap: 8px; align-content: start; justify-items: start; }
 .adm-photo__actions label { cursor: pointer; }
 
+.adm-tabs { margin-bottom: 32px; }
+.adm-hint--block { margin: -12px 0 24px; max-width: 640px; font-size: 0.86rem; }
+.adm-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.adm-tile { display: grid; gap: 8px; padding: 8px 8px 10px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+.adm-tile.is-off { opacity: 0.55; }
+.adm-tile__img { aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: var(--surface-2); }
+.adm-tile__img img { width: 100%; height: 100%; object-fit: cover; }
+.adm-tile input[type="text"] { width: 100%; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line-2); background: rgba(3, 5, 15, 0.4); font-size: 0.86rem; outline: none; }
+.adm-tile input[type="text"]:focus { border-color: var(--blue-2); }
+.adm-tile__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.adm-tile__actions .adm-icon { width: 36px; height: 36px; }
+.adm-tile__actions .btn { height: 36px; padding: 0 12px; font-size: 0.8rem; }
+
 @media (max-width: 640px) {
   .adm-top__brand span { display: none; }
   .adm-top { padding-block: 10px; }
@@ -57,3 +70,4 @@
   .adm-row__actions { width: 100%; justify-content: flex-start; }
   .adm-photo { flex-direction: column; }
 }
+.btn.is-busy { opacity: 0.6; pointer-events: none; }

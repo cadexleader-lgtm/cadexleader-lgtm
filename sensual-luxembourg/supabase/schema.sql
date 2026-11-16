@@ -99,6 +99,53 @@ create policy "photos : suppression admin" on storage.objects
   for delete to authenticated
   using (bucket_id = 'praticiennes' and (select private.is_admin()));
 
+-- ---------- Photos d'ambiance (établissement) ----------
+create table public.ambiance_photos (
+  id uuid primary key default gen_random_uuid(),
+  photo_path text not null,
+  legende text not null default '' check (char_length(legende) <= 120),
+  publie boolean not null default true,
+  ordre integer not null default 0,
+  created_at timestamptz not null default now()
+);
+create index ambiance_photos_ordre_idx on public.ambiance_photos (ordre, created_at);
+alter table public.ambiance_photos enable row level security;
+
+create policy "lecture des photos publiees" on public.ambiance_photos
+  for select to anon, authenticated
+  using (publie or (select private.is_admin()));
+create policy "ajout par admin" on public.ambiance_photos
+  for insert to authenticated
+  with check ((select private.is_admin()));
+create policy "modification par admin" on public.ambiance_photos
+  for update to authenticated
+  using ((select private.is_admin()))
+  with check ((select private.is_admin()));
+create policy "suppression par admin" on public.ambiance_photos
+  for delete to authenticated
+  using ((select private.is_admin()));
+
+grant select on public.ambiance_photos to anon;
+grant select, insert, update, delete on public.ambiance_photos to authenticated;
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('ambiance', 'ambiance', true, 3145728, array['image/webp', 'image/jpeg', 'image/png'])
+on conflict (id) do nothing;
+
+create policy "ambiance : lecture admin" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'ambiance' and (select private.is_admin()));
+create policy "ambiance : envoi admin" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'ambiance' and (select private.is_admin()));
+create policy "ambiance : remplacement admin" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'ambiance' and (select private.is_admin()))
+  with check (bucket_id = 'ambiance' and (select private.is_admin()));
+create policy "ambiance : suppression admin" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'ambiance' and (select private.is_admin()));
+
 -- ---------- Création du compte administrateur (une seule fois) ----------
 -- Un code d'installation à usage unique protège la création du premier compte.
 create table private.setup (

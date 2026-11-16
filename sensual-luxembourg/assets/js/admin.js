@@ -17,7 +17,8 @@
   const qs = (s, el = document) => el.querySelector(s);
   const qsa = (s, el = document) => [...el.querySelectorAll(s)];
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const photoUrl = (path) => `${BASE}/storage/v1/object/public/${BUCKET}/${path.split("/").map(encodeURIComponent).join("/")}`;
+  const fileUrl = (bucket, path) => `${BASE}/storage/v1/object/public/${bucket}/${path.split("/").map(encodeURIComponent).join("/")}`;
+  const photoUrl = (path) => fileUrl(BUCKET, path);
 
   /* ---------- Vues ---------- */
   function show(view) {
@@ -102,7 +103,7 @@
       throw new Error("Ce compte n'est pas administrateur.");
     }
     show("app");
-    await load();
+    await Promise.all([load(), loadAmbiance()]);
   }
 
   /* ---------- Installation & connexion ---------- */
@@ -228,7 +229,7 @@
   });
 
   /* ---------- Photo : redimensionnement + allègement dans le navigateur ---------- */
-  async function prepareImage(file) {
+  async function prepareImage(file, maxSide = 1200) {
     if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error("Format non pris en charge : choisissez une image JPG, PNG ou WebP.");
     let source;
     try {
@@ -243,7 +244,7 @@
     }
     const w = source.width || source.naturalWidth;
     const h = source.height || source.naturalHeight;
-    const scale = Math.min(1, 1200 / Math.max(w, h));
+    const scale = Math.min(1, maxSide / Math.max(w, h));
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(w * scale);
     canvas.height = Math.round(h * scale);
@@ -356,6 +357,113 @@
       if (uploaded) await removePhoto(uploaded); // pas de photo orpheline si l'enregistrement échoue
       fail(ex, profErr);
     } finally { busy(btn, false); }
+  });
+
+  /* ---------- Onglets ---------- */
+  const tabsEl = qs("[data-adm-tabs]");
+  tabsEl.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-tab]");
+    if (!btn) return;
+    qsa("[data-tab]", tabsEl).forEach((b) => b.setAttribute("aria-selected", String(b === btn)));
+    qsa("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== btn.dataset.tab; });
+  });
+
+  /* ---------- Ambiance : photos de l'établissement ---------- */
+  const AMB = "ambiance";
+  const ambList = qs("[data-amb-list]");
+  const ambInput = qs("[data-amb-input]");
+  let ambRows = [];
+
+  async function loadAmbiance() {
+    ambRows = await call("/rest/v1/ambiance_photos?select=*&order=ordre.asc,created_at.asc");
+    const shown = ambRows.filter((r) => r.publie).length;
+    qs("[data-amb-count]").textContent = ambRows.length
+      ? `${ambRows.length} photo${ambRows.length > 1 ? "s" : ""}, dont ${shown} affichée${shown > 1 ? "s" : ""} sur le site`
+      : "";
+    qs("[data-amb-empty]").hidden = ambRows.length > 0;
+    ambList.innerHTML = ambRows.map((r, i) => `
+      <li class="adm-tile ${r.publie ? "" : "is-off"}" data-id="${esc(r.id)}">
+        <div class="adm-tile__img"><img src="${esc(fileUrl(AMB, r.photo_path))}" alt="" loading="lazy"></div>
+        <input type="text" maxlength="120" value="${esc(r.legende)}" placeholder="Description (facultatif)" aria-label="Description de la photo" data-amb-caption>
+        <div class="adm-tile__actions">
+          <button class="adm-icon" data-amb="up" aria-label="Avancer"${i === 0 ? " disabled" : ""}>←</button>
+          <button class="adm-icon" data-amb="down" aria-label="Reculer"${i === ambRows.length - 1 ? " disabled" : ""}>→</button>
+          <button class="btn btn--ghost" data-amb="toggle">${r.publie ? "Masquer" : "Afficher"}</button>
+          <button class="btn btn--ghost adm-danger" data-amb="delete">Supprimer</button>
+        </div>
+      </li>`).join("");
+  }
+  const patchAmb = (id, values) => call(`/rest/v1/ambiance_photos?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", body: values });
+  const removeAmbFile = (path) => call(`/storage/v1/object/${AMB}`, { method: "DELETE", body: { prefixes: [path] } }).catch(() => { /* déjà absent */ });
+
+  ambInput.addEventListener("change", async () => {
+    const files = [...ambInput.files];
+    if (!files.length) return;
+    const label = qs("[data-amb-label]");
+    label.classList.add("is-busy");
+    let added = 0;
+    const failed = [];
+    for (const file of files) {
+      let path = null;
+      try {
+        const blob = await prepareImage(file, 1600);
+        const id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+        path = `${id}.${blob.type === "image/webp" ? "webp" : "jpg"}`;
+        notify(`Envoi de la photo ${added + failed.length + 1} sur ${files.length}…`);
+        await call(`/storage/v1/object/${AMB}/${path}`, {
+          method: "POST", body: blob, raw: true,
+          headers: { "Content-Type": blob.type, "cache-control": "max-age=31536000" },
+        });
+        await call("/rest/v1/ambiance_photos", { method: "POST", body: { photo_path: path, ordre: ambRows.length + added } });
+        added += 1;
+      } catch (ex) {
+        if (ex && ex.status === 401) { fail(ex); break; }
+        if (path) await removeAmbFile(path);
+        failed.push(file.name);
+      }
+    }
+    ambInput.value = "";
+    label.classList.remove("is-busy");
+    if (session) {
+      await loadAmbiance().catch(fail);
+      notify(failed.length ? `${added} photo(s) ajoutée(s). Échec pour : ${failed.join(", ")}` : `${added} photo${added > 1 ? "s" : ""} ajoutée${added > 1 ? "s" : ""}.`);
+    }
+  });
+
+  ambList.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-amb]");
+    if (!btn) return;
+    const id = btn.closest("[data-id]").dataset.id;
+    const index = ambRows.findIndex((r) => r.id === id);
+    const row = ambRows[index];
+    try {
+      if (btn.dataset.amb === "toggle") await patchAmb(id, { publie: !row.publie });
+      if (btn.dataset.amb === "delete") {
+        if (!window.confirm("Supprimer définitivement cette photo ?")) return;
+        await call(`/rest/v1/ambiance_photos?id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
+        await removeAmbFile(row.photo_path);
+        notify("Photo supprimée.");
+      }
+      if (btn.dataset.amb === "up" || btn.dataset.amb === "down") {
+        const target = index + (btn.dataset.amb === "up" ? -1 : 1);
+        if (target < 0 || target >= ambRows.length) return;
+        const order = ambRows.slice();
+        order.splice(target, 0, order.splice(index, 1)[0]);
+        await Promise.all(order.map((r, k) => (r.ordre === k ? null : patchAmb(r.id, { ordre: k }))));
+      }
+      await loadAmbiance();
+    } catch (ex) { fail(ex); }
+  });
+  ambList.addEventListener("change", async (e) => {
+    const input = e.target.closest("[data-amb-caption]");
+    if (!input) return;
+    const id = input.closest("[data-id]").dataset.id;
+    try {
+      await patchAmb(id, { legende: input.value.trim() });
+      const row = ambRows.find((r) => r.id === id);
+      if (row) row.legende = input.value.trim();
+      notify("Description enregistrée.");
+    } catch (ex) { fail(ex); }
   });
 
   /* ---------- Mot de passe ---------- */

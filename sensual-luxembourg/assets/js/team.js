@@ -1,7 +1,8 @@
 /* =========================================================
-   Sensual Luxembourg — Section « Nos praticiennes »
-   Lit les profils publiés dans la base (Supabase) et les affiche.
-   Tant qu'aucun profil n'est publié, la section reste masquée.
+   Sensual Luxembourg — Contenus gérés depuis /admin (Supabase)
+   1. « Nos praticiennes » : profils publiés ; section masquée s'il n'y en a aucun.
+   2. « Ambiance » : photos de l'établissement ; s'il n'y en a aucune,
+      les photos d'illustration par défaut restent affichées.
    ========================================================= */
 (function () {
   "use strict";
@@ -9,12 +10,29 @@
   const cfg = (window.SL_CONFIG || {}).supabase || {};
   const section = document.querySelector("[data-team]");
   const list = document.querySelector("[data-team-list]");
-  if (!section || !list || !cfg.url || !cfg.key) return;
+  if (!cfg.url || !cfg.key) return;
 
   const base = cfg.url.replace(/\/+$/, "");
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const photoUrl = (path) => `${base}/storage/v1/object/public/praticiennes/${path.split("/").map(encodeURIComponent).join("/")}`;
+  const fileUrl = (bucket, path) => `${base}/storage/v1/object/public/${bucket}/${path.split("/").map(encodeURIComponent).join("/")}`;
+  const photoUrl = (path) => fileUrl("praticiennes", path);
 
+  // ---------- Ambiance ----------
+  const gallery = document.querySelector("[data-gallery]");
+  if (gallery) {
+    fetch(`${base}/rest/v1/ambiance_photos?select=photo_path,legende&publie=is.true&order=ordre.asc,created_at.asc`, { headers: { apikey: cfg.key } })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => {
+        if (!Array.isArray(rows) || !rows.length) return;
+        gallery.innerHTML = rows.map((p) => `
+          <button class="gallery__item" aria-label="Agrandir la photo"><img src="${esc(fileUrl("ambiance", p.photo_path))}" alt="${esc(p.legende || "Photo de l'établissement")}" loading="lazy" decoding="async"></button>`).join("");
+        if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+      })
+      .catch(() => { /* on garde les photos par défaut */ });
+  }
+
+  // ---------- Praticiennes ----------
+  if (!section || !list) return;
   fetch(`${base}/rest/v1/praticiennes?select=id,prenom,accroche,specialites,langues,photo_path&publie=is.true&order=ordre.asc,created_at.asc`, {
     headers: { apikey: cfg.key },
   })

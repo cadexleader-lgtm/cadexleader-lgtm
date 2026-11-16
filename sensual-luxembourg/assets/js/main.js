@@ -111,14 +111,14 @@
   const lb = qs("[data-lightbox]");
   const lbImg = qs("[data-lightbox-img]");
   const closeLb = () => { lb.hidden = true; lockScroll(false); };
-  qsa(".gallery__item").forEach((item) => {
-    item.addEventListener("click", () => {
-      const img = qs("img", item);
-      lbImg.src = img.dataset.full || img.src;
-      lbImg.alt = img.alt;
-      lb.hidden = false;
-      lockScroll(true);
-    });
+  document.addEventListener("click", (e) => {
+    const item = e.target.closest(".gallery__item");
+    if (!item) return;
+    const img = qs("img", item);
+    lbImg.src = img.dataset.full || img.src;
+    lbImg.alt = img.alt;
+    lb.hidden = false;
+    lockScroll(true);
   });
   lb.addEventListener("click", (e) => { if (e.target === lb || e.target.closest("[data-lightbox-close]")) closeLb(); });
 

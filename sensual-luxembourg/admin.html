@@ -63,6 +63,12 @@
 
     <!-- Gestion des praticiennes -->
     <section data-view="app" hidden>
+      <div class="tabs adm-tabs" role="tablist" data-adm-tabs>
+        <button role="tab" aria-selected="true" data-tab="team">Praticiennes</button>
+        <button role="tab" aria-selected="false" data-tab="ambiance">Ambiance</button>
+      </div>
+
+      <div data-panel="team">
       <div class="adm-head">
         <div>
           <h1>Praticiennes</h1>
@@ -72,6 +78,20 @@
       </div>
       <p class="adm-empty" data-empty hidden>Aucun profil pour l'instant. Ajoutez la première praticienne : la section « Nos praticiennes » apparaîtra sur le site dès qu'un profil sera publié.</p>
       <ul class="adm-list" data-list></ul>
+      </div>
+
+      <div data-panel="ambiance" hidden>
+        <div class="adm-head">
+          <div>
+            <h1>Ambiance</h1>
+            <p class="adm-muted" data-amb-count></p>
+          </div>
+          <label class="btn btn--primary" data-amb-label>Ajouter des photos<input type="file" accept="image/jpeg,image/png,image/webp" multiple data-amb-input hidden></label>
+        </div>
+        <p class="adm-hint adm-hint--block">Photos de votre établissement : salles, équipements, détails. Elles remplacent les photos d'illustration de la section « Ambiance » du site. Elles sont allégées automatiquement. Si une personne est reconnaissable sur une photo, son accord écrit est nécessaire.</p>
+        <p class="adm-empty" data-amb-empty hidden>Aucune photo pour l'instant : le site affiche les photos d'illustration par défaut.</p>
+        <ul class="adm-grid" data-amb-list></ul>
+      </div>
     </section>
   </main>
 

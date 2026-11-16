@@ -93,7 +93,7 @@ Tant qu'aucun profil n'est publié, la section reste masquée.
 
 **Mise en route (une seule fois)**
 1. Créer un projet Supabase (gratuit), région Europe.
-2. Dans *SQL Editor*, exécuter le contenu de `supabase/schema.sql` (table `praticiennes`, stockage des photos, droits).
+2. Dans *SQL Editor*, exécuter le contenu de `supabase/schema.sql` (tables `praticiennes` et `ambiance_photos`, stockage des photos, droits).
 3. Enregistrer un code d'installation de votre choix (dernière ligne commentée de ce même fichier).
 4. Copier l'adresse du projet et la clé *publishable* dans `assets/js/config.js`, bloc `supabase`.
 5. Ouvrir `/admin`, saisir le code d'installation, votre e-mail et un mot de passe : le compte administrateur est créé
@@ -108,6 +108,10 @@ Tant qu'aucun profil n'est publié, la section reste masquée.
 - Publier / dépublier, changer l'ordre, modifier, supprimer (la photo est supprimée avec le profil).
 - Sur le site, chaque profil a un bouton **Réserver** : la réservation s'ouvre avec la praticienne déjà indiquée,
   et son prénom figure dans le message WhatsApp.
+
+**Onglet « Ambiance »** : envoyez les photos de votre établissement (plusieurs à la fois), ajoutez une description,
+changez l'ordre, masquez ou supprimez. Dès qu'une photo y est affichée, elle remplace les photos d'illustration
+de la section « Ambiance » du site ; sans photo, les illustrations par défaut restent en place.
 
 Sécurité : seul le compte administrateur peut écrire (règles RLS côté base) ; la clé présente dans `config.js`
 est publique par nature et ne donne accès qu'à la lecture des profils publiés.
