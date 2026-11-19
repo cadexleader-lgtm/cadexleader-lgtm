@@ -157,6 +157,21 @@
   // iPhone : Safari ignore parfois l'interdiction de zoom du viewport ; on bloque le pincement ici aussi.
   ["gesturestart", "gesturechange"].forEach((evt) => document.addEventListener(evt, (e) => e.preventDefault()));
 
+  // Carte des villes : une ville survolée dans la liste s'allume sur la carte (et inversement)
+  const pinsByCity = Object.fromEntries(qsa("[data-pin]").map((g) => [g.dataset.pin, g]));
+  const chipsByCity = Object.fromEntries(qsa("[data-cities] [data-city]").map((b) => [b.dataset.city, b]));
+  const hot = (city, on) => {
+    if (pinsByCity[city]) pinsByCity[city].classList.toggle("is-hot", on);
+    if (chipsByCity[city]) chipsByCity[city].classList.toggle("is-hot", on);
+  };
+  [...Object.values(pinsByCity), ...Object.values(chipsByCity)].forEach((el) => {
+    const city = el.dataset.pin || el.dataset.city;
+    el.addEventListener("pointerenter", () => hot(city, true));
+    el.addEventListener("pointerleave", () => hot(city, false));
+    el.addEventListener("focus", () => hot(city, true));
+    el.addEventListener("blur", () => hot(city, false));
+  });
+
   // API partagée avec booking.js et reel.js
   Object.assign(SL, {
     lockScroll, showToast, waLink,

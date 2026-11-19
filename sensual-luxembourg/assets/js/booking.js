@@ -27,9 +27,11 @@
   const ICON = (id) => `<svg><use href="#i-${id}"/></svg>`;
 
   /* ---------- Catalogue ---------- */
-  const fees = Object.assign({ salon: 0, hotel: 40, domicile: 40 }, C.placeFees || {});
+  const fees = Object.assign({ salon: 0, hotel: 50, domicile: 50 }, C.placeFees || {});
+  const CITIES = C.cities && C.cities.length ? C.cities : ["Luxembourg-Ville"];
+  const METHODS = ["PayPal", "Virement instantané", "Wero", "Payconiq"];
   const PLACES = [
-    { id: "salon", label: "Salon privé", note: "Luxembourg-Ville" },
+    { id: "salon", label: "Appartement privé", note: `${CITIES.length} villes` },
     { id: "hotel", label: "Mon hôtel", note: fees.hotel ? `+${fees.hotel} €` : "inclus" },
     { id: "domicile", label: "Domicile", note: fees.domicile ? `+${fees.domicile} €` : "inclus" },
   ];
@@ -49,14 +51,14 @@
   const pct = (C.payment && C.payment.depositPercent) || 30;
   const SLOTS = C.slots || ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "00:00"];
 
-  const state = { step: 1, service: null, duration: null, place: "salon", address: "", day: null, slot: null, pay: "onsite", ref: "", message: "", with: "" };
+  const state = { step: 1, service: null, duration: null, place: "salon", address: "", day: null, slot: null, pay: "deposit", method: "PayPal", city: CITIES[0], ref: "", message: "", with: "" };
 
   /* ---------- Calculs ---------- */
   const current = () => byId[state.service];
   const basePrice = () => { const s = current(); const p = s && s.prices.find((x) => x.d === state.duration); return p ? p.price : 0; };
   const total = () => basePrice() + (fees[state.place] || 0);
   const deposit = () => Math.ceil((total() * pct) / 100);
-  const dueNow = () => (state.pay === "deposit" ? deposit() : state.pay === "full" ? total() : 0);
+  const dueNow = () => (state.pay === "full" ? total() : deposit());
 
   const startOfDay = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
   const days = () => Array.from({ length: C.daysAhead || 14 }, (_, k) => { const d = startOfDay(new Date()); d.setDate(d.getDate() + k); return d; });
@@ -103,6 +105,12 @@
   const placeBox = qs("[data-bd-places]", drawer);
   const addrField = qs("[data-bd-address]", drawer);
   const addrInput = qs("#bd-address", drawer);
+  const cityBox = qs("[data-bd-cities]", drawer);
+  const placeLabel = () => {
+    const place = PLACES.find((p) => p.id === state.place);
+    if (state.place === "salon") return `${place.label} — ${state.city}`;
+    return place.label + (state.address ? ` — ${state.address}` : "");
+  };
 
   function renderDurations() {
     const s = current();
@@ -119,6 +127,8 @@
         <strong>${p.label}</strong><small>${p.note}</small>
       </button>`).join("");
     addrField.hidden = state.place === "salon";
+    cityBox.hidden = state.place !== "salon";
+    cityBox.innerHTML = CITIES.map((c) => `<button type="button" class="bd-city${c === state.city ? " is-on" : ""}" data-city-pick="${esc(c)}">${esc(c)}</button>`).join("");
   }
   function markService() {
     qsa(".bd-service", servicesBox).forEach((b) => {
@@ -159,6 +169,12 @@
     if (!addrField.hidden) addrInput.focus({ preventScroll: true });
   });
   addrInput.addEventListener("input", () => { state.address = addrInput.value.trim(); });
+  cityBox.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-city-pick]");
+    if (!b) return;
+    state.city = b.dataset.cityPick;
+    renderPlaces();
+  });
 
   /* ---------- Rendu étape 2 ---------- */
   const daysBox = qs("[data-bd-days]", drawer);
@@ -209,9 +225,8 @@
   const adultInput = qs("[data-bd-adult]", drawer);
   function renderPay() {
     const opts = [
-      { id: "onsite", icon: "hotel", title: "Payer sur place", sub: "Espèces, carte bancaire ou Payconiq" },
-      { id: "deposit", icon: "lock", title: `Acompte en ligne · ${pct} %`, sub: `${euro(deposit())} maintenant, le reste sur place` },
-      { id: "full", icon: "gem", title: "Tout régler en ligne", sub: `${euro(total())} · paiement sécurisé, libellé discret` },
+      { id: "deposit", icon: "lock", title: `Acompte · ${pct} %`, sub: `${euro(deposit())} pour confirmer, le solde le jour du rendez-vous` },
+      { id: "full", icon: "gem", title: "Tout régler à l'avance", sub: `${euro(total())} · libellé discret` },
     ];
     payBox.innerHTML = opts.map((o) => `
       <button type="button" class="bd-payopt${o.id === state.pay ? " is-on" : ""}" data-pay="${o.id}">
@@ -219,7 +234,16 @@
         <span class="bd-payopt__txt"><strong>${o.title}</strong><small>${o.sub}</small></span>
         <span class="bd-radio" aria-hidden="true"></span>
       </button>`).join("");
+    methodBox.innerHTML = METHODS.map((m) => `<button type="button" class="bd-chip${m === state.method ? " is-on" : ""}" data-method="${esc(m)}"><strong>${esc(m)}</strong></button>`).join("");
   }
+  const methodBox = qs("[data-bd-methods]", drawer);
+  methodBox.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-method]");
+    if (!b) return;
+    state.method = b.dataset.method;
+    renderPay();
+    renderRecap();
+  });
   function renderRecap() {
     const s = current();
     const place = PLACES.find((p) => p.id === state.place);
@@ -227,12 +251,12 @@
       ["Massage", s ? `${s.name} · ${state.duration} min` : "—"],
       ...(state.with ? [["Praticienne", state.with]] : []),
       ["Date", cap(fmtWhen()) || "—"],
-      ["Lieu", place.label + (state.address ? ` — ${state.address}` : "")],
+      ["Lieu", placeLabel()],
     ];
     recapBox.innerHTML = `
       ${rows.map(([k, v]) => `<div class="bd-recap__row"><span>${k}</span><strong>${esc(v)}</strong></div>`).join("")}
       <div class="bd-recap__total"><span>Total</span><strong>${euro(total())}</strong></div>
-      ${dueNow() ? `<div class="bd-recap__due"><span>À régler en ligne maintenant</span><strong>${euro(dueNow())}</strong></div>` : ""}`;
+      <div class="bd-recap__due"><span>${state.pay === "full" ? "À régler à l'avance" : "Acompte pour confirmer"} · ${esc(state.method)}</span><strong>${euro(dueNow())}</strong></div>`;
   }
   payBox.addEventListener("click", (e) => {
     const b = e.target.closest("[data-pay]");
@@ -301,23 +325,23 @@
   function buildMessage() {
     const s = current();
     const place = PLACES.find((p) => p.id === state.place);
-    const payTxt = state.pay === "onsite" ? "sur place"
-      : state.pay === "deposit" ? `acompte en ligne de ${euro(deposit())} (reste ${euro(total() - deposit())} sur place)`
-      : `totalité en ligne (${euro(total())})`;
+    const payTxt = state.pay === "full"
+      ? `totalité à l'avance (${euro(total())}) par ${state.method}`
+      : `acompte de ${euro(deposit())} par ${state.method} (solde ${euro(total() - deposit())} le jour du rendez-vous)`;
     const lines = [
       "Bonjour Sensual Luxembourg,",
       "je souhaite réserver :",
       `• Massage : ${s.name} (${state.duration} min)`,
       ...(state.with ? [`• Praticienne souhaitée : ${state.with}`] : []),
       `• Date : ${fmtWhen()}`,
-      `• Lieu : ${place.label}${state.address ? " (" + state.address + ")" : ""}`,
+      `• Lieu : ${placeLabel()}`,
       `• Prix : ${euro(total())}`,
       `• Paiement : ${payTxt}`,
       `• Prénom : ${nameInput.value.trim()}`,
     ];
     if (phoneInput.value.trim()) lines.push(`• Téléphone : ${phoneInput.value.trim()}`);
     if (msgInput.value.trim()) lines.push(`• Message : ${msgInput.value.trim()}`);
-    lines.push(`Référence : ${state.ref}`, "Merci de me confirmer le créneau.");
+    lines.push(`Référence : ${state.ref}`, "Merci de me confirmer la disponibilité et de m'indiquer comment régler l'acompte.");
     return lines.join("\n");
   }
 
@@ -331,20 +355,28 @@
 
     qs("[data-bd-ref]", drawer).textContent = state.ref;
     qs("[data-bd-done-lead]", drawer).innerHTML = url
-      ? "WhatsApp s'est ouvert avec votre demande : <strong>il ne reste qu'à appuyer sur Envoyer</strong>. Nous confirmons votre créneau en quelques minutes."
-      : "<strong>Mode démo</strong> — voici le message que Sensual Luxembourg recevra sur WhatsApp dès que le numéro sera configuré.";
+      ? "WhatsApp s'est ouvert avec votre demande : <strong>il ne reste qu'à appuyer sur Envoyer</strong>. Votre créneau est réservé après validation de la disponibilité et réception de l'acompte."
+      : "<strong>Mode démo</strong> — voici le message que Sensual Luxembourg recevra sur WhatsApp dès que le numéro sera configuré. Le créneau est réservé après validation de la disponibilité et réception de l'acompte.";
     const time = new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
     qs("[data-bd-preview]", drawer).innerHTML = esc(state.message).replace(/\n/g, "<br>") + `<span class="wa-preview__time">${time} ✓✓</span>`;
 
     const payBtn = qs("[data-bd-paynow]", drawer);
-    payBtn.hidden = state.pay === "onsite";
-    qs("[data-bd-paynow-label]", drawer).textContent = `Payer ${euro(dueNow())} maintenant`;
     const iban = qs("[data-bd-iban]", drawer);
     const P = C.payment || {};
-    iban.hidden = !(P.iban && state.pay !== "onsite");
-    if (!iban.hidden) {
-      iban.innerHTML = `<small>Ou par virement instantané</small><strong>${esc(P.iban)}</strong>${P.beneficiary ? `<span>${esc(P.beneficiary)}</span>` : ""}<span>Montant : ${euro(dueNow())} · Communication : ${state.ref}</span>`;
-    }
+    const amount = dueNow();
+    let link = "";
+    let details = "";
+    if (state.method === "PayPal" && P.paypal) link = `${P.paypal.replace(/\/+$/, "")}/${amount}EUR`;
+    if (state.method === "Payconiq" && P.payconiq) link = P.payconiq;
+    if (state.method === "Virement instantané" && P.iban) details = `<small>Virement instantané</small><strong>${esc(P.iban)}</strong>${P.beneficiary ? `<span>${esc(P.beneficiary)}</span>` : ""}`;
+    if (state.method === "Wero" && P.wero) details = `<small>Wero</small><strong>${esc(P.wero)}</strong>`;
+    if (!link && !details) details = `<small>${esc(state.method)}</small><span>Les coordonnées de paiement vous sont envoyées sur WhatsApp avec la confirmation de disponibilité.</span>`;
+    if (details) details += `<span>Montant : ${euro(amount)} · Référence : ${state.ref}</span>`;
+    payBtn.hidden = !link;
+    payBtn.dataset.link = link;
+    qs("[data-bd-paynow-label]", drawer).textContent = `Payer ${euro(amount)} par ${state.method}`;
+    iban.hidden = !details;
+    iban.innerHTML = details;
     goTo(4);
     const check = qs(".bd-done__check", drawer);
     check.classList.remove("is-anim");
@@ -352,14 +384,11 @@
     check.classList.add("is-anim");
   }
 
-  qs("[data-bd-paynow]", drawer).addEventListener("click", () => {
-    const P = C.payment || {};
-    if (P.url) {
-      window.open(P.url, "_blank", "noopener");
-      toast(`Indiquez la référence <strong>${state.ref}</strong> et le montant de <strong>${euro(dueNow())}</strong> lors du paiement.`, 7000);
-    } else {
-      toast("<strong>Mode démo :</strong> le paiement sécurisé s'ouvrira ici dès que le compte de paiement du salon sera relié.", 6000);
-    }
+  qs("[data-bd-paynow]", drawer).addEventListener("click", (e) => {
+    const link = e.currentTarget.dataset.link;
+    if (!link) return;
+    window.open(link, "_blank", "noopener");
+    toast(`Indiquez la référence <strong>${state.ref}</strong> lors du paiement de <strong>${euro(dueNow())}</strong>.`, 7000);
   });
   qs("[data-bd-wa-again]", drawer).addEventListener("click", () => {
     const url = waUrl(state.message);
@@ -403,6 +432,7 @@
     if (opts.place) state.place = opts.place;
     // praticienne choisie depuis la section « Nos praticiennes » (sinon aucune préférence)
     state.with = (opts.with || "").slice(0, 40);
+    if (opts.city && CITIES.includes(opts.city)) { state.place = "salon"; state.city = opts.city; }
     const withEl = qs("[data-bd-with]", drawer);
     if (withEl) withEl.textContent = state.with ? `Avec ${state.with} · réponse en ~10 min` : "Réponse en ~10 min · discret";
     if (serviceId && byId[serviceId]) selectService(serviceId, true);
@@ -461,6 +491,7 @@
       open(btn.dataset.book || null, {
         ...(fromPricing && SL.pricePlace ? { place: SL.pricePlace } : {}),
         ...(btn.dataset.with ? { with: btn.dataset.with } : {}),
+        ...(btn.dataset.city ? { city: btn.dataset.city } : {}),
       });
       return;
     }

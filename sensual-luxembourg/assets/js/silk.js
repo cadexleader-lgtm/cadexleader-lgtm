@@ -1,15 +1,15 @@
 /* =========================================================
-   Sensual Luxembourg — Fond "soie" animé en WebGL
-   Un shader plein écran qui simule des drapés de satin
-   bleu nuit, traversés de reflets blancs et de veines rouges.
+   Sensual Luxembourg — Drapeau luxembourgeois en soie, animé (WebGL)
+   Rouge, blanc, bleu clair : le tissu ondule doucement,
+   avec ses plis, ses ombres et ses reflets.
    ========================================================= */
 (function () {
   "use strict";
 
   const canvas = document.querySelector("[data-silk]");
   if (!canvas) return;
-  // Sur téléphone (ou mouvements réduits) : simple dégradé CSS, zéro calcul.
-  if (window.matchMedia("(max-width: 760px), (prefers-reduced-motion: reduce)").matches) return;
+  // Mouvements réduits : drapeau fixe en CSS, zéro calcul.
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   const gl = canvas.getContext("webgl", { antialias: false, alpha: false, powerPreference: "low-power", preserveDrawingBuffer: false });
   if (!gl) return; // le dégradé CSS du canvas sert de repli
@@ -70,22 +70,21 @@
       float spec = pow(max(dot(R, V), 0.0), 16.0);
       float rim = pow(1.0 - n.z, 2.0);
 
-      vec3 navy  = vec3(0.012, 0.02, 0.07);
-      vec3 royal = vec3(0.07, 0.13, 0.48);
-      vec3 blue  = vec3(0.26, 0.44, 1.0);
-      vec3 red   = vec3(0.92, 0.08, 0.24);
+      // Drapeau du Luxembourg : rouge (haut), blanc, bleu clair (bas)
+      vec3 fRed   = vec3(0.937, 0.200, 0.251);
+      vec3 fWhite = vec3(0.93, 0.94, 0.97);
+      vec3 fBlue  = vec3(0.000, 0.639, 0.878);
+      float y = uv.y + h * 0.045;                // les bandes suivent les plis du tissu
+      float aa = 0.006;
+      vec3 cloth = mix(fBlue, fWhite, smoothstep(0.333 - aa, 0.333 + aa, y));
+      cloth = mix(cloth, fRed, smoothstep(0.667 - aa, 0.667 + aa, y));
 
-      float redMask = smoothstep(0.05, 0.45, fbm(p * 0.45 - vec2(t * 0.7, t * 0.2) + 9.0));
-      redMask *= smoothstep(0.1, 0.9, uv.y * 0.6 + uv.x * 0.7);
-
-      vec3 base = mix(navy, royal, pow(diff, 1.7));
-      vec3 tint = mix(blue, red, redMask);
-      vec3 col = base + tint * spec * 1.05 + tint * rim * 0.28;
-      col += vec3(1.0, 0.96, 0.98) * pow(spec, 3.0) * 0.55; // reflet blanc nacré
+      vec3 col = cloth * (0.28 + 0.72 * pow(diff, 1.3));
+      col += vec3(1.0) * spec * 0.22 + cloth * rim * 0.12;
 
       // vignette + assombrissement à gauche pour la lisibilité du texte
       float vig = smoothstep(1.25, 0.25, length(uv - vec2(0.62, 0.55)));
-      col *= mix(0.35, 1.0, vig);
+      col *= mix(0.55, 1.0, vig);
       col *= mix(0.55, 1.0, smoothstep(0.0, 0.55, uv.x));
 
       // léger tramage pour éviter les bandes
@@ -127,7 +126,7 @@
   const uMouse = gl.getUniformLocation(prog, "uMouse");
 
   // Rendu en résolution réduite : la soie est douce, le flou est invisible et le GPU respire.
-  const QUALITY = 0.4;
+  const QUALITY = window.innerWidth < 760 ? 0.3 : 0.4;
   function resize() {
     const w = Math.max(1, Math.floor(canvas.clientWidth * QUALITY));
     const h = Math.max(1, Math.floor(canvas.clientHeight * QUALITY));

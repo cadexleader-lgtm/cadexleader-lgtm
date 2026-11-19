@@ -18,10 +18,15 @@
   --text: #f3f5fc;
   --muted: #9ea7cb;
   --muted-2: #6c7599;
-  --blue: #3d6bff;
-  --blue-2: #9db1ff;
-  --red: #e3173f;
-  --red-2: #ff5a79;
+  /* Couleurs du drapeau luxembourgeois */
+  --lu-red: #ef3340;
+  --lu-white: #ffffff;
+  --lu-blue: #00a3e0;
+  --lu-flag: linear-gradient(180deg, var(--lu-red) 0 33.4%, var(--lu-white) 33.4% 66.7%, var(--lu-blue) 66.7% 100%);
+  --blue: #00a3e0;
+  --blue-2: #7fd2f2;
+  --red: #e8303e;
+  --red-2: #ff6b78;
   --green: #25d366;
   --serif: "Cormorant", "Cormorant Garamond", Georgia, serif;
   --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -128,12 +133,12 @@ h1, h2, h3, h4, p, figure, blockquote { margin: 0; }
    Accueil
    ========================================================= */
 .hero { position: relative; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: 110px 0 70px; overflow: hidden; isolation: isolate; }
-.hero__silk { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; background: radial-gradient(70% 70% at 75% 35%, #13247a 0%, #0a1240 40%, #050816 75%); }
-.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(5, 8, 22, 0.85), rgba(5, 8, 22, 0.25) 60%), linear-gradient(0deg, var(--bg), transparent 25%); }
+.hero__silk { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; background: var(--lu-flag); }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(5, 8, 22, 0.9) 0%, rgba(5, 8, 22, 0.72) 42%, rgba(5, 8, 22, 0.18) 75%), linear-gradient(0deg, var(--bg), transparent 22%); }
 .hero__grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
 .hero__title { font-family: var(--serif); font-weight: 300; font-size: clamp(3.2rem, 7vw, 6.4rem); line-height: 0.98; letter-spacing: -0.03em; margin-bottom: 28px; }
 .hero__title > span { display: block; }
-.hero__title em { font-style: italic; font-weight: 400; background: linear-gradient(95deg, #b4c3ff 0%, #ffffff 50%, #ff8aa1 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: 0.06em; }
+.hero__title em { font-style: italic; font-weight: 400; background: linear-gradient(95deg, #ff6b78 0%, #ffffff 50%, #5fcbf3 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: 0.06em; }
 .hero__lead { max-width: 460px; color: #c3cae6; font-size: clamp(1rem, 1.25vw, 1.1rem); margin-bottom: 40px; }
 .hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; }
 .hero__visual { justify-self: end; width: min(100%, 420px); aspect-ratio: 2 / 3; border-radius: 999px 999px 24px 24px; overflow: hidden; border: 1px solid var(--line-2); }
@@ -427,10 +432,8 @@ body.drawer-open .fab, body.drawer-open .mbar { opacity: 0; pointer-events: none
 }
 @media (max-width: 760px) {
   .hero { align-items: flex-end; padding-bottom: 104px; background: #050816; }
-  .hero__silk { display: none; }
-  .hero__visual { position: absolute; top: 0; left: 0; right: 0; z-index: -2; width: 100%; height: 66%; aspect-ratio: auto; border: 0; border-radius: 0; }
-  .hero__visual img { transform: none; object-position: 62% 100%; }
-  .hero::after { background: linear-gradient(180deg, rgba(5, 8, 22, 0.55) 0%, rgba(5, 8, 22, 0.05) 22%, rgba(5, 8, 22, 0.35) 48%, var(--bg) 68%); }
+  .hero__visual { display: none; }
+  .hero::after { background: linear-gradient(180deg, rgba(5, 8, 22, 0.45) 0%, rgba(5, 8, 22, 0.1) 18%, rgba(5, 8, 22, 0.25) 36%, rgba(5, 8, 22, 0.88) 56%, var(--bg) 80%); }
   .services { grid-template-columns: 1fr; gap: 56px; }
   .gallery, .reviews { width: auto; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 0 var(--pad) 6px; scrollbar-width: none; }
   .gallery::-webkit-scrollbar, .reviews::-webkit-scrollbar { display: none; }
@@ -489,4 +492,57 @@ body.drawer-open .fab, body.drawer-open .mbar { opacity: 0; pointer-events: none
   .team__dots:not(:empty) { display: flex; justify-content: center; gap: 6px; margin-top: 16px; }
   .team__dots i { width: 6px; height: 6px; border-radius: 999px; background: var(--line-2); transition: width 0.3s var(--ease), background-color 0.3s; }
   .team__dots i.is-on { width: 20px; background: #fff; }
+}
+
+
+/* =========================================================
+   Identité luxembourgeoise : drapeau, adresses, politique
+   ========================================================= */
+.nav::before, .footer::before, .adm-top::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--lu-flag); }
+.footer { position: relative; }
+.flag-lu { display: inline-block; width: 21px; height: 14px; margin-right: 10px; vertical-align: -2px; border-radius: 3px; background: var(--lu-flag); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
+.eyebrow .flag-lu { letter-spacing: 0; }
+
+.places { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
+.places__lead { color: var(--muted); max-width: 470px; margin: 22px 0 28px; }
+.places__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.places__list button { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line-2); font-size: 0.88rem; font-weight: 600; transition: background-color 0.25s, color 0.25s, border-color 0.25s; }
+.places__list button svg { width: 14px; height: 14px; color: var(--red-2); transition: color 0.25s; }
+.places__list button:hover, .places__list button.is-hot { background: #fff; color: var(--bg); border-color: #fff; }
+.places__list button.is-hot svg, .places__list button:hover svg { color: var(--lu-red); }
+.places__note { margin-top: 22px; color: var(--muted-2); font-size: 0.88rem; }
+.places__map { margin: 0; justify-self: center; width: min(100%, 460px); }
+.places__map svg { width: 100%; height: auto; display: block; overflow: visible; }
+.places__land { stroke: rgba(255, 255, 255, 0.7); stroke-width: 1.4; stroke-linejoin: round; filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.55)); }
+.places__veil { fill: rgba(5, 8, 22, 0.28); pointer-events: none; }
+.pin { cursor: pointer; }
+.pin__dot { fill: #0b1230; stroke: #fff; stroke-width: 2; transition: fill 0.25s; }
+.pin--capital .pin__dot { fill: var(--lu-red); }
+.pin__halo { fill: var(--lu-red); opacity: 0; transform-box: fill-box; transform-origin: center; }
+.pin text { font-family: var(--sans); font-size: 11.5px; font-weight: 700; fill: #fff; paint-order: stroke; stroke: rgba(5, 8, 22, 0.9); stroke-width: 3.5px; stroke-linejoin: round; }
+.pin--capital text { font-size: 13px; }
+.pin.is-hot .pin__dot { fill: #fff; stroke: var(--lu-red); }
+.pin.is-hot .pin__halo { opacity: 0.45; animation: pinPulse 1.4s ease-out infinite; }
+@keyframes pinPulse { from { transform: scale(0.6); opacity: 0.6; } to { transform: scale(1.6); opacity: 0; } }
+
+.policy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.policy__card { padding: 28px; border-radius: 24px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 12px; align-content: start; }
+.policy__card > svg { width: 26px; height: 26px; color: var(--blue-2); }
+.policy__card h3 { font-family: var(--serif); font-weight: 400; font-size: 1.6rem; line-height: 1.1; }
+.policy__card p { color: var(--muted); font-size: 0.94rem; }
+.policy__card--important { border-color: rgba(239, 51, 64, 0.55); background: linear-gradient(160deg, rgba(239, 51, 64, 0.08), var(--surface) 60%); }
+.policy__card--important > svg { color: var(--red-2); }
+.policy__card--important p { color: #d9dcec; }
+.pay-chips { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.pay-chips li { padding: 7px 12px; border-radius: 10px; background: #fff; color: #0b1230; font-weight: 700; font-size: 0.82rem; }
+
+.bd-cities { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.bd-city { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line-2); font-size: 0.82rem; font-weight: 600; transition: background-color 0.25s, color 0.25s; }
+.bd-city.is-on { background: #fff; color: var(--bg); border-color: #fff; }
+.bd-methods .bd-chip { min-width: 0; padding: 10px 14px; }
+
+@media (max-width: 960px) {
+  .places { grid-template-columns: 1fr; }
+  .places__map { order: -1; width: min(100%, 380px); }
+  .policy { grid-template-columns: 1fr; }
 }

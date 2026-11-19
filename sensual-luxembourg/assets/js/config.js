@@ -12,7 +12,11 @@ window.SL_CONFIG = {
   email: "",                      // "contact@sensual-luxembourg.lu"
 
   // Supplément de déplacement ajouté au prix (en euros)
-  placeFees: { salon: 0, hotel: 40, domicile: 40 },
+  placeFees: { salon: 0, hotel: 50, domicile: 50 },
+
+  // Villes où se trouvent les appartements privés de réception
+  cities: ["Luxembourg-Ville", "Esch-sur-Alzette", "Ettelbruck", "Mersch", "Grevenmacher", "Differdange",
+           "Dudelange", "Diekirch", "Echternach", "Wiltz", "Pétange"],
 
   // Horaires des créneaux proposés (heure de début). 0 et 1 = après minuit.
   slots: ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
@@ -22,11 +26,15 @@ window.SL_CONFIG = {
   simulateBusySlots: true,        // DÉMO : marque quelques créneaux "complet". Mettre false en production.
 
   // Paiement en ligne
+  // Moyens acceptés : PayPal, virement instantané, Wero, Payconiq. Laisser vide ce qui n'est pas prêt :
+  // le client est alors prévenu que les coordonnées de paiement lui seront envoyées sur WhatsApp.
   payment: {
-    url: "",                      // lien de paiement de votre prestataire (montant libre de préférence)
-    iban: "",                     // facultatif : IBAN pour virement instantané (affiché avec la référence)
-    beneficiary: "",              // facultatif : titulaire du compte
-    depositPercent: 30,           // acompte proposé en %
+    depositPercent: 30,           // acompte demandé en %
+    paypal: "",                   // lien PayPal.Me, ex. "https://paypal.me/sensuallux" (le montant est ajouté)
+    iban: "",                     // IBAN pour le virement instantané
+    beneficiary: "",              // titulaire du compte
+    wero: "",                     // numéro de téléphone ou e-mail Wero
+    payconiq: "",                 // lien de paiement Payconiq
   },
 
   // Base de données (Supabase) : profils des praticiennes gérés depuis /admin.
