@@ -10,8 +10,9 @@ import { listProducts, toPublicProduct } from "@/lib/data/products";
 import { reviewStats } from "@/lib/data/reviews";
 import { resolvePromotions } from "@/lib/data/promotions";
 import { loadSite, type SiteParams } from "@/lib/site-context";
-import { SITES, SITE_IDS, blogPath, categoryPath, productPath, routePath, siblingSites } from "@/lib/sites";
+import { SITES, blogPath, categoryPath, productPath, routePath, siblingSites } from "@/lib/sites";
 import { MARKETS } from "@/lib/markets";
+import { ACTIVE_SITE_IDS } from "@/lib/launch";
 import { getDict } from "@/lib/i18n";
 import { loc, money } from "@/lib/format";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -37,7 +38,7 @@ export default async function SiteLayout({ children, params }: SiteParams & { ch
   const market = MARKETS[site.market];
   const siblings = siblingSites(site).map((s) => s.id);
 
-  const sites = SITE_IDS.map((id) => {
+  const sites = ACTIVE_SITE_IDS.map((id) => {
     const s = SITES[id];
     const m = MARKETS[s.market];
     const d = getDict(s.lang);

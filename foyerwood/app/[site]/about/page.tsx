@@ -6,6 +6,7 @@ import { loadSite, type SiteParams } from "@/lib/site-context";
 import { routePath } from "@/lib/sites";
 import { MARKETS, MARKET_IDS } from "@/lib/markets";
 import { AMBIANCE } from "@/lib/illustrations";
+import { isMarketActive } from "@/lib/launch";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t, site } = await loadSite((await params).site);
@@ -59,7 +60,7 @@ export default async function AboutPage({ params }: SiteParams) {
       </section>
       <section className="container-page py-16 sm:py-20">
         <div className="grid gap-4 sm:grid-cols-3">
-          {MARKET_IDS.map((m) => (
+          {MARKET_IDS.filter(isMarketActive).map((m) => (
             <div key={m} className="rounded-2xl bg-forest p-6 text-cream">
               <p className="text-3xl">{MARKETS[m].flag}</p>
               <p className="mt-3 font-display text-2xl">{MARKETS[m].names[site.lang]}</p>
