@@ -4,14 +4,14 @@ Site vitrine one-page pour **Sensual Luxembourg** : massages relaxants et massag
 Version de présentation à montrer au client avant validation.
 
 - **100 % statique** (HTML / CSS / JavaScript) : aucune compilation, aucun serveur, déploiement Vercel en 1 clic.
-- Palette **bleu nuit · bleu royal · blanc · rouge carmin**, cartes très arrondies, effet verre dépoli.
+- Thème **clair aux couleurs du Luxembourg** : fond blanc, bleu ciel `#00a3e0`, rouge `#ef3340`, cartes très arrondies.
 - **Parcours de réservation complet** : massage + durée + lieu → jour + heure → coordonnées + paiement
   → message pré-rempli envoyé sur WhatsApp → paiement en ligne (acompte ou totalité), ajout à l'agenda, référence.
 - **Design sobre et aéré** : peu d'éléments par écran, une seule animation forte, chargement léger
   (environ 1,2 Mo au total, contre 6,3 Mo pour la première maquette).
 - ***Le Rituel*, un film interactif** en WebGL : le défilement fait avancer 4 chapitres (zoom lent,
   transition liquide). Sur téléphone, **un geste = un chapitre** (accroche automatique).
-- Fond « soie » animé sur ordinateur uniquement ; sur téléphone, photo fixe (zéro calcul).
+- Accueil : soie claire animée (blanc nacré, plis bleu ciel, reflet rouge), inspirée du drapeau sans le dessiner.
 
 ## Structure
 

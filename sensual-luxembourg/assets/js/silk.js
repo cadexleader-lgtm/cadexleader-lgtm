@@ -1,14 +1,14 @@
 /* =========================================================
-   Sensual Luxembourg — Drapeau luxembourgeois en soie, animé (WebGL)
-   Rouge, blanc, bleu clair : le tissu ondule doucement,
-   avec ses plis, ses ombres et ses reflets.
+   Sensual Luxembourg — Soie animée de l'accueil (WebGL)
+   Inspirée du drapeau, sans le dessiner : blanc nacré, plis bleu ciel,
+   un reflet rouge qui glisse. Le tissu ondule doucement.
    ========================================================= */
 (function () {
   "use strict";
 
   const canvas = document.querySelector("[data-silk]");
   if (!canvas) return;
-  // Mouvements réduits : drapeau fixe en CSS, zéro calcul.
+  // Mouvements réduits : dégradé fixe en CSS, zéro calcul.
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   const gl = canvas.getContext("webgl", { antialias: false, alpha: false, powerPreference: "low-power", preserveDrawingBuffer: false });
@@ -70,22 +70,26 @@
       float spec = pow(max(dot(R, V), 0.0), 16.0);
       float rim = pow(1.0 - n.z, 2.0);
 
-      // Drapeau du Luxembourg : rouge (haut), blanc, bleu clair (bas)
-      vec3 fRed   = vec3(0.937, 0.200, 0.251);
-      vec3 fWhite = vec3(0.93, 0.94, 0.97);
-      vec3 fBlue  = vec3(0.000, 0.639, 0.878);
-      float y = uv.y + h * 0.045;                // les bandes suivent les plis du tissu
-      float aa = 0.006;
-      vec3 cloth = mix(fBlue, fWhite, smoothstep(0.333 - aa, 0.333 + aa, y));
-      cloth = mix(cloth, fRed, smoothstep(0.667 - aa, 0.667 + aa, y));
+      // Soie claire aux couleurs du Luxembourg : blanc nacré, plis bleu ciel,
+      // un reflet rouge qui glisse lentement dans le tissu. Pas de bandes.
+      vec3 white = vec3(1.0);
+      vec3 sky   = vec3(0.70, 0.88, 0.97);
+      vec3 blue  = vec3(0.000, 0.639, 0.878);
+      vec3 red   = vec3(0.937, 0.200, 0.251);
 
-      vec3 col = cloth * (0.28 + 0.72 * pow(diff, 1.3));
-      col += vec3(1.0) * spec * 0.22 + cloth * rim * 0.12;
+      vec3 col = mix(sky, white, smoothstep(0.15, 0.95, pow(diff, 1.1)));
+      // creux des plis : bleu du drapeau, très léger
+      col = mix(col, blue, (1.0 - diff) * 0.28);
+      // voile rouge qui dérive (bas droite surtout)
+      float rm = smoothstep(0.05, 0.6, fbm(p * 0.7 + vec2(t * 0.8, -t * 0.5) + 9.1) + 0.25 * (uv.x - uv.y));
+      col = mix(col, mix(col, red, 0.55), rm * (1.0 - diff) * 0.55);
+      // lisérés bleus sur les arêtes, éclat blanc nacré
+      col += blue * rim * 0.35;
+      col += vec3(1.0) * spec * 0.35;
 
-      // vignette + assombrissement à gauche pour la lisibilité du texte
-      float vig = smoothstep(1.25, 0.25, length(uv - vec2(0.62, 0.55)));
-      col *= mix(0.55, 1.0, vig);
-      col *= mix(0.55, 1.0, smoothstep(0.0, 0.55, uv.x));
+      // éclaircit à gauche pour la lisibilité du texte
+      col = mix(col, white, (1.0 - smoothstep(0.05, 0.6, uv.x)) * 0.55);
+      col = clamp(col, 0.0, 1.0);
 
       // léger tramage pour éviter les bandes
       col += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;
