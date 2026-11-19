@@ -7,6 +7,7 @@ import { routePath, SITES, productPath } from "@/lib/sites";
 import { MARKETS } from "@/lib/markets";
 import { HeroBackdrop } from "@/components/site/HeroBackdrop";
 import { AMBIANCE } from "@/lib/illustrations";
+import { isMarketActive } from "@/lib/launch";
 
 export async function generateMetadata({ params }: SiteParams): Promise<Metadata> {
   const { t, site } = await loadSite((await params).site);
@@ -18,7 +19,7 @@ const PLACEHOLDER = { fr: "75011", ca: "H2X 1Y4", us: "05401" } as const;
 export default async function CalculatorPage({ params }: SiteParams) {
   const { site, t, market } = await loadSite((await params).site);
   const others = (["ca", "us", "fr"] as const)
-    .filter((m) => m !== site.market)
+    .filter((m) => m !== site.market && isMarketActive(m))
     .map((m) => {
       const target = m === "ca" ? (site.lang === "en" ? SITES["ca-en"] : SITES.ca) : SITES[m];
       return { href: routePath(target, "calculator"), label: `${MARKETS[m].flag} ${MARKETS[m].names[site.lang]}` };

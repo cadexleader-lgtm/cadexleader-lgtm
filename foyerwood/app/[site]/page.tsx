@@ -13,6 +13,7 @@ import { listProducts, toPublicProduct, type Product } from "@/lib/data/products
 import { listApprovedReviews, reviewStats } from "@/lib/data/reviews";
 import { reviewSourceLabel } from "@/components/site/ReviewsProof";
 import { blogPath, categoryPath, routePath, SITES } from "@/lib/sites";
+import { ACTIVE_SITE_IDS, fallbackSite } from "@/lib/launch";
 import { fmt, formatMoney, formatNumber } from "@/lib/format";
 import { formatLabel } from "@/lib/product-format";
 import { estimateHeatingNeeds } from "@/lib/calculator";
@@ -27,7 +28,10 @@ export async function generateMetadata({ params }: SiteParams): Promise<Metadata
     description: t.meta.description,
     alternates: {
       canonical: site.prefix,
-      languages: { "fr-CA": SITES.ca.prefix, "en-CA": SITES["ca-en"].prefix, "en-US": SITES.us.prefix, "fr-FR": SITES.fr.prefix },
+      languages: {
+        ...Object.fromEntries(ACTIVE_SITE_IDS.map((sid) => [SITES[sid].locale, SITES[sid].prefix])),
+        "x-default": fallbackSite("fr").prefix,
+      },
     },
   };
 }

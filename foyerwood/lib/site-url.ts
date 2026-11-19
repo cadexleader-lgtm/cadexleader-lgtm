@@ -1,13 +1,21 @@
+/** Official public address of the site: every canonical URL, the sitemap and robots.txt use it. */
+export const CANONICAL_ORIGIN = "https://www.foyerwood.com";
+
 /**
- * Public base URL of the site (sitemap, robots.txt, canonical / Open Graph URLs).
- * Order: NEXT_PUBLIC_SITE_URL if set, otherwise the production domain Vercel
- * provides automatically (the custom domain once one is attached, the
- * *.vercel.app address before that), otherwise localhost for development.
+ * Public base URL (sitemap, robots.txt, canonical / Open Graph URLs).
+ * - NEXT_PUBLIC_SITE_URL if set to a real domain (a *.vercel.app address is
+ *   ignored: it must never become the canonical address);
+ * - otherwise the official domain in production builds;
+ * - localhost during development.
  */
 export function siteUrl(): string {
-  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (explicit) return explicit.replace(/\/+$/, "");
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
-  if (vercel) return `https://${vercel.replace(/\/+$/, "")}`;
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+  if (explicit && /^https?:\/\//.test(explicit)) {
+    const host = new URL(explicit).hostname.toLowerCase();
+    // foyerwood.com (with or without www) always means the official www address.
+    if (host === "foyerwood.com" || host === "www.foyerwood.com") return CANONICAL_ORIGIN;
+    if (!host.endsWith(".vercel.app")) return explicit;
+  }
+  if (process.env.NODE_ENV === "production") return CANONICAL_ORIGIN;
   return "http://localhost:3000";
 }

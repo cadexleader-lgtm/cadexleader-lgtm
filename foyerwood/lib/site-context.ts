@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { getSite, type Site } from "./sites";
+import { isSiteActive } from "./launch";
 import { MARKETS, type MarketConfig } from "./markets";
 import { getDict, type Dict } from "./i18n";
 import { getMarketSettings, getSetting, listCategories, type Category, type CompanySettings, type MarketSettings, type SocialSettings } from "./data/settings";
@@ -20,7 +21,7 @@ export interface SiteContext {
 
 export const loadSite = cache(async (siteId: string): Promise<SiteContext> => {
   const site = getSite(siteId);
-  if (!site) notFound();
+  if (!site || !isSiteActive(site)) notFound();
   const [settings, company, social, freeThresholdCents, categories] = await Promise.all([
     getMarketSettings(site.market),
     getSetting("company"),
