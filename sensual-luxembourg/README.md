@@ -66,9 +66,8 @@ window.SL_CONFIG = {
 section « Nos adresses » est dessinée dans `index.html` (contour Natural Earth, domaine public) : pour ajouter une ville,
 ajoutez-la aussi sur la carte.
 
-**Paiement** : PayPal, virement instantané, Wero, Payconiq (bloc `payment` de `config.js`). Tant qu'un moyen n'est pas
-renseigné, le client est prévenu que les coordonnées lui seront envoyées sur WhatsApp. La réservation demande toujours
-un acompte (30 % par défaut) ou le règlement complet.
+**Paiement** : aucun moyen de paiement n'est affiché sur le site. Le client envoie sa demande sur WhatsApp ;
+la disponibilité et les modalités de paiement lui sont communiquées là-bas.
 
 **Massages, durées et prix** : directement dans `index.html`, sur chaque carte
 (`data-prices="60:150,90:200"` = 60 min à 150 €, 90 min à 200 €). Le tiroir de réservation lit ces valeurs :

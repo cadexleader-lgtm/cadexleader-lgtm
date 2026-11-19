@@ -29,7 +29,6 @@
   /* ---------- Catalogue ---------- */
   const fees = Object.assign({ salon: 0, hotel: 50, domicile: 50 }, C.placeFees || {});
   const CITIES = C.cities && C.cities.length ? C.cities : ["Luxembourg-Ville"];
-  const METHODS = ["PayPal", "Virement instantané", "Wero", "Payconiq"];
   const PLACES = [
     { id: "salon", label: "Appartement privé", note: `${CITIES.length} villes` },
     { id: "hotel", label: "Mon hôtel", note: fees.hotel ? `+${fees.hotel} €` : "inclus" },
@@ -48,17 +47,14 @@
   });
   const byId = Object.fromEntries(services.map((s) => [s.id, s]));
   const groups = [...new Set(services.map((s) => s.group))];
-  const pct = (C.payment && C.payment.depositPercent) || 30;
   const SLOTS = C.slots || ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "00:00"];
 
-  const state = { step: 1, service: null, duration: null, place: "salon", address: "", day: null, slot: null, pay: "deposit", method: "PayPal", city: CITIES[0], ref: "", message: "", with: "" };
+  const state = { step: 1, service: null, duration: null, place: "salon", address: "", day: null, slot: null, city: CITIES[0], ref: "", message: "", with: "" };
 
   /* ---------- Calculs ---------- */
   const current = () => byId[state.service];
   const basePrice = () => { const s = current(); const p = s && s.prices.find((x) => x.d === state.duration); return p ? p.price : 0; };
   const total = () => basePrice() + (fees[state.place] || 0);
-  const deposit = () => Math.ceil((total() * pct) / 100);
-  const dueNow = () => (state.pay === "full" ? total() : deposit());
 
   const startOfDay = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
   const days = () => Array.from({ length: C.daysAhead || 14 }, (_, k) => { const d = startOfDay(new Date()); d.setDate(d.getDate() + k); return d; });
@@ -217,33 +213,11 @@
   });
 
   /* ---------- Rendu étape 3 ---------- */
-  const payBox = qs("[data-bd-pay]", drawer);
   const recapBox = qs("[data-bd-recap]", drawer);
   const nameInput = qs("#bd-name", drawer);
   const phoneInput = qs("#bd-phone", drawer);
   const msgInput = qs("#bd-msg", drawer);
   const adultInput = qs("[data-bd-adult]", drawer);
-  function renderPay() {
-    const opts = [
-      { id: "deposit", icon: "lock", title: `Acompte · ${pct} %`, sub: `${euro(deposit())} pour confirmer, le solde le jour du rendez-vous` },
-      { id: "full", icon: "gem", title: "Tout régler à l'avance", sub: `${euro(total())} · libellé discret` },
-    ];
-    payBox.innerHTML = opts.map((o) => `
-      <button type="button" class="bd-payopt${o.id === state.pay ? " is-on" : ""}" data-pay="${o.id}">
-        <span class="bd-payopt__ico">${ICON(o.icon)}</span>
-        <span class="bd-payopt__txt"><strong>${o.title}</strong><small>${o.sub}</small></span>
-        <span class="bd-radio" aria-hidden="true"></span>
-      </button>`).join("");
-    methodBox.innerHTML = METHODS.map((m) => `<button type="button" class="bd-chip${m === state.method ? " is-on" : ""}" data-method="${esc(m)}"><strong>${esc(m)}</strong></button>`).join("");
-  }
-  const methodBox = qs("[data-bd-methods]", drawer);
-  methodBox.addEventListener("click", (e) => {
-    const b = e.target.closest("[data-method]");
-    if (!b) return;
-    state.method = b.dataset.method;
-    renderPay();
-    renderRecap();
-  });
   function renderRecap() {
     const s = current();
     const place = PLACES.find((p) => p.id === state.place);
@@ -256,16 +230,8 @@
     recapBox.innerHTML = `
       ${rows.map(([k, v]) => `<div class="bd-recap__row"><span>${k}</span><strong>${esc(v)}</strong></div>`).join("")}
       <div class="bd-recap__total"><span>Total</span><strong>${euro(total())}</strong></div>
-      <div class="bd-recap__due"><span>${state.pay === "full" ? "À régler à l'avance" : "Acompte pour confirmer"} · ${esc(state.method)}</span><strong>${euro(dueNow())}</strong></div>`;
+      <p class="bd-recap__note">Les modalités de paiement vous sont communiquées sur WhatsApp.</p>`;
   }
-  payBox.addEventListener("click", (e) => {
-    const b = e.target.closest("[data-pay]");
-    if (!b) return;
-    state.pay = b.dataset.pay;
-    renderPay();
-    renderRecap();
-  });
-
   /* ---------- Navigation entre étapes ---------- */
   const tabs = qsa("[data-bd-tabs] li", drawer);
   const bar = qs("[data-bd-bar]", drawer);
@@ -292,7 +258,7 @@
     qs("use", nextBtn).setAttribute("href", step === 3 ? "#i-whatsapp" : "#i-arrow");
     nextBtn.classList.toggle("is-wa", step === 3);
     if (step === 2) { renderDays(); renderSlots(); }
-    if (step === 3) { renderPay(); renderRecap(); }
+    if (step === 3) renderRecap();
     scroller.scrollTop = 0;
     const active = qs(`.bd-step[data-step="${step}"]`, drawer);
     if (gsap) gsap.fromTo(active.children, { opacity: 0, x: 40 * dir }, { opacity: 1, x: 0, duration: 0.6, stagger: 0.05, ease: "power3.out" });
@@ -325,9 +291,6 @@
   function buildMessage() {
     const s = current();
     const place = PLACES.find((p) => p.id === state.place);
-    const payTxt = state.pay === "full"
-      ? `totalité à l'avance (${euro(total())}) par ${state.method}`
-      : `acompte de ${euro(deposit())} par ${state.method} (solde ${euro(total() - deposit())} le jour du rendez-vous)`;
     const lines = [
       "Bonjour Sensual Luxembourg,",
       "je souhaite réserver :",
@@ -336,12 +299,11 @@
       `• Date : ${fmtWhen()}`,
       `• Lieu : ${placeLabel()}`,
       `• Prix : ${euro(total())}`,
-      `• Paiement : ${payTxt}`,
       `• Prénom : ${nameInput.value.trim()}`,
     ];
     if (phoneInput.value.trim()) lines.push(`• Téléphone : ${phoneInput.value.trim()}`);
     if (msgInput.value.trim()) lines.push(`• Message : ${msgInput.value.trim()}`);
-    lines.push(`Référence : ${state.ref}`, "Merci de me confirmer la disponibilité et de m'indiquer comment régler l'acompte.");
+    lines.push(`Référence : ${state.ref}`, "Merci de me confirmer la disponibilité et les modalités de paiement.");
     return lines.join("\n");
   }
 
@@ -355,28 +317,11 @@
 
     qs("[data-bd-ref]", drawer).textContent = state.ref;
     qs("[data-bd-done-lead]", drawer).innerHTML = url
-      ? "WhatsApp s'est ouvert avec votre demande : <strong>il ne reste qu'à appuyer sur Envoyer</strong>. Votre créneau est réservé après validation de la disponibilité et réception de l'acompte."
-      : "<strong>Mode démo</strong> — voici le message que Sensual Luxembourg recevra sur WhatsApp dès que le numéro sera configuré. Le créneau est réservé après validation de la disponibilité et réception de l'acompte.";
+      ? "WhatsApp s'est ouvert avec votre demande : <strong>il ne reste qu'à appuyer sur Envoyer</strong>. Nous vous confirmons la disponibilité et vous indiquons les modalités de paiement sur WhatsApp."
+      : "<strong>Mode démo</strong> — voici le message que Sensual Luxembourg recevra sur WhatsApp dès que le numéro sera configuré. ";
     const time = new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
     qs("[data-bd-preview]", drawer).innerHTML = esc(state.message).replace(/\n/g, "<br>") + `<span class="wa-preview__time">${time} ✓✓</span>`;
 
-    const payBtn = qs("[data-bd-paynow]", drawer);
-    const iban = qs("[data-bd-iban]", drawer);
-    const P = C.payment || {};
-    const amount = dueNow();
-    let link = "";
-    let details = "";
-    if (state.method === "PayPal" && P.paypal) link = `${P.paypal.replace(/\/+$/, "")}/${amount}EUR`;
-    if (state.method === "Payconiq" && P.payconiq) link = P.payconiq;
-    if (state.method === "Virement instantané" && P.iban) details = `<small>Virement instantané</small><strong>${esc(P.iban)}</strong>${P.beneficiary ? `<span>${esc(P.beneficiary)}</span>` : ""}`;
-    if (state.method === "Wero" && P.wero) details = `<small>Wero</small><strong>${esc(P.wero)}</strong>`;
-    if (!link && !details) details = `<small>${esc(state.method)}</small><span>Les coordonnées de paiement vous sont envoyées sur WhatsApp avec la confirmation de disponibilité.</span>`;
-    if (details) details += `<span>Montant : ${euro(amount)} · Référence : ${state.ref}</span>`;
-    payBtn.hidden = !link;
-    payBtn.dataset.link = link;
-    qs("[data-bd-paynow-label]", drawer).textContent = `Payer ${euro(amount)} par ${state.method}`;
-    iban.hidden = !details;
-    iban.innerHTML = details;
     goTo(4);
     const check = qs(".bd-done__check", drawer);
     check.classList.remove("is-anim");
@@ -384,12 +329,6 @@
     check.classList.add("is-anim");
   }
 
-  qs("[data-bd-paynow]", drawer).addEventListener("click", (e) => {
-    const link = e.currentTarget.dataset.link;
-    if (!link) return;
-    window.open(link, "_blank", "noopener");
-    toast(`Indiquez la référence <strong>${state.ref}</strong> lors du paiement de <strong>${euro(dueNow())}</strong>.`, 7000);
-  });
   qs("[data-bd-wa-again]", drawer).addEventListener("click", () => {
     const url = waUrl(state.message);
     if (url) window.open(url, "_blank", "noopener");

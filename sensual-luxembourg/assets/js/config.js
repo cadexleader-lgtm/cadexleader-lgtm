@@ -26,17 +26,6 @@ window.SL_CONFIG = {
   simulateBusySlots: true,        // DÉMO : marque quelques créneaux "complet". Mettre false en production.
 
   // Paiement en ligne
-  // Moyens acceptés : PayPal, virement instantané, Wero, Payconiq. Laisser vide ce qui n'est pas prêt :
-  // le client est alors prévenu que les coordonnées de paiement lui seront envoyées sur WhatsApp.
-  payment: {
-    depositPercent: 30,           // acompte demandé en %
-    paypal: "",                   // lien PayPal.Me, ex. "https://paypal.me/sensuallux" (le montant est ajouté)
-    iban: "",                     // IBAN pour le virement instantané
-    beneficiary: "",              // titulaire du compte
-    wero: "",                     // numéro de téléphone ou e-mail Wero
-    payconiq: "",                 // lien de paiement Payconiq
-  },
-
   // Base de données (Supabase) : profils des praticiennes gérés depuis /admin.
   // La clé « publishable » est publique par nature ; les droits sont gérés côté base (RLS).
   supabase: {

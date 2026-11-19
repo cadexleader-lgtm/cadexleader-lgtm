@@ -546,3 +546,5 @@ body.drawer-open .fab, body.drawer-open .mbar { opacity: 0; pointer-events: none
   .places__map { order: -1; width: min(100%, 380px); }
   .policy { grid-template-columns: 1fr; }
 }
+
+.bd-recap__note { margin: 4px 0 0; color: var(--muted); font-size: 0.84rem; }

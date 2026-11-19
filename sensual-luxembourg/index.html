@@ -18,7 +18,7 @@
   <link rel="preload" href="assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/img/dos-lumiere-800.webp" as="image" media="(max-width: 960px)">
   <link rel="preload" href="assets/img/dos-lumiere.webp" as="image" media="(min-width: 961px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=20261119a">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261119b">
   <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -266,7 +266,7 @@
         <div class="value" data-reveal>
           <svg><use href="#i-lock"/></svg>
           <h3>Discrétion</h3>
-          <p>Adresse communiquée à la réservation, paiement au libellé discret.</p>
+          <p>Adresse communiquée à la réservation, échanges confidentiels.</p>
         </div>
         <div class="value" data-reveal style="--d:1">
           <svg><use href="#i-heart"/></svg>
@@ -353,7 +353,7 @@
     <section class="section section--tight" id="politique">
       <div class="container">
         <header class="head head--center">
-          <p class="eyebrow" data-reveal>Réservation & paiement</p>
+          <p class="eyebrow" data-reveal>Réservation</p>
           <h2 class="title" data-reveal>Un service <em>sur réservation</em></h2>
         </header>
         <div class="policy">
@@ -363,10 +363,9 @@
             <p>Nos praticiennes exercent selon un planning de disponibilités établi à l'avance : elles ne sont pas présentes en permanence et sont mobilisées en fonction des réservations confirmées. Réservez à l'avance, surtout aux horaires de forte demande.</p>
           </article>
           <article class="policy__card" data-reveal style="--d:1">
-            <svg><use href="#i-lock"/></svg>
-            <h3>Moyens de paiement</h3>
-            <p>Pour une confirmation rapide, nous acceptons exclusivement :</p>
-            <ul class="pay-chips"><li>PayPal</li><li>Virement instantané</li><li>Wero</li><li>Payconiq</li></ul>
+            <svg><use href="#i-whatsapp"/></svg>
+            <h3>Tout se passe sur WhatsApp</h3>
+            <p>Envoyez votre demande en quelques clics : nous vous répondons sur WhatsApp pour confirmer le créneau et vous indiquer les modalités de paiement.</p>
           </article>
           <article class="policy__card policy__card--important" data-reveal style="--d:2">
             <svg><use href="#i-shield"/></svg>
@@ -416,15 +415,15 @@
         <div class="faq__list" data-reveal>
           <div class="faq__item">
             <button class="faq__q" aria-expanded="false">Comment réserver ?<svg><use href="#i-plus"/></svg></button>
-            <div class="faq__a"><div><p>Cliquez sur « Réserver », choisissez votre massage, le lieu puis votre créneau. Votre demande s'ouvre pré-remplie dans WhatsApp. Le rendez-vous est confirmé après validation de la disponibilité et réception de l'acompte.</p></div></div>
+            <div class="faq__a"><div><p>Cliquez sur « Réserver », choisissez votre massage, le lieu puis votre créneau. Votre demande s'ouvre pré-remplie dans WhatsApp. Nous vous confirmons la disponibilité et les modalités sur WhatsApp.</p></div></div>
           </div>
           <div class="faq__item">
             <button class="faq__q" aria-expanded="false">Où se déroulent les massages ?<svg><use href="#i-plus"/></svg></button>
             <div class="faq__a"><div><p>Dans l'un de nos appartements privés de réception (Luxembourg-Ville, Esch-sur-Alzette, Ettelbruck, Mersch, Grevenmacher, Differdange, Dudelange, Diekirch, Echternach, Wiltz, Pétange) ou à votre hôtel / domicile. L'adresse exacte est communiquée à la confirmation.</p></div></div>
           </div>
           <div class="faq__item">
-            <button class="faq__q" aria-expanded="false">Quels moyens de paiement acceptez-vous ?<svg><use href="#i-plus"/></svg></button>
-            <div class="faq__a"><div><p>Exclusivement PayPal, virement bancaire instantané, Wero et Payconiq. Un acompte confirme votre réservation ; vous pouvez aussi tout régler à l'avance.</p></div></div>
+            <button class="faq__q" aria-expanded="false">Comment se passe le paiement ?<svg><use href="#i-plus"/></svg></button>
+            <div class="faq__a"><div><p>Les modalités de paiement vous sont communiquées sur WhatsApp, au moment où nous confirmons votre rendez-vous.</p></div></div>
           </div>
           <div class="faq__item">
             <button class="faq__q" aria-expanded="false">Quelles sont les règles de la maison ?<svg><use href="#i-plus"/></svg></button>
@@ -451,7 +450,7 @@
           <ol>
             <li><span>1</span>Votre massage, la durée et le lieu</li>
             <li><span>2</span>Le jour et l'heure</li>
-            <li><span>3</span>Confirmation après acompte : PayPal, virement instantané, Wero ou Payconiq</li>
+            <li><span>3</span>Confirmation et modalités de paiement sur WhatsApp</li>
           </ol>
           <button class="btn btn--primary btn--lg btn--block" data-book>Choisir mon créneau</button>
           <a class="link-wa" href="#" data-wa><svg><use href="#i-whatsapp"/></svg>Une question ? Écrire sur WhatsApp</a>
@@ -540,11 +539,7 @@
             <textarea id="bd-msg" rows="2" placeholder=" "></textarea>
             <label for="bd-msg">Une demande particulière ? (facultatif)</label>
           </div>
-          <h4 class="bd-h4">Paiement</h4>
-          <div class="bd-pay" data-bd-pay></div>
-          <h4 class="bd-h4">Moyen de paiement</h4>
-          <div class="bd-chips bd-methods" data-bd-methods></div>
-          <p class="bd-hint"><svg><use href="#i-shield"/></svg>Votre créneau est réservé après validation de la disponibilité et réception de l'acompte.</p>
+
           <div class="bd-recap" data-bd-recap></div>
           <label class="consent" data-bd-consent><input type="checkbox" data-bd-adult><span>Je certifie avoir 18 ans ou plus.</span></label>
         </section>
@@ -559,8 +554,6 @@
             <div class="wa-preview__bubble" data-bd-preview></div>
           </div>
           <div class="bd-done__actions">
-            <button class="btn btn--primary btn--block" data-bd-paynow hidden><span data-bd-paynow-label>Payer maintenant</span></button>
-            <div class="bd-iban" data-bd-iban hidden></div>
             <button class="btn btn--ghost btn--block" data-bd-wa-again><svg><use href="#i-whatsapp"/></svg><span>Ouvrir WhatsApp</span></button>
             <button class="btn btn--ghost btn--block" data-bd-ics><svg><use href="#i-calendar"/></svg><span>Ajouter à mon agenda</span></button>
           </div>
@@ -583,13 +576,13 @@
 
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
-  <script src="assets/js/config.js?v=20261119a" defer></script>
+  <script src="assets/js/config.js?v=20261119b" defer></script>
   <script src="assets/vendor/gsap.min.js" defer></script>
   <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="assets/js/silk.js?v=20261119a" defer></script>
-  <script src="assets/js/main.js?v=20261119a" defer></script>
-  <script src="assets/js/booking.js?v=20261119a" defer></script>
-  <script src="assets/js/reel.js?v=20261119a" defer></script>
-  <script src="assets/js/team.js?v=20261119a" defer></script>
+  <script src="assets/js/silk.js?v=20261119b" defer></script>
+  <script src="assets/js/main.js?v=20261119b" defer></script>
+  <script src="assets/js/booking.js?v=20261119b" defer></script>
+  <script src="assets/js/reel.js?v=20261119b" defer></script>
+  <script src="assets/js/team.js?v=20261119b" defer></script>
 </body>
 </html>
