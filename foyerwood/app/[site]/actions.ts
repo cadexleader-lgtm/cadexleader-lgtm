@@ -13,6 +13,8 @@ import { checkDelivery, evaluateDelivery, listZones } from "@/lib/data/zones";
 import { createPreorder, findOrderForTracking, setOrderWhatsapp } from "@/lib/data/orders";
 import { getSetting } from "@/lib/data/settings";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { emailCustomerStage, emailShopNewOrder } from "@/lib/notify";
 import { calculationExists, createContactMessage, saveCalculation, subscribeNewsletter } from "@/lib/data/misc";
 import { createReview, findDeliveredOrder, hasReviewForOrder } from "@/lib/data/reviews";
 import { rateLimit } from "@/lib/rate-limit";
@@ -318,6 +320,12 @@ export async function submitPreorderAction(_: FormState, fd: FormData): Promise<
       deliveryFree: delivery.freeDelivery,
       deliveryNote: t.confirmation.proformaDeliveryNote,
     },
+  });
+
+  // Automatic e-mails (customer + shop) once the response is sent; skipped when SMTP is not configured.
+  after(async () => {
+    await emailCustomerStage(order.id, "received").catch(() => false);
+    await emailShopNewOrder(order.id).catch(() => false);
   });
 
   redirect(`${routePath(site, "preorder", "confirmation", order.reference)}?t=${order.accessToken}`);

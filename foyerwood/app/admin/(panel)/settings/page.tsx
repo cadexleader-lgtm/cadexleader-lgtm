@@ -8,7 +8,9 @@ import { MARKETS } from "@/lib/markets";
 import { formatDateTime } from "@/lib/format";
 import {
   saveMarketSettingsAction, saveCompanyAction, saveCategoryAction, createUserAction, changePasswordAction, changeProfileAction, toggleUserAction,
+  sendTestEmailAction,
 } from "@/app/admin/actions";
+import { mailConfigured, mailFromAddress } from "@/lib/mailer";
 
 export default async function SettingsPage({ searchParams }: SearchProps) {
   const sp = await searchParams;
@@ -74,6 +76,24 @@ export default async function SettingsPage({ searchParams }: SearchProps) {
             </form>
           ))}
         </section>
+
+        <Panel title="E-mails automatiques aux clients" id="emails">
+          {mailConfigured() ? (
+            <div className="space-y-3 text-sm">
+              <p className="flex flex-wrap items-center gap-2">
+                <Badge tone="success">Actifs</Badge> Envoyés depuis <strong>{mailFromAddress()}</strong> : réception de la précommande, confirmation (paiement attendu), paiement reçu, livraison, livrée, annulation. Vous recevez aussi une alerte à chaque nouvelle précommande (à l&apos;e-mail de contact du marché).
+              </p>
+              <form action={sendTestEmailAction}>
+                <SubmitButton variant="secondary">M&apos;envoyer un e-mail de test</SubmitButton>
+              </form>
+            </div>
+          ) : (
+            <div className="space-y-2 text-sm text-charcoal/85">
+              <p className="flex flex-wrap items-center gap-2"><Badge tone="warning">Inactifs</Badge> Le site n&apos;envoie pas encore d&apos;e-mails tout seul. Les boutons WhatsApp, SMS et e-mail de chaque commande fonctionnent quand même.</p>
+              <p>Pour les activer : créez la boîte <strong>contact@foyerwoods.com</strong> chez LWS, puis ajoutez dans Vercel → Settings → Environment Variables : <code>SMTP_HOST</code> = mail.foyerwoods.com, <code>SMTP_PORT</code> = 465, <code>SMTP_USER</code> = contact@foyerwoods.com, <code>SMTP_PASS</code> = le mot de passe de la boîte. Redéployez, puis revenez ici pour envoyer un e-mail de test.</p>
+            </div>
+          )}
+        </Panel>
 
         <form action={saveCompanyAction}>
           <Panel title="Entreprise et informations légales" id="company">
