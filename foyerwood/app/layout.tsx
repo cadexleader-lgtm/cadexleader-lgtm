@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { siteUrl } from "@/lib/site-url";
-import "@fontsource-variable/instrument-sans";
+import "@fontsource-variable/hanken-grotesk";
+import "@fontsource-variable/fraunces/full.css";
+import "@fontsource-variable/fraunces/full-italic.css";
+// Instrument Serif is kept only for the "Foyerwood" wordmark (brand logo).
 import "@fontsource/instrument-serif/400.css";
-import "@fontsource/instrument-serif/400-italic.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
