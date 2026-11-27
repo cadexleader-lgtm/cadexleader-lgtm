@@ -126,14 +126,14 @@ export function PreorderClient(p: Props) {
     );
   }
 
-  const field = (name: string, label: string, opts: { type?: string; autoComplete?: string; placeholder?: string; help?: string; full?: boolean } = {}) => (
+  const field = (name: string, label: string, opts: { type?: string; autoComplete?: string; placeholder?: string; help?: string; full?: boolean; optional?: boolean } = {}) => (
     <div className={opts.full ? "sm:col-span-2" : ""}>
       <label htmlFor={`po-${name}`} className="field-label">{label}</label>
       <input
         id={`po-${name}`}
         name={name}
         type={opts.type ?? "text"}
-        required
+        required={!opts.optional}
         autoComplete={opts.autoComplete}
         placeholder={opts.placeholder}
         className="field"
@@ -217,6 +217,7 @@ export function PreorderClient(p: Props) {
             {field("fullName", t.fields.fullName, { autoComplete: "name", full: true })}
             {field("email", t.fields.email, { type: "email", autoComplete: "email" })}
             {field("phone", t.fields.phone, { type: "tel", autoComplete: "tel", placeholder: p.phonePlaceholder, help: t.fields.phoneHelp })}
+            {field("whatsapp", t.fields.whatsapp, { type: "tel", placeholder: p.phonePlaceholder, help: t.fields.whatsappHelp, full: true, optional: true })}
             {field("address", t.fields.address, { autoComplete: "street-address", full: true })}
             {field("postalCode", t.fields.postalCode, { autoComplete: "postal-code", placeholder: p.postalPlaceholder })}
             {field("city", t.fields.city, { autoComplete: "address-level2" })}

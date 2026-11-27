@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, MapPin, ShieldCheck } from "lucide-react";
-import { ClearCartOnMount, ContactActions } from "@/components/cart/ConfirmationClient";
-import { ButtonLink } from "@/components/ui";
+import { CheckCircle2, FileText, Mail, MapPin, Phone, Route, ShieldCheck } from "lucide-react";
+import { ClearCartOnMount, WhatsappOptIn } from "@/components/cart/ConfirmationClient";
+import { ButtonLink, btn } from "@/components/ui";
 import { loadSite } from "@/lib/site-context";
-import { getOrderForCustomer } from "@/lib/data/orders";
+import { getActiveProformaNumber, getOrderForCustomer } from "@/lib/data/orders";
 import { routePath } from "@/lib/sites";
+import { siteUrl } from "@/lib/site-url";
 import { fmt, money } from "@/lib/format";
-import { buildPreorderMessage, whatsappLink } from "@/lib/whatsapp";
 import { isSaleUnit, unitLabel } from "@/lib/energy";
 import { HeroBackdrop } from "@/components/site/HeroBackdrop";
 import { AMBIANCE } from "@/lib/illustrations";
@@ -35,20 +35,37 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
   const unit = (u: string, q: number) => (isSaleUnit(u) ? unitLabel(u, lang, q) : u);
   const address = `${order.addressLine}, ${order.postalCode} ${order.city}`;
   const total = money(site, order.subtotalCents - (order.discountCents ?? 0), order.currency);
-  const message = buildPreorderMessage({
-    lang,
-    reference: order.reference,
-    items: items.map((i) => ({ name: i.productName, quantity: i.quantity, unit: unit(i.unit, i.quantity) })),
-    total,
+  const tk = token ?? "";
+  const pf = await getActiveProformaNumber(order.id);
+  const pfPath = pf ? `/documents/proforma/${encodeURIComponent(pf)}?t=${encodeURIComponent(tk)}` : null;
+  const c = t.confirmation;
+
+  // E-mail to the shop, fully written: the customer only presses "Send".
+  const emailBody = [
+    fmt(c.emailIntro, { ref: order.reference, pf: pf ?? "—" }),
+    "",
+    ...(pfPath ? [c.emailProformaLink, `${siteUrl()}${pfPath}`, ""] : []),
+    ...items.map((i) => `- ${i.quantity} ${unit(i.unit, i.quantity)} — ${i.productName}`),
+    fmt(c.emailTotal, { amount: total }),
+    "",
+    c.emailContact,
+    order.customerName,
     address,
-    name: order.customerName,
-  });
-  const wa = whatsappLink(settings.whatsappNumber, message);
-  const contactHref = `${routePath(site, "contact")}?ref=${encodeURIComponent(order.reference)}&t=${encodeURIComponent(token ?? "")}`;
+    order.customerPhone,
+    ...(order.customerWhatsapp ? [fmt(c.emailWhatsapp, { phone: order.customerWhatsapp })] : []),
+    order.customerEmail,
+    "",
+    c.emailThanks,
+    order.customerName,
+  ].join("\n");
+  const emailSubject = pf ? `${fmt(c.emailSubject, { ref: order.reference })} — ${c.proformaNumber} ${pf}` : fmt(c.emailSubject, { ref: order.reference });
   const emailHref = settings.contactEmail
-    ? `mailto:${settings.contactEmail}?subject=${encodeURIComponent(fmt(t.confirmation.emailSubject, { ref: order.reference }))}&body=${encodeURIComponent(message)}`
+    ? `mailto:${settings.contactEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
     : null;
+  const contactHref = `${routePath(site, "contact")}?ref=${encodeURIComponent(order.reference)}&t=${encodeURIComponent(tk)}`;
   const phoneHref = settings.contactPhone ? `tel:${settings.contactPhone.replace(/[^\d+]/g, "")}` : null;
+  const trackHref = `${routePath(site, "track")}?ref=${encodeURIComponent(order.reference)}`;
+  const phonePlaceholder = site.market === "fr" ? "+33 6 12 34 56 78" : site.market === "us" ? "+1 212 555 0123" : "+1 514 555 0123";
 
   return (
     <>
@@ -65,27 +82,76 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
             <span className="text-xs uppercase tracking-wider text-cream/60">{t.confirmation.reference}</span>
             <span className="mt-1 font-mono text-2xl font-semibold tracking-wide text-wood-100 sm:text-3xl">{order.reference}</span>
           </div>
-          <div className="mt-10 max-w-2xl rounded-2xl bg-cream/[0.06] p-6 ring-1 ring-cream/15">
-            <p className="font-display text-2xl">{wa ? t.confirmation.whatsappTitle : t.confirmation.writeFirstTitle}</p>
-            <p className="mt-2 text-cream/75">{wa ? t.confirmation.whatsappText : t.confirmation.writeFirstText}</p>
-            <div className="mt-5">
-              <ContactActions
-                whatsappHref={wa}
-                siteHref={contactHref}
-                emailHref={emailHref}
-                phoneHref={phoneHref}
-                message={message}
-                labels={{
-                  whatsapp: t.confirmation.whatsappCta,
-                  site: t.confirmation.writeSite,
-                  email: t.confirmation.writeEmail,
-                  call: t.confirmation.call,
-                  copy: t.confirmation.copy,
-                  copied: t.confirmation.copied,
-                }}
-              />
+          <div className="mt-10 max-w-2xl space-y-4">
+            <div className="rounded-2xl bg-cream/[0.06] p-6 ring-1 ring-cream/15">
+              <p className="font-display text-2xl">{c.sendTitle}</p>
+              <p className="mt-2 text-cream/75">{emailHref ? c.sendText : c.noEmailText}</p>
+              {pfPath && (
+                <a
+                  href={pfPath}
+                  target="_blank"
+                  rel="noopener"
+                  className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl bg-cream p-4 text-ink transition hover:bg-white"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-wood-100 text-wood-600">
+                    <FileText className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs uppercase tracking-wider text-stone">{c.proformaNumber}</span>
+                    <span className="block break-all font-mono text-[0.95rem] font-semibold">{pf}</span>
+                  </span>
+                  <span className="w-full text-sm font-semibold underline underline-offset-4 sm:w-auto">{c.viewProforma} →</span>
+                </a>
+              )}
+              <div className="mt-5">
+                {emailHref ? (
+                  <a href={emailHref} className={btn("wood", "lg", "w-full sm:w-auto")}>
+                    <Mail className="h-5 w-5" /> {c.sendEmail}
+                  </a>
+                ) : (
+                  <Link href={contactHref} className={btn("wood", "lg", "w-full sm:w-auto")}>
+                    <Mail className="h-5 w-5" /> {c.writeSite}
+                  </Link>
+                )}
+                {emailHref && <p className="mt-2 text-xs leading-relaxed text-cream/60">{c.sendHint}</p>}
+              </div>
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-cream/10 pt-4 text-sm">
+                {phoneHref && (
+                  <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-2 sm:w-auto">
+                    <span className="text-cream/70">{c.orCall}</span>
+                    <a
+                      href={phoneHref}
+                      className="inline-flex h-11 items-center gap-2 rounded-[3px] px-4 font-semibold text-cream ring-1 ring-cream/30 transition hover:bg-cream/10"
+                    >
+                      <Phone className="h-4 w-4 text-wood" /> <span className="tabular-nums">{settings.contactPhone}</span>
+                    </a>
+                  </span>
+                )}
+                {emailHref && (
+                  <Link href={contactHref} className="text-cream/70 underline underline-offset-4 hover:text-cream">
+                    {c.orSite}
+                  </Link>
+                )}
+              </div>
             </div>
-            <pre className="mt-5 max-h-56 overflow-auto whitespace-pre-wrap rounded-xl bg-forest-950/60 p-4 font-sans text-sm text-cream/85">{message}</pre>
+            <WhatsappOptIn
+              site={site.id}
+              reference={order.reference}
+              token={tk}
+              current={order.customerWhatsapp}
+              placeholder={phonePlaceholder}
+              labels={{
+                title: c.whatsappOptTitle,
+                text: c.whatsappOptText,
+                onFile: c.whatsappOnFile,
+                change: c.whatsappChange,
+                save: c.whatsappSave,
+                field: t.preorder.fields.whatsapp,
+              }}
+            />
+            <Link href={trackHref} className="inline-flex items-center gap-2 text-sm font-semibold text-cream underline decoration-cream/30 underline-offset-[6px] hover:decoration-cream">
+              <Route className="h-4 w-4 text-wood" /> {c.trackCta}
+            </Link>
           </div>
         </div>
       </section>
@@ -135,7 +201,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
               {t.confirmation.deliveryTo} : {order.customerName}, {address} ({market.names[lang]})
             </span>
           </p>
-          <Link href={routePath(site, "track")} className="mt-5 inline-block text-sm font-medium text-pine underline underline-offset-2">
+          <Link href={trackHref} className="mt-5 inline-block text-sm font-medium text-pine underline underline-offset-2">
             {t.confirmation.track} →
           </Link>
         </aside>

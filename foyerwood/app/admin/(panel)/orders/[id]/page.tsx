@@ -42,7 +42,7 @@ export default async function OrderDetailPage({ params, searchParams }: Props) {
     o.language === "fr"
       ? `Bonjour ${o.customerName}, ici Foyerwood au sujet de votre précommande ${o.reference}.`
       : `Hello ${o.customerName}, this is Foyerwood about your pre-order ${o.reference}.`;
-  const waCustomer = whatsappLink(o.customerPhone, greet);
+  const waCustomer = whatsappLink(o.customerWhatsapp || o.customerPhone, greet);
   const unit = (u: string, q: number) => (isSaleUnit(u) ? unitLabel(u, "fr", q) : u);
   const today = new Date().toISOString().slice(0, 10);
 
@@ -95,6 +95,11 @@ export default async function OrderDetailPage({ params, searchParams }: Props) {
               <ul className="mt-3 space-y-2 text-sm">
                 <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-wood" /><a href={`mailto:${o.customerEmail}`} className="hover:underline">{o.customerEmail}</a></li>
                 <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-wood" /><a href={`tel:${o.customerPhone.replace(/\s/g, "")}`} className="hover:underline">{o.customerPhone}</a></li>
+                {o.customerWhatsapp ? (
+                  <li className="flex items-center gap-2"><MessageCircle className="h-4 w-4 text-wood" />WhatsApp : {o.customerWhatsapp}</li>
+                ) : (
+                  <li className="flex items-center gap-2 text-stone"><MessageCircle className="h-4 w-4" />Pas de numéro WhatsApp indiqué</li>
+                )}
               </ul>
               {waCustomer && (
                 <a href={waCustomer} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#1f7a4d] px-4 py-2 text-sm font-medium text-white hover:opacity-90">
