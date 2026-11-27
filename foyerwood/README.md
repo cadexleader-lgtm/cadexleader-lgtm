@@ -63,11 +63,13 @@ Tout se fait depuis le tableau de bord Vercel : hébergement, base de données P
    - facultatif : `WHATSAPP_CA`, `WHATSAPP_US`, `WHATSAPP_FR`, `CONTACT_EMAIL` (modifiables ensuite dans l'admin)
 5. **Déployer**. À la première visite, le site crée automatiquement les tables, le catalogue de départ et votre compte administrateur.
 
-### Nom de domaine foyerwood.com
+### Nom de domaine foyerwoods.com
 
-1. Achetez `foyerwood.com` (Vercel *Domains*, ou Cloudflare Registrar au prix coûtant).
-2. Vercel → projet → *Settings → Domains* → ajoutez `foyerwood.com` et `www.foyerwood.com`.
-3. Si le domaine est chez Cloudflare : créez les enregistrements DNS indiqués par Vercel (enregistrement `A` pour `foyerwood.com`, `CNAME` pour `www`) en mode **DNS only** (nuage gris). Le certificat HTTPS est automatique.
+Le site officiel est `https://www.foyerwoods.com` (canonical, sitemap et robots.txt l'utilisent).
+
+1. Vercel → projet → *Settings → Domains* : `www.foyerwoods.com` en **Production**, `foyerwoods.com` en redirection **308** vers `www.foyerwoods.com`.
+2. Chez le registrar (LWS) : soit les serveurs DNS `ns1.vercel-dns.com` / `ns2.vercel-dns.com`, soit, en gardant les DNS LWS, les enregistrements indiqués par Vercel (`A` pour `foyerwoods.com`, `CNAME` pour `www`). Le certificat HTTPS est automatique.
+3. `NEXT_PUBLIC_SITE_URL` : laissez vide, ou mettez exactement `https://www.foyerwoods.com`.
 
 ### Alternative : Supabase
 
