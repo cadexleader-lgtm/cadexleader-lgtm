@@ -138,7 +138,7 @@ export function ProformaDocument({
         <div className="flex items-center gap-3">
           <LogoMark tone="light" className="h-12 w-12" />
           <div>
-            <p className="font-display text-[2rem] leading-none">{company.tradeName || "Foyerwood"}</p>
+            <p className="font-logo text-[2rem] leading-none">{company.tradeName || "Foyerwood"}</p>
             <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-cream/60">{lang === "fr" ? "Bois de chauffage livré" : "Firewood, delivered"}</p>
           </div>
         </div>
