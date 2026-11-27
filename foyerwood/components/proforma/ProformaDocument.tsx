@@ -175,6 +175,7 @@ export function ProformaDocument({
             <p>{m.names[lang]}</p>
             <p className="mt-1">{order.customerEmail}</p>
             <p>{order.customerPhone}</p>
+            {order.customerWhatsapp && order.customerWhatsapp !== order.customerPhone && <p>WhatsApp : {order.customerWhatsapp}</p>}
           </div>
         </section>
 

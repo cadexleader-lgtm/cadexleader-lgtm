@@ -84,9 +84,12 @@ export function TrackForm({
   site,
   labels,
   contactHref,
+  defaultReference,
 }: {
   site: string;
   labels: { reference: string; referencePlaceholder: string; email: string; submit: string; status: string; cancelled: string; writeUs: string };
+  /** Pre-filled reference (link from the confirmation page). */
+  defaultReference?: string;
   /** Contact page, opened with the order reference pre-filled. */
   contactHref: string;
 }) {
@@ -97,7 +100,7 @@ export function TrackForm({
         <input type="hidden" name="site" value={site} />
         <div>
           <label className="field-label" htmlFor="t-ref">{labels.reference}</label>
-          <input id="t-ref" name="reference" required className="field uppercase" placeholder={labels.referencePlaceholder} />
+          <input id="t-ref" name="reference" required className="field uppercase" placeholder={labels.referencePlaceholder} defaultValue={defaultReference} />
         </div>
         <div>
           <label className="field-label" htmlFor="t-email">{labels.email}</label>

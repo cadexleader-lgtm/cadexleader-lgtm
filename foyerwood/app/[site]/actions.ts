@@ -10,7 +10,9 @@ import { estimateHeatingNeeds, fuelsForAppliance, suggestedUnits, type CalcInput
 import { fuelKindForCategory, SOFTWOODS } from "@/lib/energy";
 import { availabilityOf, canOrder, getProductsByIds, listProducts, productEnergyKwh, toPublicProduct, type PublicProduct } from "@/lib/data/products";
 import { checkDelivery, evaluateDelivery, listZones } from "@/lib/data/zones";
-import { createPreorder, findOrderForTracking } from "@/lib/data/orders";
+import { createPreorder, findOrderForTracking, setOrderWhatsapp } from "@/lib/data/orders";
+import { getSetting } from "@/lib/data/settings";
+import { revalidatePath } from "next/cache";
 import { calculationExists, createContactMessage, saveCalculation, subscribeNewsletter } from "@/lib/data/misc";
 import { createReview, findDeliveredOrder, hasReviewForOrder } from "@/lib/data/reviews";
 import { rateLimit } from "@/lib/rate-limit";
@@ -187,6 +189,7 @@ export async function checkDeliveryAction(siteId: string, postalCode: string, pr
 // ---------------------------------------------------------------- pre-order
 
 const PHONE = /^[+()\d\s.-]{8,24}$/;
+const validPhone = (v: string) => PHONE.test(v) && v.replace(/\D/g, "").length >= 8;
 
 export async function submitPreorderAction(_: FormState, fd: FormData): Promise<FormState> {
   const site = siteFromForm(fd);
@@ -211,6 +214,7 @@ export async function submitPreorderAction(_: FormState, fd: FormData): Promise<
   const fullName = str(fd, "fullName");
   const email = str(fd, "email");
   const phone = str(fd, "phone");
+  const whatsapp = str(fd, "whatsapp");
   const address = str(fd, "address");
   const postalCode = str(fd, "postalCode");
   const city = str(fd, "city");
@@ -218,6 +222,7 @@ export async function submitPreorderAction(_: FormState, fd: FormData): Promise<
   if (fullName.length < 2 || fullName.length > 120) fieldErrors.fullName = e.fullName;
   if (!z.email().safeParse(email).success) fieldErrors.email = e.email;
   if (!PHONE.test(phone) || phone.replace(/\D/g, "").length < 8) fieldErrors.phone = e.phone;
+  if (whatsapp && !validPhone(whatsapp)) fieldErrors.whatsapp = e.whatsapp;
   if (address.length < 4 || address.length > 200) fieldErrors.address = e.address;
   if (!isValidPostalCode(site.market, postalCode)) fieldErrors.postalCode = e.postalCode;
   if (city.length < 2 || city.length > 80) fieldErrors.city = e.city;
@@ -288,6 +293,7 @@ export async function submitPreorderAction(_: FormState, fd: FormData): Promise<
   }
 
   const calcId = str(fd, "calculationId");
+  const billing = (await getSetting("billing"))[site.market];
   const order = await createPreorder({
     market: site.market,
     language: site.lang,
@@ -295,6 +301,7 @@ export async function submitPreorderAction(_: FormState, fd: FormData): Promise<
       fullName,
       email,
       phone,
+      whatsapp: whatsapp || null,
       addressLine: address,
       postalCode: formatPostalCode(site.market, postalCode),
       city,
@@ -306,9 +313,29 @@ export async function submitPreorderAction(_: FormState, fd: FormData): Promise<
     calculationId: calcId && (await calculationExists(calcId)) ? calcId : null,
     discountCents: promo.discountCents,
     discountPercent: promo.discountPercent,
+    proforma: {
+      validityDays: billing?.validityDays ?? 14,
+      deliveryFree: delivery.freeDelivery,
+      deliveryNote: t.confirmation.proformaDeliveryNote,
+    },
   });
 
   redirect(`${routePath(site, "preorder", "confirmation", order.reference)}?t=${order.accessToken}`);
+}
+
+// ---------------------------------------------------------------- customer WhatsApp (confirmation page)
+
+export async function saveWhatsappAction(_: FormState, fd: FormData): Promise<FormState> {
+  const site = siteFromForm(fd);
+  const t = getDict(site.lang);
+  const whatsapp = str(fd, "whatsapp");
+  if (!validPhone(whatsapp)) return { status: "error", message: t.preorder.errors.whatsapp };
+  if (!(await rateLimit("whatsapp", 10, 10 * 60_000))) return { status: "error", message: t.preorder.errors.rate };
+  const reference = str(fd, "reference");
+  const ok = await setOrderWhatsapp(reference, str(fd, "token"), whatsapp);
+  if (!ok) return { status: "error", message: t.common.error };
+  revalidatePath(routePath(site, "preorder", "confirmation", reference));
+  return { status: "success", message: t.confirmation.whatsappSaved };
 }
 
 // ---------------------------------------------------------------- tracking

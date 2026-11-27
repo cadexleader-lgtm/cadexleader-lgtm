@@ -11,8 +11,10 @@ export async function generateMetadata({ params }: SiteParams): Promise<Metadata
   return { title: t.track.title, robots: { index: false } };
 }
 
-export default async function TrackPage({ params }: SiteParams) {
+export default async function TrackPage({ params, searchParams }: SiteParams & { searchParams: Promise<{ ref?: string }> }) {
   const { site, t } = await loadSite((await params).site);
+  const sp = await searchParams;
+  const clip = (v: unknown, n: number) => (typeof v === "string" ? v.slice(0, n) : undefined);
   return (
     <>
       <PageHero kicker={t.nav.track} title={t.track.title} intro={t.track.subtitle} image={AMBIANCE.trailer} imagePosition="50% 55%" />
@@ -29,6 +31,7 @@ export default async function TrackPage({ params }: SiteParams) {
             writeUs: t.track.writeUs,
           }}
           contactHref={routePath(site, "contact")}
+          defaultReference={clip(sp.ref, 40)}
         />
         <p className="mt-10 text-stone">
           {t.track.help}{" "}
