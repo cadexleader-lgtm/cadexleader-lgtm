@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, FileText, Mail, MapPin, Phone, Route, ShieldCheck } from "lucide-react";
+import { Check, CheckCircle2, FileText, Landmark, Mail, MapPin, Phone, Route, ShieldCheck } from "lucide-react";
 import { ClearCartOnMount, WhatsappOptIn } from "@/components/cart/ConfirmationClient";
 import { ButtonLink, btn } from "@/components/ui";
 import { loadSite } from "@/lib/site-context";
-import { getActiveProformaNumber, getOrderForCustomer } from "@/lib/data/orders";
+import { getActiveQuotation, getOrderForCustomer, quotationTotal } from "@/lib/data/orders";
+import { getSetting } from "@/lib/data/settings";
+import { stageOf } from "@/lib/customer-messages";
+import { CUSTOMER_STEPS, customerStepIndex } from "@/lib/order-status";
 import { routePath } from "@/lib/sites";
 import { siteUrl } from "@/lib/site-url";
-import { fmt, money } from "@/lib/format";
+import { fmt, formatDate, money } from "@/lib/format";
 import { isSaleUnit, unitLabel } from "@/lib/energy";
 import { HeroBackdrop } from "@/components/site/HeroBackdrop";
 import { AMBIANCE } from "@/lib/illustrations";
@@ -36,7 +39,12 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
   const address = `${order.addressLine}, ${order.postalCode} ${order.city}`;
   const total = money(site, order.subtotalCents - (order.discountCents ?? 0), order.currency);
   const tk = token ?? "";
-  const pf = await getActiveProformaNumber(order.id);
+  const [quote, billingAll] = await Promise.all([getActiveQuotation(order.id), getSetting("billing")]);
+  const pf = quote?.number ?? null;
+  const billing = billingAll[order.marketId];
+  const stage = stageOf(order.status);
+  const stepIndex = customerStepIndex(order.status);
+  const due = money(site, quote ? quotationTotal(quote) : order.subtotalCents - (order.discountCents ?? 0), order.currency);
   const pfPath = pf ? `/documents/proforma/${encodeURIComponent(pf)}?t=${encodeURIComponent(tk)}` : null;
   const c = t.confirmation;
 
@@ -65,44 +73,131 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
   const contactHref = `${routePath(site, "contact")}?ref=${encodeURIComponent(order.reference)}&t=${encodeURIComponent(tk)}`;
   const phoneHref = settings.contactPhone ? `tel:${settings.contactPhone.replace(/[^\d+]/g, "")}` : null;
   const trackHref = `${routePath(site, "track")}?ref=${encodeURIComponent(order.reference)}`;
+  const payDoneHref = settings.contactEmail
+    ? `mailto:${settings.contactEmail}?subject=${encodeURIComponent(fmt(c.payDoneSubject, { ref: order.reference }))}&body=${encodeURIComponent(
+        fmt(c.payDoneBody, { amount: due, ref: order.reference, pf: pf ?? order.reference, name: order.customerName }),
+      )}`
+    : null;
+  const proformaCard = pfPath && (
+    <a href={pfPath} target="_blank" rel="noopener" className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl bg-cream p-4 text-ink transition hover:bg-white">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-wood-100 text-wood-600">
+        <FileText className="h-5 w-5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-xs uppercase tracking-wider text-stone">{c.proformaNumber}</span>
+        <span className="block break-all font-mono text-[0.95rem] font-semibold">{pf}</span>
+      </span>
+      <span className="w-full text-sm font-semibold underline underline-offset-4 sm:w-auto">{c.viewProforma} →</span>
+    </a>
+  );
+  const callRow = (
+    <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-cream/10 pt-4 text-sm">
+      {phoneHref && (
+        <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-2 sm:w-auto">
+          <span className="text-cream/70">{c.orCall}</span>
+          <a href={phoneHref} className="inline-flex h-11 items-center gap-2 rounded-[3px] px-4 font-semibold text-cream ring-1 ring-cream/30 transition hover:bg-cream/10">
+            <Phone className="h-4 w-4 text-wood" /> <span className="tabular-nums">{settings.contactPhone}</span>
+          </a>
+        </span>
+      )}
+      <Link href={contactHref} className="text-cream/70 underline underline-offset-4 hover:text-cream">
+        {c.orSite}
+      </Link>
+    </div>
+  );
   const phonePlaceholder = site.market === "fr" ? "+33 6 12 34 56 78" : site.market === "us" ? "+1 212 555 0123" : "+1 514 555 0123";
 
   return (
     <>
-      <ClearCartOnMount reference={order.reference} />
+      {/* Only right after ordering: a later visit (link in an e-mail) must not empty a new cart. */}
+      {stage === "received" && Date.now() - new Date(order.createdAt).getTime() < 2 * 3600_000 && <ClearCartOnMount reference={order.reference} />}
       <section className="relative isolate overflow-hidden bg-forest-950 text-cream">
         <HeroBackdrop src={AMBIANCE.livingRoom} />
         <div className="container-page relative py-14 sm:py-20">
           <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-wood text-ink">
             <CheckCircle2 className="h-7 w-7" />
           </span>
-          <h1 className="mt-6 max-w-3xl text-4xl leading-tight sm:text-5xl">{t.confirmation.title}</h1>
-          <p className="mt-3 text-lg text-cream/75">{t.confirmation.subtitle}</p>
+          <h1 className="mt-6 max-w-3xl text-4xl leading-tight sm:text-5xl">{stage === "received" ? c.title : fmt(c.orderTitle, { ref: order.reference })}</h1>
+          <p className="mt-3 text-lg text-cream/75">{stage === "received" ? c.subtitle : c.bookmark}</p>
           <div className="mt-8 inline-flex flex-col rounded-2xl bg-cream/[0.08] px-6 py-4 ring-1 ring-cream/20">
             <span className="text-xs uppercase tracking-wider text-cream/60">{t.confirmation.reference}</span>
             <span className="mt-1 font-mono text-2xl font-semibold tracking-wide text-wood-100 sm:text-3xl">{order.reference}</span>
           </div>
+          {stage !== "cancelled" && (
+            <ol aria-label={c.progress} className="mt-8 grid max-w-3xl gap-2 sm:grid-cols-5">
+              {CUSTOMER_STEPS.map((st, i) => {
+                const done = i < stepIndex;
+                const current = i === stepIndex;
+                return (
+                  <li
+                    key={st.key}
+                    aria-current={current ? "step" : undefined}
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-[0.8rem] leading-snug ring-1 ${
+                      current ? "bg-wood text-ink ring-wood" : done ? "bg-cream/10 text-cream ring-cream/20" : "text-cream/50 ring-cream/10"
+                    }`}
+                  >
+                    <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-semibold ${current ? "bg-ink text-wood" : done ? "bg-wood text-ink" : "ring-1 ring-cream/30"}`}>
+                      {done ? <Check className="h-3 w-3" /> : i + 1}
+                    </span>
+                    {st.label[lang]}
+                  </li>
+                );
+              })}
+            </ol>
+          )}
           <div className="mt-10 max-w-2xl space-y-4">
+            {stage === "pay" && (
+              <div className="rounded-2xl bg-cream/[0.06] p-6 ring-1 ring-wood/60">
+                <p className="font-display text-2xl">{c.stages.pay.title}</p>
+                <p className="mt-2 text-cream/75">{c.stages.pay.text}</p>
+                <dl className="mt-5 overflow-hidden rounded-xl bg-cream text-ink">
+                  <div className="flex items-baseline justify-between gap-4 border-b border-line px-4 py-3">
+                    <dt className="text-sm text-stone">{c.payAmount}</dt>
+                    <dd className="font-display text-2xl tabular-nums">{due}</dd>
+                  </div>
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-line px-4 py-3">
+                    <dt className="text-sm text-stone">{c.payRef}</dt>
+                    <dd className="break-all font-mono font-semibold text-wood-600">{pf ?? order.reference}</dd>
+                  </div>
+                  <div className="px-4 py-3">
+                    <dt className="flex items-center gap-2 text-sm text-stone"><Landmark className="h-4 w-4 text-wood-600" /> {c.payBank}</dt>
+                    {billing?.beneficiary || billing?.bankDetails ? (
+                      <dd className="mt-2 space-y-1 text-sm">
+                        {billing.beneficiary && <p>{c.payBeneficiary} : <strong>{billing.beneficiary}</strong></p>}
+                        {billing.bankDetails && <p className="whitespace-pre-line font-mono text-[0.85rem]">{billing.bankDetails}</p>}
+                      </dd>
+                    ) : (
+                      <dd className="mt-2 text-sm text-stone">{c.payBankMissing}</dd>
+                    )}
+                    {quote?.validUntil && <p className="mt-2 text-sm font-semibold text-wood-600">{fmt(c.payBefore, { date: formatDate(quote.validUntil, site.locale) })}</p>}
+                  </div>
+                </dl>
+                <p className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-cream/65"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-wood" /> {c.paySecurity}</p>
+                {proformaCard}
+                {payDoneHref && (
+                  <div className="mt-5">
+                    <a href={payDoneHref} className={btn("wood", "lg", "w-full sm:w-auto")}>
+                      <Check className="h-5 w-5" /> {c.payDone}
+                    </a>
+                    <p className="mt-2 text-xs text-cream/60">{c.payDoneHint}</p>
+                  </div>
+                )}
+                {callRow}
+              </div>
+            )}
+            {(stage === "paid" || stage === "shipping" || stage === "delivered" || stage === "cancelled") && (
+              <div className="rounded-2xl bg-cream/[0.06] p-6 ring-1 ring-cream/15">
+                <p className="font-display text-2xl">{c.stages[stage].title}</p>
+                <p className="mt-2 text-cream/75">{c.stages[stage].text}</p>
+                {proformaCard}
+                {callRow}
+              </div>
+            )}
+            {stage === "received" && (
             <div className="rounded-2xl bg-cream/[0.06] p-6 ring-1 ring-cream/15">
               <p className="font-display text-2xl">{c.sendTitle}</p>
               <p className="mt-2 text-cream/75">{emailHref ? c.sendText : c.noEmailText}</p>
-              {pfPath && (
-                <a
-                  href={pfPath}
-                  target="_blank"
-                  rel="noopener"
-                  className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl bg-cream p-4 text-ink transition hover:bg-white"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-wood-100 text-wood-600">
-                    <FileText className="h-5 w-5" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-xs uppercase tracking-wider text-stone">{c.proformaNumber}</span>
-                    <span className="block break-all font-mono text-[0.95rem] font-semibold">{pf}</span>
-                  </span>
-                  <span className="w-full text-sm font-semibold underline underline-offset-4 sm:w-auto">{c.viewProforma} →</span>
-                </a>
-              )}
+              {proformaCard}
               <div className="mt-5">
                 {emailHref ? (
                   <a href={emailHref} className={btn("wood", "lg", "w-full sm:w-auto")}>
@@ -115,25 +210,10 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                 )}
                 {emailHref && <p className="mt-2 text-xs leading-relaxed text-cream/60">{c.sendHint}</p>}
               </div>
-              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-cream/10 pt-4 text-sm">
-                {phoneHref && (
-                  <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-2 sm:w-auto">
-                    <span className="text-cream/70">{c.orCall}</span>
-                    <a
-                      href={phoneHref}
-                      className="inline-flex h-11 items-center gap-2 rounded-[3px] px-4 font-semibold text-cream ring-1 ring-cream/30 transition hover:bg-cream/10"
-                    >
-                      <Phone className="h-4 w-4 text-wood" /> <span className="tabular-nums">{settings.contactPhone}</span>
-                    </a>
-                  </span>
-                )}
-                {emailHref && (
-                  <Link href={contactHref} className="text-cream/70 underline underline-offset-4 hover:text-cream">
-                    {c.orSite}
-                  </Link>
-                )}
-              </div>
+              {callRow}
             </div>
+            )}
+            {stage !== "delivered" && stage !== "cancelled" && (
             <WhatsappOptIn
               site={site.id}
               reference={order.reference}
@@ -149,6 +229,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                 field: t.preorder.fields.whatsapp,
               }}
             />
+            )}
             <Link href={trackHref} className="inline-flex items-center gap-2 text-sm font-semibold text-cream underline decoration-cream/30 underline-offset-[6px] hover:decoration-cream">
               <Route className="h-4 w-4 text-wood" /> {c.trackCta}
             </Link>

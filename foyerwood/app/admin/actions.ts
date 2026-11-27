@@ -8,7 +8,11 @@ import { createSessionToken, hashPassword, SESSION_COOKIE, verifyPassword } from
 import { createUser, findUserByEmail, setContactStatus, setSubscriberStatus, setUserActive, touchLogin, updateUserPassword, updateUserProfile } from "@/lib/data/misc";
 import { saveProduct, setProductActive, slugExists, adminGetProduct, applyPriceDrop, clearPriceDrop, type ProductInput } from "@/lib/data/products";
 import { saveMarketPromotions } from "@/lib/data/promotions";
-import { getProformaById, getProformaOrderMarket } from "@/lib/data/orders";
+import { getOrderStatus, getProformaById, getProformaOrderMarket } from "@/lib/data/orders";
+import { after } from "next/server";
+import { stageOf } from "@/lib/customer-messages";
+import { emailCustomerStage } from "@/lib/notify";
+import { brandedEmail, mailConfigured, sendMail } from "@/lib/mailer";
 import { saveSupplier } from "@/lib/data/suppliers";
 import { deleteZone, saveZone } from "@/lib/data/zones";
 import {
@@ -294,7 +298,15 @@ export async function changeStatusAction(fd: FormData) {
     fd,
     async (id, uid) => {
       if (!isOrderStatus(to)) throw new OrderRuleError("Statut invalide.");
+      const before = await getOrderStatus(id);
       await changeOrderStatus(id, to, uid, s(fd, "note") || undefined);
+      // Tell the customer automatically when the order reaches a new stage.
+      if (before && stageOf(before) !== stageOf(to)) {
+        const stage = stageOf(to);
+        after(async () => {
+          await emailCustomerStage(id, stage).catch(() => false);
+        });
+      }
     },
     "Statut mis à jour.",
   );
@@ -699,4 +711,35 @@ export async function toggleUserAction(fd: FormData) {
   const id = s(fd, "id");
   if (isUuid(id) && id !== user.id) await setUserActive(id, s(fd, "active") === "1");
   redirect("/admin/settings#users");
+}
+
+// ---------------------------------------------------------------- automatic e-mails
+
+/** Sends the customer the e-mail matching the order's current stage, right now. */
+export async function sendStageEmailAction(fd: FormData) {
+  await orderAction(
+    fd,
+    async (id) => {
+      if (!mailConfigured()) throw new OrderRuleError("Les e-mails automatiques ne sont pas configurés (variables SMTP dans Vercel).");
+      const status = await getOrderStatus(id);
+      if (!status) throw new OrderRuleError("Commande introuvable.");
+      const ok = await emailCustomerStage(id, stageOf(status));
+      if (!ok) throw new OrderRuleError("L'e-mail n'a pas pu être envoyé : voyez le détail dans l'historique.");
+    },
+    "E-mail envoyé au client.",
+  );
+}
+
+/** Sends a test e-mail to the logged-in administrator. */
+export async function sendTestEmailAction() {
+  const user = await requireAdmin();
+  if (!mailConfigured()) redirect(back("/admin/settings", { error: "E-mails automatiques non configurés : ajoutez SMTP_HOST, SMTP_PORT, SMTP_USER et SMTP_PASS dans Vercel, puis redéployez." }));
+  const res = await sendMail({
+    to: user.email,
+    subject: "Test d'envoi — Foyerwood",
+    text: "Les e-mails automatiques de votre site fonctionnent.",
+    html: brandedEmail({ brand: "Foyerwood", paragraphs: ["Bonjour,", "Les e-mails automatiques de votre site fonctionnent : vos clients recevront les confirmations de commande."] }),
+  });
+  if (!res.ok) redirect(back("/admin/settings", { error: `Échec de l'envoi : ${res.error}` }));
+  redirect(back("/admin/settings", { ok: `E-mail de test envoyé à ${user.email}.` }));
 }

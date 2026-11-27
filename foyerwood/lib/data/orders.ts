@@ -265,6 +265,17 @@ export async function setOrderWhatsapp(reference: string, token: string, whatsap
   return true;
 }
 
+export async function getOrderStatus(orderId: string): Promise<OrderStatus | null> {
+  const row = await queryOne<{ status: OrderStatus }>(`select status from orders where id = $1`, [orderId]);
+  return row?.status ?? null;
+}
+
+/** The quotation (pro forma) currently valid for an order, if any. */
+export async function getActiveQuotation(orderId: string): Promise<Quotation | null> {
+  const row = await queryOne(`select * from quotations where order_id = $1 and status <> 'cancelled' order by created_at desc limit 1`, [orderId]);
+  return row ? fixDate(camelize<Quotation>(row)) : null;
+}
+
 /** The pro forma currently valid for an order (customer side), if any. */
 export async function getActiveProformaNumber(orderId: string): Promise<string | null> {
   const row = await queryOne<{ number: string }>(
