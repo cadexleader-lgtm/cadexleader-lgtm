@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check, CheckCircle2, FileText, Landmark, Mail, MapPin, Phone, Route, ShieldCheck } from "lucide-react";
+import { Check, CheckCircle2, FileText, Landmark, Mail, MapPin, MessageCircle, Phone, Route, ShieldCheck } from "lucide-react";
+import { whatsappLink } from "@/lib/whatsapp";
 import { ClearCartOnMount, WhatsappOptIn } from "@/components/cart/ConfirmationClient";
 import { ButtonLink, btn } from "@/components/ui";
 import { loadSite } from "@/lib/site-context";
@@ -70,14 +71,32 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
   const emailHref = settings.contactEmail
     ? `mailto:${settings.contactEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
     : null;
+  // The customer chooses: WhatsApp or e-mail, both with the message already written.
+  const waHref = whatsappLink(settings.whatsappNumber, emailBody);
   const contactHref = `${routePath(site, "contact")}?ref=${encodeURIComponent(order.reference)}&t=${encodeURIComponent(tk)}`;
   const phoneHref = settings.contactPhone ? `tel:${settings.contactPhone.replace(/[^\d+]/g, "")}` : null;
   const trackHref = `${routePath(site, "track")}?ref=${encodeURIComponent(order.reference)}`;
+  const payDoneText = fmt(c.payDoneBody, { amount: due, ref: order.reference, pf: pf ?? order.reference, name: order.customerName });
   const payDoneHref = settings.contactEmail
-    ? `mailto:${settings.contactEmail}?subject=${encodeURIComponent(fmt(c.payDoneSubject, { ref: order.reference }))}&body=${encodeURIComponent(
-        fmt(c.payDoneBody, { amount: due, ref: order.reference, pf: pf ?? order.reference, name: order.customerName }),
-      )}`
+    ? `mailto:${settings.contactEmail}?subject=${encodeURIComponent(fmt(c.payDoneSubject, { ref: order.reference }))}&body=${encodeURIComponent(payDoneText)}`
     : null;
+  const payDoneWa = whatsappLink(settings.whatsappNumber, payDoneText);
+  const waBtn = "inline-flex h-14 w-full items-center justify-center gap-2.5 rounded-full bg-[#1f7a4d] px-6 text-base font-semibold text-white transition hover:bg-[#1a6942]";
+  const outlineBtn = "inline-flex h-14 w-full items-center justify-center gap-2.5 rounded-full px-6 text-base font-semibold text-cream ring-1 ring-cream/35 transition hover:bg-cream/10";
+  const twoWays = (wa: string | null, mail: string | null, waLabel: string, mailLabel: string) => (
+    <div className={`grid gap-3 ${wa && mail ? "sm:grid-cols-2" : ""}`}>
+      {wa && (
+        <a href={wa} target="_blank" rel="noopener noreferrer" className={waBtn}>
+          <MessageCircle className="h-5 w-5" /> {waLabel}
+        </a>
+      )}
+      {mail && (
+        <a href={mail} className={wa ? outlineBtn : btn("wood", "lg", "h-14 w-full")}>
+          <Mail className="h-5 w-5" /> {mailLabel}
+        </a>
+      )}
+    </div>
+  );
   const proformaCard = pfPath && (
     <a href={pfPath} target="_blank" rel="noopener" className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl bg-cream p-4 text-ink transition hover:bg-white">
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-wood-100 text-wood-600">
@@ -90,6 +109,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
       <span className="w-full text-sm font-semibold underline underline-offset-4 sm:w-auto">{c.viewProforma} →</span>
     </a>
   );
+  const waQuick = whatsappLink(settings.whatsappNumber, `${fmt(c.emailSubject, { ref: order.reference })} — ${order.customerName}`);
   const callRow = (
     <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-cream/10 pt-4 text-sm">
       {phoneHref && (
@@ -99,6 +119,11 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
             <Phone className="h-4 w-4 text-wood" /> <span className="tabular-nums">{settings.contactPhone}</span>
           </a>
         </span>
+      )}
+      {stage !== "received" && waQuick && (
+        <a href={waQuick} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-2 rounded-[3px] px-4 font-semibold text-cream ring-1 ring-cream/30 transition hover:bg-cream/10">
+          <MessageCircle className="h-4 w-4 text-wood" /> WhatsApp
+        </a>
       )}
       <Link href={contactHref} className="text-cream/70 underline underline-offset-4 hover:text-cream">
         {c.orSite}
@@ -174,12 +199,11 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                 </dl>
                 <p className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-cream/65"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-wood" /> {c.paySecurity}</p>
                 {proformaCard}
-                {payDoneHref && (
+                {(payDoneWa || payDoneHref) && (
                   <div className="mt-5">
-                    <a href={payDoneHref} className={btn("wood", "lg", "w-full sm:w-auto")}>
-                      <Check className="h-5 w-5" /> {c.payDone}
-                    </a>
-                    <p className="mt-2 text-xs text-cream/60">{c.payDoneHint}</p>
+                    <p className="mb-3 flex items-center gap-2 font-semibold"><Check className="h-5 w-5 text-wood" /> {c.payDone}</p>
+                    {twoWays(payDoneWa, payDoneHref, c.notifyWhatsapp, c.notifyEmail)}
+                    <p className="mt-2 text-xs text-cream/60">{c.sendHint}</p>
                   </div>
                 )}
                 {callRow}
@@ -196,19 +220,17 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
             {stage === "received" && (
             <div className="rounded-2xl bg-cream/[0.06] p-6 ring-1 ring-cream/15">
               <p className="font-display text-2xl">{c.sendTitle}</p>
-              <p className="mt-2 text-cream/75">{emailHref ? c.sendText : c.noEmailText}</p>
+              <p className="mt-2 text-cream/75">{emailHref || waHref ? c.sendText : c.noEmailText}</p>
               {proformaCard}
               <div className="mt-5">
-                {emailHref ? (
-                  <a href={emailHref} className={btn("wood", "lg", "w-full sm:w-auto")}>
-                    <Mail className="h-5 w-5" /> {c.sendEmail}
-                  </a>
+                {emailHref || waHref ? (
+                  twoWays(waHref, emailHref, c.sendWhatsapp, c.sendEmail)
                 ) : (
                   <Link href={contactHref} className={btn("wood", "lg", "w-full sm:w-auto")}>
                     <Mail className="h-5 w-5" /> {c.writeSite}
                   </Link>
                 )}
-                {emailHref && <p className="mt-2 text-xs leading-relaxed text-cream/60">{c.sendHint}</p>}
+                {(emailHref || waHref) && <p className="mt-2 text-xs leading-relaxed text-cream/60">{c.sendHint}</p>}
               </div>
               {callRow}
             </div>
