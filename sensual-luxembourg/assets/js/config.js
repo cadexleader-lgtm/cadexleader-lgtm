@@ -10,6 +10,9 @@ window.SL_CONFIG = {
   whatsapp: "",
   whatsappDisplay: "",            // Affichage : "+352 621 123 456"
   email: "",                      // "contact@sensual-luxembourg.lu"
+  // Numéro pour les appels et SMS (format international avec "+"). Vide = lignes masquées.
+  phone: "",                      // "+352621123456"
+  phoneDisplay: "",               // "+352 621 123 456"
 
   // Supplément de déplacement ajouté au prix (en euros)
   placeFees: { salon: 0, hotel: 50, domicile: 50 },

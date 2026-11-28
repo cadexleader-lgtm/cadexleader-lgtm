@@ -611,3 +611,4 @@ body.drawer-open .fab, body.drawer-open .mbar { opacity: 0; pointer-events: none
   [data-theme="dark"] .hero::after { background: linear-gradient(180deg, rgba(6, 20, 35, 0.45) 0%, rgba(6, 20, 35, 0.1) 18%, rgba(6, 20, 35, 0.25) 36%, rgba(6, 20, 35, 0.88) 56%, var(--bg) 80%); }
   [data-theme="dark"] .mbar { background: rgba(10, 28, 48, 0.96); box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.8); }
 }
+.contact__list a { color: var(--blue-2); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }

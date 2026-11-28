@@ -152,6 +152,16 @@
     }
   });
   if (CONFIG.whatsappDisplay) qs("[data-whatsapp-label]").textContent = "WhatsApp — " + CONFIG.whatsappDisplay;
+  // Appel / SMS : affichés seulement si un numéro est configuré
+  const tel = String(CONFIG.phone || "").replace(/[^+\d]/g, "");
+  if (tel) {
+    const row = qs("[data-phone-row]");
+    const call = qs("[data-phone-call]", row);
+    call.href = "tel:" + tel;
+    call.textContent = CONFIG.phoneDisplay || CONFIG.phone;
+    qs("[data-phone-sms]", row).href = "sms:" + tel;
+    row.hidden = false;
+  }
   qsa("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
 
   // iPhone : Safari ignore parfois l'interdiction de zoom du viewport ; on bloque le pincement ici aussi.
