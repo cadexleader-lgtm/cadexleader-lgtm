@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Calculator, Check, ChevronDown, Globe, Mail, Menu, MessageCircle, PackageSearch, Phone, Search, ShoppingBasket, Truck, X } from "lucide-react";
+import { Calculator, Check, ChevronDown, Globe, Menu, PackageSearch, Phone, Search, ShoppingBasket, Truck, X } from "lucide-react";
 import { Logo } from "@/components/art/Logo";
 import { useCart } from "@/components/cart/CartProvider";
 
@@ -152,32 +152,23 @@ export function Header(p: HeaderProps) {
       {/* Utility bar */}
       <div className="bg-forest-950 text-[0.8rem] text-cream/80">
         <div className="container-page flex h-11 items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-5">
+          <div className="flex min-w-0 flex-1 items-center gap-5">
             {p.contact.phone && (
-              <a href={`tel:${p.contact.phone.replace(/\s/g, "")}`} className="hidden items-center gap-1.5 hover:text-cream md:flex">
+              <a href={`tel:${p.contact.phone.replace(/\s/g, "")}`} className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap hover:text-cream lg:flex">
                 <Phone className="h-3.5 w-3.5 text-wood" /> {p.contact.phone}
               </a>
             )}
-            {p.contact.email && (
-              <a href={`mailto:${p.contact.email}`} className="hidden items-center gap-1.5 text-wood-100 hover:text-cream lg:flex">
-                <Mail className="h-3.5 w-3.5 text-wood" /> {p.contact.email}
-              </a>
-            )}
-            {p.contact.whatsappHref && (
-              <a href={p.contact.whatsappHref} target="_blank" rel="noopener noreferrer" className="hidden items-center gap-1.5 hover:text-cream md:flex">
-                <MessageCircle className="h-3.5 w-3.5 text-wood" /> {p.labels.whatsapp}
-              </a>
-            )}
+            {/* E-mail and WhatsApp live in the footer and on the contact page: the bar keeps phone + live message. */}
             <PromoTicker messages={p.promos?.length ? p.promos : [p.contact.freeLabel]} />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <form onSubmit={onSearch} role="search" className="hidden h-8 items-center overflow-hidden rounded-[3px] bg-white md:flex">
               <input
                 name="q"
                 type="search"
                 placeholder={p.labels.searchPlaceholder}
                 aria-label={p.labels.search}
-                className="h-full w-56 bg-transparent px-3 text-[0.8rem] text-charcoal placeholder:text-stone/60 focus:outline-none lg:w-64"
+                className="h-full w-40 bg-transparent px-3 text-[0.8rem] text-charcoal placeholder:text-stone/60 focus:outline-none xl:w-44"
               />
               <button type="submit" aria-label={p.labels.search} className="flex h-full w-9 items-center justify-center bg-wood text-ink hover:bg-ember">
                 <Search className="h-4 w-4" />

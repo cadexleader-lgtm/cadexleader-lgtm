@@ -45,7 +45,7 @@ export function HeroSlider({
 
   return (
     <section
-      className="relative isolate h-[620px] overflow-hidden bg-forest-950 text-cream lg:h-[min(82vh,760px)]"
+      className="relative isolate flex min-h-[620px] flex-col overflow-hidden bg-forest-950 text-cream lg:min-h-[max(600px,min(82vh,760px))]"
       aria-roledescription="carousel"
     >
       {slides.map((s, i) => (
@@ -71,7 +71,7 @@ export function HeroSlider({
         </div>
       ))}
 
-      <div className="container-page relative z-20 flex h-full flex-col justify-end pb-24 pt-16 lg:pb-28">
+      <div className="container-page relative z-20 flex flex-1 flex-col justify-end pb-24 pt-16 lg:pb-28">
         {slides.map((s, i) =>
           i === index ? (
             <div key={i} className="max-w-[46rem]">
@@ -80,7 +80,7 @@ export function HeroSlider({
                 <span className="h-px w-10 bg-cream/30" />
                 {s.kicker}
               </p>
-              <h1 className="mt-6 animate-fade-up text-[2.75rem] leading-[1.03] [animation-delay:100ms] sm:text-[4.25rem] lg:text-[5.1rem]">{emphasize(s.title)}</h1>
+              <h1 className="mt-6 animate-fade-up text-[2.75rem] leading-[1.03] [animation-delay:100ms] sm:text-[4.25rem] lg:text-[min(5.1rem,9vh)]">{emphasize(s.title)}</h1>
               <p className="mt-6 max-w-xl animate-fade-up text-[1.05rem] leading-[1.6] text-cream/80 [animation-delay:200ms] sm:text-lg">{s.text}</p>
               <div className="mt-9 flex animate-fade-up flex-wrap items-center gap-x-8 gap-y-4 [animation-delay:300ms]">
                 <Link href={s.href} className="inline-flex h-13 items-center gap-3 rounded-[3px] bg-wood px-7 text-[0.95rem] font-semibold text-ink transition-colors hover:bg-ember">
