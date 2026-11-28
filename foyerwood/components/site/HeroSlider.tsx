@@ -45,7 +45,7 @@ export function HeroSlider({
 
   return (
     <section
-      className="relative isolate flex min-h-[620px] flex-col overflow-hidden bg-forest-950 text-cream lg:min-h-[max(600px,min(82vh,760px))]"
+      className="relative isolate flex min-h-[540px] flex-col overflow-hidden sm:min-h-[620px] bg-forest-950 text-cream lg:min-h-[max(600px,min(82vh,760px))]"
       aria-roledescription="carousel"
     >
       {slides.map((s, i) => (
@@ -71,7 +71,7 @@ export function HeroSlider({
         </div>
       ))}
 
-      <div className="container-page relative z-20 flex flex-1 flex-col justify-end pb-24 pt-16 lg:pb-28">
+      <div className="container-page relative z-20 flex flex-1 flex-col justify-end pb-[5.5rem] pt-12 sm:pb-24 sm:pt-16 lg:pb-28">
         {slides.map((s, i) =>
           i === index ? (
             <div key={i} className="max-w-[46rem]">

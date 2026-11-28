@@ -46,6 +46,7 @@ export const en: Dict = {
     learnMore: "Learn more",
     seeAll: "See all",
     addToPreorder: "Add to my pre-order",
+    addShort: "Add",
     added: "Added to your pre-order",
     viewPreorder: "View my pre-order",
     minQty: "Minimum {n} {unit}",
@@ -137,6 +138,9 @@ export const en: Dict = {
         secondary: "FAQ",
       },
     ],
+    shopTitle: "Our most *ordered* firewood",
+    shopSub: "Pick, add, send your pre-order: nothing to pay online.",
+    allProducts: "See all products",
     values: [
       { title: "Free delivery", text: "In our service areas, from the amount shown for your address." },
       { title: "Pay after invoice", text: "No online payment: bank transfer after a pro forma invoice." },
