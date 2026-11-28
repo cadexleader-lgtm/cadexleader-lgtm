@@ -60,7 +60,7 @@ export async function Catalog({ ctx, search, category }: { ctx: SiteContext; sea
         {products.length === 1 ? t.shop.result1 : fmt(t.shop.results, { n: products.length })}
       </p>
       {products.length > 0 ? (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
           {products.map((p, i) => (
             <ProductCard key={p.id} p={toPublicProduct(p, site.lang)} site={site} t={t} currency={market.currency} formatLabel={formatLabel(p, t, site.lang)} priority={i < 4} />
           ))}

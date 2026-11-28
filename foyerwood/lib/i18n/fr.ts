@@ -46,6 +46,7 @@ export const fr = {
     learnMore: "En savoir plus",
     seeAll: "Tout voir",
     addToPreorder: "Ajouter à ma précommande",
+    addShort: "Ajouter",
     added: "Ajouté à votre précommande",
     viewPreorder: "Voir ma précommande",
     minQty: "Minimum {n} {unit}",
@@ -137,6 +138,9 @@ export const fr = {
         secondary: "Questions fréquentes",
       },
     ],
+    shopTitle: "Nos bois les plus *commandés*",
+    shopSub: "Choisissez, ajoutez, envoyez votre précommande : rien à payer en ligne.",
+    allProducts: "Voir tous les produits",
     values: [
       { title: "Livraison offerte", text: "Dans nos zones, selon le montant affiché pour votre adresse." },
       { title: "Payé après facture", text: "Aucun paiement en ligne : virement après facture pro forma." },

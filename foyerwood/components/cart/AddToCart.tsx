@@ -146,7 +146,7 @@ export function QuickAdd({ productId, minQty, label, addedLabel }: { productId: 
 }
 
 /** Full-width "add to pre-order" button used on product cards. */
-export function AddButton({ productId, minQty, label, addedLabel, disabled }: { productId: string; minQty: number; label: string; addedLabel: string; disabled?: boolean }) {
+export function AddButton({ productId, minQty, label, shortLabel, addedLabel, disabled }: { productId: string; minQty: number; label: string; shortLabel?: string; addedLabel: string; disabled?: boolean }) {
   const { add } = useCart();
   const [done, setDone] = useState(false);
   useEffect(() => {
@@ -167,7 +167,16 @@ export function AddButton({ productId, minQty, label, addedLabel, disabled }: { 
       }`}
     >
       {done ? <Check className="h-4 w-4" /> : <ShoppingBasket className="h-4 w-4" />}
-      {done ? addedLabel : label}
+      {done ? (
+        addedLabel
+      ) : shortLabel ? (
+        <>
+          <span className="sm:hidden">{shortLabel}</span>
+          <span className="hidden sm:inline">{label}</span>
+        </>
+      ) : (
+        label
+      )}
     </button>
   );
 }
