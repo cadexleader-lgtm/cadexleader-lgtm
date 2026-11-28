@@ -1,4 +1,5 @@
 import { LogoMark } from "@/components/art/Logo";
+import { AMBIANCE } from "@/lib/illustrations";
 import type { Order, OrderItem, Quotation } from "@/lib/data/orders";
 import type { BillingSettings, CompanySettings, MarketSettings } from "@/lib/data/settings";
 import { MARKETS } from "@/lib/markets";
@@ -134,11 +135,15 @@ export function ProformaDocument({
   return (
     <article className="proforma mx-auto w-full max-w-[210mm] bg-white text-[13px] leading-relaxed text-charcoal shadow-[0_30px_80px_-40px_rgb(22_21_21/0.45)] print:max-w-none print:text-[11.5px] print:leading-snug print:shadow-none">
       {/* Header band */}
-      <header className="flex flex-col gap-5 bg-forest-950 px-6 py-6 text-cream sm:flex-row sm:items-start sm:justify-between sm:px-10 sm:py-8 print:flex-row print:items-start print:justify-between print:px-8 print:py-4">
+      <header className="relative isolate flex flex-col gap-5 overflow-hidden bg-forest-950 px-6 py-6 text-cream sm:flex-row sm:items-start sm:justify-between sm:px-10 sm:py-8 print:flex-row print:items-start print:justify-between print:px-8 print:py-4">
+        {/* Real firewood photo behind the header, darkened so every line stays readable (also in the PDF). */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={AMBIANCE.woodStack} alt="" aria-hidden className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_45%]" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgb(22_21_21/0.86)_0%,rgb(22_21_21/0.4)_48%,rgb(22_21_21/0.86)_100%)]" />
         <div className="flex items-center gap-3">
           <LogoMark tone="light" className="h-12 w-12" />
           <div>
-            <p className="font-display text-[2rem] leading-none">{company.tradeName || "Foyerwood"}</p>
+            <p className="font-logo text-[2rem] leading-none">{company.tradeName || "Foyerwood"}</p>
             <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-cream/60">{lang === "fr" ? "Bois de chauffage livré" : "Firewood, delivered"}</p>
           </div>
         </div>
@@ -175,6 +180,7 @@ export function ProformaDocument({
             <p>{m.names[lang]}</p>
             <p className="mt-1">{order.customerEmail}</p>
             <p>{order.customerPhone}</p>
+            {order.customerWhatsapp && order.customerWhatsapp !== order.customerPhone && <p>WhatsApp : {order.customerWhatsapp}</p>}
           </div>
         </section>
 

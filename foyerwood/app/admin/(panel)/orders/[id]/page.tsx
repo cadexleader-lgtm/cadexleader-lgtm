@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MessageCircle, Mail, Phone, MapPin, ShieldAlert } from "lucide-react";
+import { MessageCircle, Mail, Phone, MapPin, ShieldAlert, Smartphone, ExternalLink } from "lucide-react";
+import { stageMessage, stageOf, smsLink, orderPagePath, type OrderStage } from "@/lib/customer-messages";
+import { amountFor } from "@/lib/notify";
+import { mailConfigured } from "@/lib/mailer";
+import { getSetting } from "@/lib/data/settings";
 import { Flash, Panel, StatusBadge, Field, TextArea, Select, SubmitButton } from "@/components/admin/AdminUi";
 import { Badge } from "@/components/ui";
 import { getOrderDetail, quotationTotal } from "@/lib/data/orders";
@@ -12,8 +16,17 @@ import { whatsappLink } from "@/lib/whatsapp";
 import { isSaleUnit, unitLabel } from "@/lib/energy";
 import {
   addNoteAction, changeStatusAction, createQuotationAction, paymentStatusAction, quotationStatusAction,
-  recordPaymentAction, saveDeliveryAction, saveInternalNotesAction,
+  recordPaymentAction, saveDeliveryAction, saveInternalNotesAction, sendStageEmailAction,
 } from "@/app/admin/actions";
+
+const STAGE_LABEL: Record<OrderStage, string> = {
+  received: "précommande reçue, à confirmer",
+  pay: "confirmée, paiement attendu",
+  paid: "paiement reçu",
+  shipping: "livraison en cours",
+  delivered: "livrée",
+  cancelled: "annulée",
+};
 
 type Props = { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | undefined>> };
 
@@ -38,11 +51,13 @@ export default async function OrderDetailPage({ params, searchParams }: Props) {
   const cost = items.reduce((s, i) => s + (i.unitCostCents ?? 0) * i.quantity, 0);
   const productsTotal = orderProductsTotal(o);
   const costKnown = items.every((i) => i.unitCostCents != null);
-  const greet =
-    o.language === "fr"
-      ? `Bonjour ${o.customerName}, ici Foyerwood au sujet de votre précommande ${o.reference}.`
-      : `Hello ${o.customerName}, this is Foyerwood about your pre-order ${o.reference}.`;
-  const waCustomer = whatsappLink(o.customerPhone, greet);
+  const company = await getSetting("company");
+  const stage = stageOf(o.status);
+  const notice = stageMessage(o, stage, { ...amountFor(d), brand: company.tradeName || "Foyerwood" });
+  const waNotify = whatsappLink(o.customerWhatsapp || o.customerPhone, notice.short);
+  const smsNotify = smsLink(o.customerPhone, notice.short);
+  const mailNotify = `mailto:${o.customerEmail}?subject=${encodeURIComponent(notice.subject)}&body=${encodeURIComponent(notice.short)}`;
+  const autoMail = mailConfigured();
   const unit = (u: string, q: number) => (isSaleUnit(u) ? unitLabel(u, "fr", q) : u);
   const today = new Date().toISOString().slice(0, 10);
 
@@ -89,18 +104,56 @@ export default async function OrderDetailPage({ params, searchParams }: Props) {
             </div>
           </Panel>
 
+          <Panel title="Prévenir le client">
+            <p className="text-sm text-stone">
+              Étape actuelle : <strong className="text-charcoal">{STAGE_LABEL[stage]}</strong>. Message prêt à envoyer, avec le lien vers sa page de commande
+              {stage === "pay" ? " (montant, coordonnées bancaires et pro forma)" : ""}. Changez le statut ci-contre : le message s&apos;adapte.
+            </p>
+            <pre className="mt-3 max-h-52 overflow-auto whitespace-pre-wrap rounded-lg bg-cream p-3 font-sans text-[0.85rem] text-charcoal/90">{notice.short}</pre>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {waNotify && (
+                <a href={waNotify} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-2 rounded-full bg-[#1f7a4d] px-4 text-sm font-medium text-white hover:opacity-90">
+                  <MessageCircle className="h-4 w-4" /> WhatsApp{o.customerWhatsapp ? "" : " (n° de téléphone)"}
+                </a>
+              )}
+              {smsNotify && (
+                <a href={smsNotify} className="inline-flex h-10 items-center gap-2 rounded-full bg-forest px-4 text-sm font-medium text-cream hover:bg-pine">
+                  <Smartphone className="h-4 w-4" /> SMS
+                </a>
+              )}
+              {autoMail ? (
+                <form action={sendStageEmailAction}>
+                  <input type="hidden" name="orderId" value={o.id} />
+                  <SubmitButton variant="secondary"><Mail className="h-4 w-4" /> Envoyer l&apos;e-mail maintenant</SubmitButton>
+                </form>
+              ) : (
+                <a href={mailNotify} className="inline-flex h-10 items-center gap-2 rounded-full bg-wood px-4 text-sm font-medium text-ink hover:bg-ember">
+                  <Mail className="h-4 w-4" /> E-mail
+                </a>
+              )}
+              <a href={orderPagePath(o)} target="_blank" rel="noopener" className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-sm font-medium text-forest ring-1 ring-line hover:bg-cream">
+                <ExternalLink className="h-4 w-4" /> Page du client
+              </a>
+            </div>
+            <p className="mt-3 text-xs text-stone">
+              {autoMail
+                ? "E-mails automatiques actifs : le client reçoit déjà un e-mail à chaque changement d'étape. WhatsApp et SMS permettent de le prévenir plus vite."
+                : "E-mails automatiques inactifs (voir Réglages → E-mails automatiques). Le bouton E-mail ouvre votre messagerie avec le message prêt."}
+            </p>
+          </Panel>
+
           <div className="grid gap-6 md:grid-cols-2">
             <Panel title="Client">
               <p className="font-medium text-charcoal">{o.customerName}</p>
               <ul className="mt-3 space-y-2 text-sm">
                 <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-wood" /><a href={`mailto:${o.customerEmail}`} className="hover:underline">{o.customerEmail}</a></li>
                 <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-wood" /><a href={`tel:${o.customerPhone.replace(/\s/g, "")}`} className="hover:underline">{o.customerPhone}</a></li>
+                {o.customerWhatsapp ? (
+                  <li className="flex items-center gap-2"><MessageCircle className="h-4 w-4 text-wood" />WhatsApp : {o.customerWhatsapp}</li>
+                ) : (
+                  <li className="flex items-center gap-2 text-stone"><MessageCircle className="h-4 w-4" />Pas de numéro WhatsApp indiqué</li>
+                )}
               </ul>
-              {waCustomer && (
-                <a href={waCustomer} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#1f7a4d] px-4 py-2 text-sm font-medium text-white hover:opacity-90">
-                  <MessageCircle className="h-4 w-4" /> Écrire au client sur WhatsApp
-                </a>
-              )}
             </Panel>
             <Panel title="Livraison">
               <p className="flex items-start gap-2 text-sm"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-wood" /><span>{o.addressLine}<br />{o.postalCode} {o.city}{o.region ? ` (${o.region})` : ""}<br />{market.names.fr}</span></p>

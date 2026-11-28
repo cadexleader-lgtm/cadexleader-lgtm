@@ -24,7 +24,7 @@ export function Logo({ tone = "dark", className = "" }: { tone?: "dark" | "light
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <LogoMark tone={tone} />
       <span
-        className={`font-display text-[1.6rem] leading-none tracking-tight ${tone === "dark" ? "text-forest" : "text-cream"}`}
+        className={`font-logo text-[1.6rem] leading-none tracking-tight ${tone === "dark" ? "text-forest" : "text-cream"}`}
       >
         Foyerwood
       </span>

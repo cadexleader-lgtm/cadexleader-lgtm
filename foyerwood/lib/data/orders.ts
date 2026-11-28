@@ -15,6 +15,8 @@ export interface Order {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
+  /** Optional WhatsApp number the customer chose to leave. */
+  customerWhatsapp: string | null;
   addressLine: string;
   postalCode: string;
   city: string;
@@ -136,6 +138,7 @@ export interface NewPreorder {
     fullName: string;
     email: string;
     phone: string;
+    whatsapp?: string | null;
     addressLine: string;
     postalCode: string;
     city: string;
@@ -156,9 +159,17 @@ export interface NewPreorder {
   calculationId: string | null;
   discountCents?: number;
   discountPercent?: number;
+  /**
+   * Pro forma invoice issued automatically with the pre-order (products total
+   * after discount). Delivery is 0 when free; otherwise the note says it is
+   * confirmed later, and the admin can issue a corrected pro forma.
+   */
+  proforma?: { validityDays: number; deliveryFree: boolean; deliveryNote: string | null };
 }
 
-export async function createPreorder(input: NewPreorder): Promise<{ id: string; reference: string; accessToken: string }> {
+export async function createPreorder(
+  input: NewPreorder,
+): Promise<{ id: string; reference: string; accessToken: string; proformaNumber: string | null }> {
   const currency = MARKETS[input.market].currency;
   const subtotal = input.items.reduce((s, i) => s + i.unitPriceCents * i.quantity, 0);
   // Gifts cost us their purchase price too: they are part of the estimated cost.
@@ -183,8 +194,9 @@ export async function createPreorder(input: NewPreorder): Promise<{ id: string; 
     const [order] = await q.query<{ id: string }>(
       `insert into orders (reference, access_token, market_id, language, currency, customer_id, customer_name,
          customer_email, customer_phone, address_line, postal_code, city, region, delivery_instructions,
-         subtotal_cents, estimated_cost_cents, delivery_zone_id, calculation_id, consent_at, discount_cents, discount_percent)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,now(),$19,$20)
+         subtotal_cents, estimated_cost_cents, delivery_zone_id, calculation_id, consent_at, discount_cents, discount_percent,
+         customer_whatsapp)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,now(),$19,$20,$21)
        returning id`,
       [
         reference,
@@ -207,6 +219,7 @@ export async function createPreorder(input: NewPreorder): Promise<{ id: string; 
         input.calculationId,
         discount,
         input.discountPercent ?? 0,
+        c.whatsapp || null,
       ],
     );
     let pos = 0;
@@ -222,8 +235,54 @@ export async function createPreorder(input: NewPreorder): Promise<{ id: string; 
       order.id,
       "Précommande envoyée depuis le site",
     ]);
-    return { id: order.id, reference, accessToken };
+    let proformaNumber: string | null = null;
+    if (input.proforma) {
+      proformaNumber = `PF-${reference.replace(/^FW-/, "")}-1`;
+      const days = Math.max(1, Math.min(90, Math.round(input.proforma.validityDays || 14)));
+      await q.query(
+        `insert into quotations (order_id, number, amount_cents, delivery_cents, tax_cents, currency, status, sent_at, valid_until, notes)
+         values ($1,$2,$3,0,0,$4,'sent',now(),(now() + make_interval(days => $5::int))::date,$6)`,
+        [order.id, proformaNumber, subtotal - discount, currency, days, input.proforma.deliveryFree ? null : input.proforma.deliveryNote],
+      );
+      await q.query(`insert into order_events (order_id, note) values ($1, $2)`, [
+        order.id,
+        `Facture pro forma ${proformaNumber} générée automatiquement et remise au client (${((subtotal - discount) / 100).toFixed(2)} ${currency}).`,
+      ]);
+    }
+    return { id: order.id, reference, accessToken, proformaNumber };
   });
+}
+
+/** Lets the customer add or change their WhatsApp number from the confirmation page. */
+export async function setOrderWhatsapp(reference: string, token: string, whatsapp: string | null): Promise<boolean> {
+  const data = await getOrderForCustomer(reference, token);
+  if (!data) return false;
+  await query(`update orders set customer_whatsapp = $2, updated_at = now() where id = $1`, [data.order.id, whatsapp]);
+  await query(`insert into order_events (order_id, note) values ($1, $2)`, [
+    data.order.id,
+    whatsapp ? `Le client a indiqué son numéro WhatsApp : ${whatsapp}` : "Le client a retiré son numéro WhatsApp.",
+  ]);
+  return true;
+}
+
+export async function getOrderStatus(orderId: string): Promise<OrderStatus | null> {
+  const row = await queryOne<{ status: OrderStatus }>(`select status from orders where id = $1`, [orderId]);
+  return row?.status ?? null;
+}
+
+/** The quotation (pro forma) currently valid for an order, if any. */
+export async function getActiveQuotation(orderId: string): Promise<Quotation | null> {
+  const row = await queryOne(`select * from quotations where order_id = $1 and status <> 'cancelled' order by created_at desc limit 1`, [orderId]);
+  return row ? fixDate(camelize<Quotation>(row)) : null;
+}
+
+/** The pro forma currently valid for an order (customer side), if any. */
+export async function getActiveProformaNumber(orderId: string): Promise<string | null> {
+  const row = await queryOne<{ number: string }>(
+    `select number from quotations where order_id = $1 and status <> 'cancelled' order by created_at desc limit 1`,
+    [orderId],
+  );
+  return row?.number ?? null;
 }
 
 // ---------------------------------------------------------------- customer access

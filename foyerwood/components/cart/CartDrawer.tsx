@@ -185,6 +185,9 @@ export function CartDrawer({
           </div>
         ) : (
           <>
+            {/* One scroll area for everything except the header and the checkout bar,
+                so the chosen products always get the room (mobile included). */}
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
             {freeThresholdCents != null && left != null && (
               <div className="border-b border-line bg-white px-5 py-3">
                 <p className="flex items-start gap-2 text-[0.82rem] leading-snug text-charcoal">
@@ -204,7 +207,7 @@ export function CartDrawer({
               <PromoNudges result={promo} labels={promoLabels} money={money} className="border-b border-line bg-wood-100/50 px-5 py-3" />
             )}
 
-            <ul className="flex-1 divide-y divide-line overflow-y-auto px-5">
+            <ul className="divide-y divide-line px-5">
               {rows.map(({ line, product: p }) => {
                 const tooFew = line.qty < p.minQty;
                 return (
@@ -257,24 +260,8 @@ export function CartDrawer({
               )}
             </ul>
 
-            <div className="border-t border-line bg-white px-5 pb-5 pt-4">
-              {promo.discountCents > 0 && (
-                <div className="mb-1 space-y-1 text-sm">
-                  <div className="flex justify-between text-stone">
-                    <span>{labels.lineTotal}</span>
-                    <span className="tabular-nums">{money(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between font-semibold text-success">
-                    <span>{promoLabels.discountLine.replace("{pct}", String(promo.discountPercent))}</span>
-                    <span className="tabular-nums">−{money(promo.discountCents)}</span>
-                  </div>
-                </div>
-              )}
-              <div className="flex items-baseline justify-between">
-                <span className="text-sm text-stone">{promo.discountCents > 0 ? promoLabels.totalAfter : labels.subtotal}</span>
-                <span className="font-display text-3xl tabular-nums text-forest">{money(promo.totalCents)}</span>
-              </div>
-              <p className="mt-2 flex gap-2 text-xs leading-relaxed text-stone">
+            <div className="border-t border-line px-5 py-4">
+              <p className="flex gap-2 text-xs leading-relaxed text-stone">
                 <Landmark className="mt-0.5 h-3.5 w-3.5 shrink-0 text-wood-600" />
                 {labels.note}
               </p>
@@ -291,15 +278,35 @@ export function CartDrawer({
               <p className="mt-3 flex items-center gap-2 rounded-[3px] bg-wood-100 px-3 py-2 text-xs font-semibold text-wood-600">
                 <AlertCircle className="h-4 w-4 shrink-0" /> {labels.notReserved}
               </p>
+            </div>
+            </div>
+
+            <div className="border-t border-line bg-white px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_24px_-18px_rgb(22_21_21/0.35)]">
+              {promo.discountCents > 0 && (
+                <div className="mb-1 space-y-0.5 text-[0.82rem]">
+                  <div className="flex justify-between text-stone">
+                    <span>{labels.lineTotal}</span>
+                    <span className="tabular-nums">{money(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between font-semibold text-success">
+                    <span>{promoLabels.discountLine.replace("{pct}", String(promo.discountPercent))}</span>
+                    <span className="tabular-nums">−{money(promo.discountCents)}</span>
+                  </div>
+                </div>
+              )}
+              <div className="flex items-baseline justify-between">
+                <span className="text-sm text-stone">{promo.discountCents > 0 ? promoLabels.totalAfter : labels.subtotal}</span>
+                <span className="font-display text-[1.75rem] leading-tight tabular-nums text-forest">{money(promo.totalCents)}</span>
+              </div>
               <Link
                 href={preorderHref}
                 onClick={closeDrawer}
-                className="mt-3 flex h-14 w-full flex-col items-center justify-center rounded-[3px] bg-wood text-ink transition-colors hover:bg-ember"
+                className="mt-2.5 flex h-13 w-full flex-col items-center justify-center rounded-[3px] bg-wood text-ink transition-colors hover:bg-ember"
               >
                 <span className="text-[0.95rem] font-semibold leading-tight">{labels.checkout}</span>
                 <span className="text-[0.72rem] font-medium leading-tight opacity-80">{labels.zeroToday}</span>
               </Link>
-              <button type="button" onClick={closeDrawer} className="mt-2 h-10 w-full text-sm font-medium text-forest underline-offset-4 hover:underline">
+              <button type="button" onClick={closeDrawer} className="mt-1 h-9 w-full text-sm font-medium text-forest underline-offset-4 hover:underline">
                 {labels.continue}
               </button>
             </div>

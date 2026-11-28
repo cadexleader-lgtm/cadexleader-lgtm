@@ -64,7 +64,7 @@ export function AdminNav({ user, badges, demo }: { user: { name: string; email: 
       <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col bg-forest text-cream lg:flex">
         <Link href="/admin" className="flex items-center gap-2.5 px-6 py-5">
           <LogoMark tone="light" />
-          <span className="font-display text-xl">Foyerwood</span>
+          <span className="font-logo text-xl">Foyerwood</span>
           <span className="rounded bg-cream/10 px-1.5 py-0.5 text-[0.65rem] uppercase tracking-wider text-cream/70">Admin</span>
         </Link>
         {nav}
@@ -73,7 +73,7 @@ export function AdminNav({ user, badges, demo }: { user: { name: string; email: 
       <div className="sticky top-0 z-30 flex items-center justify-between bg-forest px-4 py-3 text-cream lg:hidden">
         <Link href="/admin" className="flex items-center gap-2">
           <LogoMark tone="light" className="h-8 w-8" />
-          <span className="font-display text-lg">Foyerwood Admin</span>
+          <span className="font-logo text-lg">Foyerwood Admin</span>
         </Link>
         <button type="button" onClick={() => setOpen(true)} aria-label="Menu" className="rounded-lg p-2 hover:bg-cream/10">
           <Menu className="h-5 w-5" />
@@ -84,7 +84,7 @@ export function AdminNav({ user, badges, demo }: { user: { name: string; email: 
           <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
           <div className="absolute inset-y-0 left-0 flex w-72 flex-col overflow-y-auto bg-forest text-cream">
             <div className="flex items-center justify-between px-5 py-4">
-              <span className="font-display text-xl">Foyerwood</span>
+              <span className="font-logo text-xl">Foyerwood</span>
               <button type="button" onClick={() => setOpen(false)} aria-label="Fermer" className="rounded-lg p-2 hover:bg-cream/10">
                 <X className="h-5 w-5" />
               </button>

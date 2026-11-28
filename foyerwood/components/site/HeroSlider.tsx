@@ -80,8 +80,8 @@ export function HeroSlider({
                 <span className="h-px w-10 bg-cream/30" />
                 {s.kicker}
               </p>
-              <h1 className="mt-6 animate-fade-up text-[3rem] leading-[0.98] [animation-delay:100ms] sm:text-[4.6rem] lg:text-[5.6rem]">{emphasize(s.title)}</h1>
-              <p className="mt-6 max-w-xl animate-fade-up text-[1.05rem] leading-relaxed text-cream/75 [animation-delay:200ms] sm:text-lg">{s.text}</p>
+              <h1 className="mt-6 animate-fade-up text-[2.75rem] leading-[1.03] [animation-delay:100ms] sm:text-[4.25rem] lg:text-[5.1rem]">{emphasize(s.title)}</h1>
+              <p className="mt-6 max-w-xl animate-fade-up text-[1.05rem] leading-[1.6] text-cream/80 [animation-delay:200ms] sm:text-lg">{s.text}</p>
               <div className="mt-9 flex animate-fade-up flex-wrap items-center gap-x-8 gap-y-4 [animation-delay:300ms]">
                 <Link href={s.href} className="inline-flex h-13 items-center gap-3 rounded-[3px] bg-wood px-7 text-[0.95rem] font-semibold text-ink transition-colors hover:bg-ember">
                   {s.cta} <ArrowRight className="h-4 w-4" />

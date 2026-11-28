@@ -28,8 +28,12 @@
   --color-success: #2f7a45;
   --color-warning: #b86a05;
 
-  --font-sans: "Instrument Sans Variable", "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
+  /* Typography: a warm, optical-size serif for headings (Fraunces) and a
+     humanist grotesque for reading (Hanken Grotesk). The wordmark keeps
+     its own face so the brand logo does not change. */
+  --font-sans: "Hanken Grotesk Variable", "Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces Variable", "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+  --font-logo: "Instrument Serif", ui-serif, Georgia, serif;
 
   /* Restrained geometry: crisp corners, hairlines rather than heavy shadows. */
   --radius-xs: 2px;
@@ -88,22 +92,43 @@
   }
   body {
     @apply bg-cream text-charcoal font-sans antialiased;
-    font-feature-settings: "ss01", "tnum" 0;
+    font-feature-settings: "kern", "liga", "calt";
     text-rendering: optimizeLegibility;
+    hanging-punctuation: first;
   }
   h1, h2, .font-display {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.015em;
+    font-weight: 380;
+    font-optical-sizing: auto;
+    /* Softened, non-"wonky" Fraunces: calm and crafted rather than quirky. */
+    font-variation-settings: "SOFT" 40, "WONK" 0;
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+  h1 {
+    font-weight: 360;
+    letter-spacing: -0.03em;
   }
   h3 {
     font-family: var(--font-sans);
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.012em;
   }
   h1 em, h2 em, .font-display em {
     font-style: italic;
+    font-weight: 340;
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+    letter-spacing: -0.01em;
     color: var(--color-wood);
+  }
+  p, li {
+    text-wrap: pretty;
+  }
+  .font-logo {
+    font-family: var(--font-logo);
+    font-weight: 400;
+    font-variation-settings: normal;
+    letter-spacing: -0.015em;
   }
   ::selection {
     background: var(--color-wood-100);

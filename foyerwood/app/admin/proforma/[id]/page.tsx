@@ -30,7 +30,7 @@ export default async function AdminProformaPage({ params }: { params: Promise<{ 
       <ProformaToolbar
         backHref={`/admin/orders/${data.order.id}`}
         publicUrl={ctx.publicUrl}
-        whatsappHref={whatsappLink(data.order.customerPhone, msg.body)}
+        whatsappHref={whatsappLink(data.order.customerWhatsapp || data.order.customerPhone, msg.body)}
         mailtoHref={`mailto:${data.order.customerEmail}?subject=${encodeURIComponent(msg.subject)}&body=${encodeURIComponent(msg.body)}`}
         markSent={markSent}
         status={data.quotation.status}
