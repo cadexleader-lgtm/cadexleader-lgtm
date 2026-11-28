@@ -71,3 +71,10 @@
   .adm-photo { flex-direction: column; }
 }
 .btn.is-busy { opacity: 0.6; pointer-events: none; }
+
+/* Mode sombre */
+[data-theme="dark"] .adm-top { background: rgba(6, 20, 35, 0.94); }
+[data-theme="dark"] .adm-modal__panel { background: #0a1c30; }
+[data-theme="dark"] .adm-modal__overlay { background: rgba(0, 0, 0, 0.6); }
+[data-theme="dark"] .adm-tile input[type="text"] { background: rgba(0, 0, 0, 0.25); }
+[data-theme="dark"] .adm-badge.is-on { color: #6ee7a0; }

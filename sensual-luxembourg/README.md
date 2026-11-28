@@ -5,6 +5,7 @@ Version de présentation à montrer au client avant validation.
 
 - **100 % statique** (HTML / CSS / JavaScript) : aucune compilation, aucun serveur, déploiement Vercel en 1 clic.
 - Thème **clair aux couleurs du Luxembourg** : fond blanc, bleu ciel `#00a3e0`, rouge `#ef3340`, cartes très arrondies.
+- **Bouton clair / sombre** (soleil / lune, dans la barre du haut) : clair par défaut, le choix du visiteur est mémorisé (`assets/js/theme.js`).
 - **Parcours de réservation complet** : massage + durée + lieu → jour + heure → coordonnées + paiement
   → message pré-rempli envoyé sur WhatsApp → paiement en ligne (acompte ou totalité), ajout à l'agenda, référence.
 - **Design sobre et aéré** : peu d'éléments par écran, une seule animation forte, chargement léger

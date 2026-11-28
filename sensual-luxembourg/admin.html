@@ -6,20 +6,27 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Administration — Sensual Luxembourg</title>
   <meta name="theme-color" content="#ffffff">
+  <script>try{var t=localStorage.getItem("sl-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}</script>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/style.css?v=20261119c">
-  <link rel="stylesheet" href="assets/css/admin.css?v=20261119c">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261128a">
+  <link rel="stylesheet" href="assets/css/admin.css?v=20261128a">
 </head>
 <body class="admin">
 
   <header class="adm-top">
     <a class="adm-top__brand" href="./" aria-label="Retour au site">
-      <img src="assets/img/logo-mark.svg" alt="" width="36" height="36">
+      <img class="for-light" src="assets/img/logo-mark.svg" alt="" width="36" height="36"><img class="for-dark" src="assets/img/logo-mark-dark.svg" alt="" width="36" height="36">
       <span>Administration</span>
     </a>
-    <div class="adm-top__actions" data-top-actions hidden>
-      <button class="btn btn--ghost btn--sm" data-open-password>Mot de passe</button>
-      <button class="btn btn--ghost btn--sm" data-logout>Déconnexion</button>
+    <div class="adm-top__right">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Passer en mode sombre" aria-pressed="false">
+          <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a7 7 0 0 0 10.7 10.7Z"/></svg>
+          <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+        </button>
+      <div class="adm-top__actions" data-top-actions hidden>
+        <button class="btn btn--ghost btn--sm" data-open-password>Mot de passe</button>
+        <button class="btn btn--ghost btn--sm" data-logout>Déconnexion</button>
+      </div>
     </div>
   </header>
 
@@ -146,7 +153,9 @@
 
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
-  <script src="assets/js/config.js?v=20261119c"></script>
-  <script src="assets/js/admin.js?v=20261119c"></script>
+  <script src="assets/js/theme.js?v=20261128a"></script>
+
+  <script src="assets/js/config.js?v=20261128a"></script>
+  <script src="assets/js/admin.js?v=20261128a"></script>
 </body>
 </html>

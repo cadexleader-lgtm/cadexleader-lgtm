@@ -550,3 +550,64 @@ body.drawer-open .fab, body.drawer-open .mbar { opacity: 0; pointer-events: none
 }
 
 .bd-recap__note { margin: 4px 0 0; color: var(--muted); font-size: 0.84rem; }
+
+/* =========================================================
+   Bouton clair / sombre
+   ========================================================= */
+.theme-toggle { position: relative; width: 40px; height: 40px; flex: none; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line-2); color: var(--text); transition: border-color 0.3s, background-color 0.3s, transform 0.4s var(--ease); }
+.theme-toggle:hover { border-color: var(--blue); }
+.theme-toggle:active { transform: scale(0.94); }
+.theme-toggle svg { position: absolute; width: 18px; height: 18px; transition: opacity 0.35s, transform 0.5s var(--ease); }
+.theme-toggle__sun { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+[data-theme="dark"] .theme-toggle__moon { opacity: 0; transform: rotate(90deg) scale(0.6); }
+[data-theme="dark"] .theme-toggle__sun { opacity: 1; transform: none; color: #ffd36b; }
+.nav__links + .theme-toggle { margin-left: -6px; }
+@media (max-width: 960px) {
+  .theme-toggle { margin-left: auto !important; }
+  .theme-toggle + .nav__cta + .nav__burger, .theme-toggle ~ .nav__burger { margin-left: 4px; }
+}
+.adm-top__right { display: flex; align-items: center; gap: 8px; }
+.theme-anim, .theme-anim *, .theme-anim *::before, .theme-anim *::after { transition: background-color 0.5s, color 0.5s, border-color 0.5s, fill 0.5s !important; }
+
+/* Logos : version claire ou sombre */
+.for-dark { display: none !important; }
+[data-theme="dark"] .for-light { display: none !important; }
+[data-theme="dark"] .for-dark { display: block !important; }
+
+/* =========================================================
+   Mode sombre — bleu nuit, bleu ciel et rouge du drapeau
+   ========================================================= */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #061423;
+  --surface: #0b1f33;
+  --surface-2: #10294a;
+  --line: rgba(160, 210, 240, 0.12);
+  --line-2: rgba(255, 255, 255, 0.2);
+  --text: #f2f6fa;
+  --muted: #a3b4c6;
+  --muted-2: #71859a;
+  --blue-2: #5cc6ee;
+  --red-2: #ff6b78;
+  --shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.8);
+}
+[data-theme="dark"] .gate { background: rgba(3, 10, 20, 0.9); }
+[data-theme="dark"] .gate__card { background: var(--surface); }
+[data-theme="dark"] .nav.is-scrolled { background: rgba(6, 20, 35, 0.9); }
+[data-theme="dark"] .hero__silk { background: radial-gradient(120% 90% at 85% 20%, #0f3a5c 0%, rgba(15, 58, 92, 0) 60%), radial-gradient(70% 60% at 70% 95%, #4a1420 0%, rgba(74, 20, 32, 0) 70%), #061423; }
+[data-theme="dark"] .hero::after { background: linear-gradient(90deg, rgba(6, 20, 35, 0.88) 0%, rgba(6, 20, 35, 0.6) 42%, rgba(6, 20, 35, 0.1) 75%), linear-gradient(0deg, var(--bg), transparent 18%); }
+[data-theme="dark"] .hero__title em { background-image: linear-gradient(95deg, #ff6b78 0%, #ffffff 50%, #5fcbf3 100%); }
+[data-theme="dark"] .hero__visual { border-color: var(--surface-2); box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8); }
+[data-theme="dark"] .price--featured { background: var(--surface-2); }
+[data-theme="dark"] .field input, [data-theme="dark"] .field textarea { background: rgba(0, 0, 0, 0.25); color-scheme: dark; }
+[data-theme="dark"] .drawer__panel { background: #0a1c30; }
+[data-theme="dark"] .drawer__overlay { background: rgba(0, 0, 0, 0.55); }
+[data-theme="dark"] .places__veil { fill: rgba(6, 20, 35, 0.25); }
+[data-theme="dark"] .pin text { fill: #fff; stroke: rgba(6, 20, 35, 0.9); }
+[data-theme="dark"] .places__land { filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.55)); }
+[data-theme="dark"] .policy__card--important p { color: #dde5ee; }
+@media (max-width: 760px) {
+  [data-theme="dark"] .hero { background: #061423; }
+  [data-theme="dark"] .hero::after { background: linear-gradient(180deg, rgba(6, 20, 35, 0.45) 0%, rgba(6, 20, 35, 0.1) 18%, rgba(6, 20, 35, 0.25) 36%, rgba(6, 20, 35, 0.88) 56%, var(--bg) 80%); }
+  [data-theme="dark"] .mbar { background: rgba(10, 28, 48, 0.96); box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.8); }
+}

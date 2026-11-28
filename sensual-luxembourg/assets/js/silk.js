@@ -26,6 +26,7 @@
     uniform vec2 uRes;
     uniform float uTime;
     uniform vec2 uMouse;
+    uniform float uDark;
 
     vec2 hash(vec2 p) {
       p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
@@ -89,6 +90,13 @@
 
       // éclaircit à gauche pour la lisibilité du texte
       col = mix(col, white, (1.0 - smoothstep(0.05, 0.6, uv.x)) * 0.55);
+
+      // Mode sombre : soie bleu nuit, plis bleu ciel, même reflet rouge
+      vec3 night = mix(vec3(0.016, 0.060, 0.110), vec3(0.060, 0.260, 0.420), pow(diff, 1.4));
+      night = mix(night, mix(night, red * 0.75, 0.6), rm * (1.0 - diff) * 0.7);
+      night += blue * rim * 0.45 + vec3(0.75, 0.9, 1.0) * spec * 0.22;
+      night *= mix(0.45, 1.0, smoothstep(0.0, 0.6, uv.x));
+      col = mix(col, night, uDark);
       col = clamp(col, 0.0, 1.0);
 
       // léger tramage pour éviter les bandes
@@ -128,6 +136,9 @@
   const uRes = gl.getUniformLocation(prog, "uRes");
   const uTime = gl.getUniformLocation(prog, "uTime");
   const uMouse = gl.getUniformLocation(prog, "uMouse");
+  const uDark = gl.getUniformLocation(prog, "uDark");
+  const isDark = () => document.documentElement.dataset.theme === "dark";
+  let dark = isDark() ? 1 : 0;
 
   // Rendu en résolution réduite : la soie est douce, le flou est invisible et le GPU respire.
   const QUALITY = window.innerWidth < 760 ? 0.3 : 0.4;
@@ -162,6 +173,8 @@
     mouse.y += (mouse.ty - mouse.y) * 0.04;
     gl.uniform1f(uTime, (now - start) / 1000);
     gl.uniform2f(uMouse, mouse.x, mouse.y);
+    dark += ((isDark() ? 1 : 0) - dark) * 0.12; // fondu doux au changement de thème
+    gl.uniform1f(uDark, dark);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     if (visible && !reduced && !document.hidden) raf = requestAnimationFrame(frame);
   }
@@ -175,5 +188,6 @@
 
   document.addEventListener("visibilitychange", () => { if (!document.hidden) play(); });
   window.addEventListener("resize", play, { passive: true });
+  window.addEventListener("sl-theme", play);
   play();
 })();

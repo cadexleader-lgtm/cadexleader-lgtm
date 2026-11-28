@@ -18,8 +18,8 @@
   <link rel="preload" href="assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/img/dos-lumiere-800.webp" as="image" media="(max-width: 960px)">
   <link rel="preload" href="assets/img/dos-lumiere.webp" as="image" media="(min-width: 961px)">
-  <link rel="stylesheet" href="assets/css/style.css?v=20261119c">
-  <script>document.documentElement.classList.add("js");</script>
+  <link rel="stylesheet" href="assets/css/style.css?v=20261128a">
+  <script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("sl-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}</script>
 </head>
 <body>
 
@@ -44,7 +44,7 @@
   <!-- ===== Vérification d'âge ===== -->
   <div class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title" hidden>
     <div class="gate__card">
-      <img src="assets/img/logo-mark.svg" alt="" width="64" height="64">
+      <img class="for-light" src="assets/img/logo-mark.svg" alt="" width="64" height="64"><img class="for-dark" src="assets/img/logo-mark-dark.svg" alt="" width="64" height="64">
       <h2 id="gate-title">Espace réservé aux adultes</h2>
       <p>Ce site présente des massages sensuels destinés aux personnes majeures. En entrant, vous confirmez avoir au moins 18 ans.</p>
       <div class="gate__actions">
@@ -58,7 +58,7 @@
   <header class="nav" data-nav>
     <div class="nav__inner">
       <a class="nav__logo" href="#top" aria-label="Sensual Luxembourg — accueil">
-        <img src="assets/img/logo.svg" alt="Sensual Luxembourg" width="156" height="48">
+        <img class="for-light" src="assets/img/logo.svg" alt="Sensual Luxembourg" width="156" height="48"><img class="for-dark" src="assets/img/logo-dark.svg" alt="Sensual Luxembourg" width="156" height="48">
       </a>
       <nav class="nav__links" aria-label="Navigation principale">
         <a href="#rituel">Le rituel</a>
@@ -67,6 +67,10 @@
         <a href="#tarifs">Tarifs</a>
         <a href="#contact">Contact</a>
       </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Passer en mode sombre" aria-pressed="false">
+        <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a7 7 0 0 0 10.7 10.7Z"/></svg>
+        <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
       <button class="btn btn--primary btn--sm nav__cta" data-book>Réserver</button>
       <button class="nav__burger" aria-label="Ouvrir le menu" aria-expanded="false" data-burger><span></span><span></span></button>
     </div>
@@ -462,7 +466,7 @@
   <!-- ===== Pied de page ===== -->
   <footer class="footer">
     <div class="container footer__top">
-      <img src="assets/img/logo.svg" alt="Sensual Luxembourg" width="180" height="56" loading="lazy">
+      <img class="for-light" src="assets/img/logo.svg" alt="Sensual Luxembourg" width="180" height="56" loading="lazy"><img class="for-dark" src="assets/img/logo-dark.svg" alt="Sensual Luxembourg" width="180" height="56" loading="lazy">
       <nav aria-label="Pied de page">
         <a href="#massages">Massages</a><a href="#tarifs">Tarifs</a><a href="#contact">Contact</a>
       </nav>
@@ -486,7 +490,7 @@
     <aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="bd-title">
       <header class="drawer__head">
         <div class="drawer__brand">
-          <img src="assets/img/logo-mark.svg" alt="" width="36" height="36">
+          <img class="for-light" src="assets/img/logo-mark.svg" alt="" width="36" height="36"><img class="for-dark" src="assets/img/logo-mark-dark.svg" alt="" width="36" height="36">
           <div><h2 id="bd-title">Réserver</h2><small data-bd-with>Réponse en ~10 min · discret</small></div>
           <button class="drawer__close" data-drawer-close aria-label="Fermer la réservation"><svg><use href="#i-close"/></svg></button>
         </div>
@@ -576,13 +580,15 @@
 
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
-  <script src="assets/js/config.js?v=20261119c" defer></script>
+  <script src="assets/js/theme.js?v=20261128a" defer></script>
+
+  <script src="assets/js/config.js?v=20261128a" defer></script>
   <script src="assets/vendor/gsap.min.js" defer></script>
   <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="assets/js/silk.js?v=20261119c" defer></script>
-  <script src="assets/js/main.js?v=20261119c" defer></script>
-  <script src="assets/js/booking.js?v=20261119c" defer></script>
-  <script src="assets/js/reel.js?v=20261119c" defer></script>
-  <script src="assets/js/team.js?v=20261119c" defer></script>
+  <script src="assets/js/silk.js?v=20261128a" defer></script>
+  <script src="assets/js/main.js?v=20261128a" defer></script>
+  <script src="assets/js/booking.js?v=20261128a" defer></script>
+  <script src="assets/js/reel.js?v=20261128a" defer></script>
+  <script src="assets/js/team.js?v=20261128a" defer></script>
 </body>
 </html>
